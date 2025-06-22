@@ -1,8 +1,10 @@
 ---
 services:
   stirling-pdf:
-    container_name: Stirling-PDF
     image: stirlingtools/stirling-pdf
+    container_name: stirling-pdf
+    networks:
+      - proxynet
     mem_limit: 4g
     cpu_shares: 1024
     security_opt:
@@ -33,3 +35,7 @@ services:
      METRICS_ENABLED: ${METRICS_ENABLED}
      SYSTEM_GOOGLEVISIBILITY: ${SYSTEM_GOOGLEVISIBILITY}
     restart: on-failure:5
+
+networks:
+  proxynet:
+    external: true
