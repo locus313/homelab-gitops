@@ -1,0 +1,35 @@
+---
+services:
+  stirling-pdf:
+    container_name: Stirling-PDF
+    image: stirlingtools/stirling-pdf
+    mem_limit: 4g
+    cpu_shares: 1024
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    ports:
+      - 7890:8080
+    volumes:
+      - /docker/stirling-pdf/data:/usr/share/tessdata:rw # Required for extra OCR languages
+      - /docker/stirling-pdf/config:/configs:rw
+      - /docker/stirling-pdf/logs:/logs:rw
+    environment:
+     PUID: ${PUID}
+     PGID: ${PGID}
+     DOCKER_ENABLE_SECURITY: ${DOCKER_ENABLE_SECURITY}
+     SECURITY_ENABLELOGIN: ${SECURITY_ENABLELOGIN}
+     SECURITY_INITIALLOGIN_USERNAME: ${SECURITY_INITIALLOGIN_USERNAME}
+     SECURITY_INITIALLOGIN_PASSWORD: ${SECURITY_INITIALLOGIN_PASSWORD}  
+     INSTALL_BOOK_AND_ADVANCED_HTML_OPS: ${INSTALL_BOOK_AND_ADVANCED_HTML_OPS}
+     SECURITY_CSRFDISABLED: ${SECURITY_CSRFDISABLED}
+     SYSTEM_DEFAULTLOCALE: ${SYSTEM_DEFAULTLOCALE}
+     SYSTEM_MAXFILESIZE: ${SYSTEM_MAXFILESIZE}
+     METRICS_ENABLED: ${METRICS_ENABLED}
+     SYSTEM_GOOGLEVISIBILITY: ${SYSTEM_GOOGLEVISIBILITY}
+    restart: on-failure:5
