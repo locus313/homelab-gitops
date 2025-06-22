@@ -1,0 +1,19 @@
+services:
+  homarr:
+    image: ghcr.io/homarr-labs/homarr:latest
+    container_name: homarr
+    restart: unless-stopped
+    networks:
+      - proxynet
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - /docker/homarr/appdata/appdata:/appdata
+    environment:
+      SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY}
+      PUID: ${PUID}
+      PGID: ${PGID}
+
+
+networks:
+  proxynet:
+    external: true
