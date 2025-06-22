@@ -1,0 +1,15 @@
+services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    networks:
+      - proxynet
+    environment:
+      WATCHTOWER_CLEANUP: ${WATCHTOWER_CLEANUP}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+networks:
+  proxynet:
+    external: true
