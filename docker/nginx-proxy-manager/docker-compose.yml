@@ -1,0 +1,21 @@
+services:
+  nginx-proxy-manager:
+    image: 'docker.io/jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    networks:
+      - proxynet
+    ports:
+      - '80:80'
+      - '8181:81'
+      - '443:443'
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+    volumes:
+      - /docker/nginx-proxy-manager/data:/data
+      - /docker/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+
+networks:
+  proxynet:
+    external: true
