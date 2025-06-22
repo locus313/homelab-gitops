@@ -1,0 +1,21 @@
+services:
+  plex:
+    image: plexinc/pms-docker:latest
+    container_name: plex
+    network_mode: host
+    devices:
+      - /dev/dri:/dev/dri
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      PLEX_CLAIM: ${PLEX_CLAIM}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /docker/PlexMediaServer:/config 
+      - /mnt/h-syn-1_media/Videos:/shares/videos
+      - /mnt/h-syn-1_media/Music:/shares/music
+      - /mnt/h-syn-1_media/Pictures:/shares/photos
+      - /docker/PlexMediaServer/transcode:/transcode
+      - /mnt/h-syn-1_media:/data
+    restart: unless-stopped
