@@ -7,7 +7,7 @@ services:
       - proxynet
     ports:
       - '80:80'
-      - '8181:81'
+      # - '8181:81'
       - '443:443'
     environment:
       PUID: ${PUID}
