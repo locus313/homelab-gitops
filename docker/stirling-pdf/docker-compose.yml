@@ -15,8 +15,6 @@ services:
       timeout: 5s
       retries: 3
       start_period: 90s
-    ports:
-      - 7890:8080
     volumes:
       - /docker/stirling-pdf/data:/usr/share/tessdata:rw # Required for extra OCR languages
       - /docker/stirling-pdf/config:/configs:rw
