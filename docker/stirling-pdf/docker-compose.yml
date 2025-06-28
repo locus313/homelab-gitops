@@ -1,7 +1,7 @@
 ---
 services:
   stirling-pdf:
-    image: stirlingtools/stirling-pdf
+    image: ghcr.io/stirling-tools/stirling-pdf:0.46.2
     container_name: stirling-pdf
     networks:
       - proxynet
