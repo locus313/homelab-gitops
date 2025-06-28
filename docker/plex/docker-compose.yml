@@ -1,6 +1,6 @@
 services:
   plex:
-    image: plexinc/pms-docker:latest
+    image: plexinc/pms-docker:1.41.8.9834-071366d65
     container_name: plex
     network_mode: host
     devices:
