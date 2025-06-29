@@ -25,7 +25,7 @@ find . -regex '.*/\(docker-\)?compose\(-[\w]+\)?\(?>\.[\w-]+\)?\.ya?ml' -print0 
 # Append the schedule block
 cat >> "$tmpfile" <<'YAML'
     schedule:
-      interval: "monthly"
+      interval: "weekly"
 YAML
 
 # Install if changed
