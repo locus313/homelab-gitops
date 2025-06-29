@@ -8,4 +8,4 @@ updates:
       - "/docker/stirling-pdf"
       - "/docker/watchtower"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
