@@ -3,6 +3,7 @@ updates:
   - package-ecosystem: "docker-compose"
     directories:
       - "/docker/homarr"
+      - "/docker/metube"
       - "/docker/nginx-proxy-manager"
       - "/docker/plex"
       - "/docker/stirling-pdf"
