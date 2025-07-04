@@ -1,0 +1,20 @@
+services:
+  metube:
+    image: ghcr.io/alexta69/metube:2025-07-01
+    container_name: metube
+    restart: unless-stopped
+    networks:
+      - proxynet
+    volumes:
+      - /mnt/h-syn-1_media/Videos/converted:/downloads
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      UMASK: ${UMASK}
+      OUTPUT_TEMPLATE: ${OUTPUT_TEMPLATE}
+      YTDL_OPTIONS: ${YTDL_OPTIONS}
+
+
+networks:
+  proxynet:
+    external: true
