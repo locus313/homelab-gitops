@@ -1,0 +1,23 @@
+services:
+  netbootxyz:
+    image: ghcr.io/netbootxyz/netbootxyz:0.7.6-nbxyz4
+    container_name: netbootxyz
+    restart: unless-stopped
+    networks:
+      - proxynet
+    ports:
+    - 69:69/udp
+    - 8080:80
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      NGINX_PORT: ${NGINX_PORT}
+      WEB_APP_PORT: ${WEB_APP_PORT}
+    volumes:
+      - /docker/netbootxyz/config:/config
+      - /docker/netbootxyz/assets:/assets
+
+networks:
+  proxynet:
+    external: true
