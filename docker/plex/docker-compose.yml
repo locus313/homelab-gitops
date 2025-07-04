@@ -2,6 +2,7 @@ services:
   plex:
     image: plexinc/pms-docker:1.41.8.9834-071366d65
     container_name: plex
+    restart: unless-stopped
     network_mode: host
     devices:
       - /dev/dri:/dev/dri
@@ -18,4 +19,3 @@ services:
       - /mnt/h-syn-1_media/Pictures:/shares/photos
       - /docker/PlexMediaServer/transcode:/transcode
       - /mnt/h-syn-1_media:/data
-    restart: unless-stopped

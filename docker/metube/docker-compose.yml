@@ -14,7 +14,6 @@ services:
       OUTPUT_TEMPLATE: ${OUTPUT_TEMPLATE}
       YTDL_OPTIONS: ${YTDL_OPTIONS}
 
-
 networks:
   proxynet:
     external: true

@@ -3,6 +3,7 @@ services:
   stirling-pdf:
     image: ghcr.io/stirling-tools/stirling-pdf:0.46.2
     container_name: stirling-pdf
+    restart: on-failure:5
     networks:
       - proxynet
     mem_limit: 4g
@@ -32,7 +33,6 @@ services:
      SYSTEM_MAXFILESIZE: ${SYSTEM_MAXFILESIZE}
      METRICS_ENABLED: ${METRICS_ENABLED}
      SYSTEM_GOOGLEVISIBILITY: ${SYSTEM_GOOGLEVISIBILITY}
-    restart: on-failure:5
 
 networks:
   proxynet:
