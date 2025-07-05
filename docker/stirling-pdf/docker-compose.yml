@@ -17,9 +17,9 @@ services:
       retries: 3
       start_period: 90s
     volumes:
-      - /docker/stirling-pdf/data:/usr/share/tessdata:rw # Required for extra OCR languages
-      - /docker/stirling-pdf/config:/configs:rw
-      - /docker/stirling-pdf/logs:/logs:rw
+      - ${DOCKER_BASE_PATH}/stirling-pdf/data:/usr/share/tessdata:rw # Required for extra OCR languages
+      - ${DOCKER_BASE_PATH}/stirling-pdf/config:/configs:rw
+      - ${DOCKER_BASE_PATH}/stirling-pdf/logs:/logs:rw
     environment:
      PUID: ${PUID}
      PGID: ${PGID}
