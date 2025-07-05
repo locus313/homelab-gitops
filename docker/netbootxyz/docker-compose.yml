@@ -15,8 +15,8 @@ services:
       NGINX_PORT: ${NGINX_PORT}
       WEB_APP_PORT: ${WEB_APP_PORT}
     volumes:
-      - /docker/netbootxyz/config:/config
-      - /docker/netbootxyz/assets:/assets
+      - ${DOCKER_BASE_PATH}/netbootxyz/config:/config
+      - ${DOCKER_BASE_PATH}/netbootxyz/assets:/assets
 
 networks:
   proxynet:
