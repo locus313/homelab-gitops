@@ -3,35 +3,19 @@ services:
     image: traefik:v3.4.3
     container_name: traefik
     restart: unless-stopped
-    command:
-      - --log.level=DEBUG
-      # Enable Docker provider
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      # Entrypoints for HTTP and HTTPS
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      # Enable dashboard (optional)
-      - --api.dashboard=true
-      # Configure ACME (Let's Encrypt) with DNS challenge
-      - --certificatesresolvers.myresolver.acme.email=${ACME_EMAIL}
-      - --certificatesresolvers.myresolver.acme.storage=${ACME_STORAGE}
-      - --certificatesresolvers.myresolver.acme.dnschallenge=${ACME_DNSCHALLENGE}
-      - --certificatesresolvers.myresolver.acme.dnschallenge.provider=${ACME_DNSCHALLENGE_PROVIDER}
-      - --certificatesresolvers.myresolver.acme.dnschallenge.resolvers=${ACME_DNSCHALLENGE_RESOLVERS}
     networks:
       - proxynet
     ports:
-      - "80:80"
-      - "443:443"
-      - "8181:8080" # For Traefik dashboard (optional)
+      - 80:80
+      - 443:443
+      - 8181:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ${DOCKER_BASE_PATH}/traefik:/etc/traefik # Persistent storage for acme.json
+      - ${DOCKER_BASE_PATH}/traefik/config:/etc/traefik:ro
+      - ${DOCKER_BASE_PATH}/traefik/certs:/var/traefik/certs/:rw
     environment:
-      CLOUDNS_AUTH_ID: ${CLOUDNS_AUTH_ID}
       CLOUDNS_SUB_AUTH_ID: ${CLOUDNS_SUB_AUTH_ID}
-      CLOUDNS_PASSWORD: ${CLOUDNS_PASSWORD}
+      CLOUDNS_AUTH_PASSWORD: ${CLOUDNS_AUTH_PASSWORD}
 
 networks:
   proxynet:

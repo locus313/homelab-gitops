@@ -13,6 +13,13 @@ services:
       UMASK: ${UMASK}
       OUTPUT_TEMPLATE: ${OUTPUT_TEMPLATE}
       YTDL_OPTIONS: ${YTDL_OPTIONS}
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.metube.loadbalancer.server.port=8081
+      - traefik.http.routers.metube.rule=Host(`${TRAEFIK_HOSTNAME}`)
+      - traefik.http.routers.metube.entrypoints=websecure
+      - traefik.http.routers.metube.tls=true
+      - traefik.http.routers.metube.tls.certresolver=${TRAEFIK_CERTRESOLVER}
 
 networks:
   proxynet:

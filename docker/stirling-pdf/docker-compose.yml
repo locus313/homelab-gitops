@@ -33,6 +33,13 @@ services:
      SYSTEM_MAXFILESIZE: ${SYSTEM_MAXFILESIZE}
      METRICS_ENABLED: ${METRICS_ENABLED}
      SYSTEM_GOOGLEVISIBILITY: ${SYSTEM_GOOGLEVISIBILITY}
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.stirling-pdf.loadbalancer.server.port=8080
+      - traefik.http.routers.stirling-pdf.rule=Host(`${TRAEFIK_HOSTNAME}`)
+      - traefik.http.routers.stirling-pdf.entrypoints=websecure
+      - traefik.http.routers.stirling-pdf.tls=true
+      - traefik.http.routers.stirling-pdf.tls.certresolver=${TRAEFIK_CERTRESOLVER}
 
 networks:
   proxynet:

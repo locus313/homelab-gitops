@@ -17,6 +17,13 @@ services:
     volumes:
       - ${DOCKER_BASE_PATH}/netbootxyz/config:/config
       - ${DOCKER_BASE_PATH}/netbootxyz/assets:/assets
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.netbootxyz.loadbalancer.server.port=3000
+      - traefik.http.routers.netbootxyz.rule=Host(`${TRAEFIK_HOSTNAME}`)
+      - traefik.http.routers.netbootxyz.entrypoints=websecure
+      - traefik.http.routers.netbootxyz.tls=true
+      - traefik.http.routers.netbootxyz.tls.certresolver=${TRAEFIK_CERTRESOLVER}
 
 networks:
   proxynet:
