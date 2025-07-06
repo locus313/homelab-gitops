@@ -13,8 +13,8 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
     volumes:
-      - /docker/nginx-proxy-manager/data:/data
-      - /docker/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+      - ${DOCKER_BASE_PATH}/nginx-proxy-manager/data:/data
+      - ${DOCKER_BASE_PATH}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
 
 networks:
   proxynet:
