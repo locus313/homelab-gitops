@@ -58,11 +58,11 @@ services:
       DOMAINNAME: ${DOMAINNAME}
     labels:
       - "traefik.enable=true"
-      # HTTP Routers
       - "traefik.http.routers.traefik-rtr.entrypoints=websecure"
       - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.${DOMAINNAME}`)"
-      # Services - API
       - "traefik.http.routers.traefik-rtr.service=api@internal"
+      - traefik.http.routers.traefik-rtr.tls=true
+      - traefik.http.routers.traefik-rtr.tls.certresolver=${ACME_DNSCHALLENGE_PROVIDER}
 
 networks:
   proxynet:
