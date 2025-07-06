@@ -21,12 +21,17 @@ services:
       - ${DOCKER_BASE_PATH}/nginx-proxy-manager/data:/data
       - ${DOCKER_BASE_PATH}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
     depends_on:
-      - db
+      - nginx-proxy-manager-db
 
-  db:
+  nginx-proxy-manager-db:
     image: jc21/mariadb-aria:10.11.5
+    container_name: nginx-proxy-manager-db
+    networks:
+      - proxynet
     restart: unless-stopped
     environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
