@@ -37,10 +37,10 @@ services:
       - --providers.file.watch=true
       - --certificatesresolvers.${ACME_DNSCHALLENGE_PROVIDER}.acme.email=${ACME_EMAIL}
       - --certificatesresolvers.${ACME_DNSCHALLENGE_PROVIDER}.acme.storage=${ACME_STORAGE}
-      - --certificatesresolvers.${ACME_DNSCHALLENGE_PROVIDER}.acme.dnschallenge=true
-      - --certificatesresolvers.${ACME_DNSCHALLENGE_PROVIDER}.dnschallenge.provider=${ACME_DNSCHALLENGE_PROVIDER}
-      - --certificatesresolvers.${ACME_DNSCHALLENGE_PROVIDER}.dnschallenge.resolvers=${ACME_DNSCHALLENGE_RESOLVERS}
-      # - --certificatesresolvers.${ACME_DNSCHALLENGE_PROVIDER}.dnschallenge.propagation.delaybeforechecks=120 # To delay DNS check and reduce LE hitrate
+      - --certificatesresolvers.${ACME_DNSCHALLENGE_PROVIDER}.acme.dnsChallenge=true
+      - --certificatesresolvers.${ACME_DNSCHALLENGE_PROVIDER}.dnsChallenge.provider=${ACME_DNSCHALLENGE_PROVIDER}
+      - --certificatesresolvers.${ACME_DNSCHALLENGE_PROVIDER}.dnsChallenge.resolvers=${ACME_DNSCHALLENGE_RESOLVERS}
+      # - --certificatesresolvers.${ACME_DNSCHALLENGE_PROVIDER}.dnsChallenge.propagation.delaybeforechecks=120 # To delay DNS check and reduce LE hitrate
     networks:
       - proxynet
     ports:
