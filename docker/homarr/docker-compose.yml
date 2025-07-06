@@ -14,6 +14,7 @@ services:
       PGID: ${PGID}
     labels:
       - traefik.enable=true
+      - traefik.http.services.homarr.loadbalancer.server.port=7575
       - traefik.http.routers.homarr.rule=Host(`${TRAEFIK_HOSTNAME}`)
       - traefik.http.routers.homarr.entrypoints=websecure
       - traefik.http.routers.homarr.tls=true
