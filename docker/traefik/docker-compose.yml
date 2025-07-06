@@ -23,7 +23,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080" # For Traefik dashboard (optional)
+      - "8181:8080" # For Traefik dashboard (optional)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${DOCKER_BASE_PATH}/traefik:/etc/traefik # Persistent storage for acme.json
