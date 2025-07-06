@@ -12,7 +12,12 @@ services:
       SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY}
       PUID: ${PUID}
       PGID: ${PGID}
-
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.homarr.rule=Host(`${TRAEFIK_HOSTNAME}`)
+      - traefik.http.routers.homarr.entrypoints=websecure
+      - traefik.http.routers.homarr.tls=true
+      - traefik.http.routers.homarr.tls.certresolver=${TRAEFIK_CERTRESOLVER}
 networks:
   proxynet:
     external: true
