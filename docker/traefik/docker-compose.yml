@@ -3,6 +3,43 @@ services:
     image: traefik:v3.4.3
     container_name: traefik
     restart: unless-stopped
+    command: 
+      - --global.checkNewVersion=false
+      - --global.sendAnonymousUsage=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.traefik.address=:8080
+      - --entrypoints.websecure.http3=true
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      - --api=true
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --serversTransport.insecureSkipVerify=true
+      - --log=true
+      - --log.filePath=/logs/traefik.log
+      - --log.level=DEBUG # (Default: error) DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+      - --accessLog=true
+      - --accessLog.filePath=/logs/access.log
+      - --accessLog.bufferingSize=100 # Configuring a buffer of 100 lines
+      - --accessLog.filters.statusCodes=204-299,400-499,500-599
+      - --providers.docker=true
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
+      - --providers.docker.exposedByDefault=false
+      - --providers.docker.network=proxynet
+      - --entrypoints.websecure.http.tls=true
+      # - --entrypoints.websecure.http.tls.options=tls-opts@file
+      - --entrypoints.websecure.http.tls.certresolver=dns-resolver
+      - --entrypoints.websecure.http.tls.domains[0].main=${DOMAINNAME}
+      - --entrypoints.websecure.http.tls.domains[0].sans=*.${DOMAINNAME}
+      - --providers.file.directory=/etc/traefik/dynamic # Load dynamic configuration from one or more .toml or .yml files in a directory
+      - --providers.file.watch=true
+      - --certificatesresolvers.dns-resolver.acme.email=${ACME_EMAIL}
+      - --certificatesResolvers.dns-resolver.acme.storage=${ACME_STORAGE}
+      - --certificatesResolvers.dns-resolver.dnsChallenge.provider=${ACME_DNSCHALLENGE_PROVIDER}
+      - --certificatesResolvers.dns-resolver.dnsChallenge.resolvers=${ACME_DNSCHALLENGE_RESOLVERS}
+      # - --certificatesResolvers.dns-resolver.dnsChallenge.propagation.delaybeforechecks=120 # To delay DNS check and reduce LE hitrate
     networks:
       - proxynet
     ports:
@@ -13,9 +50,18 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${DOCKER_BASE_PATH}/traefik/config:/etc/traefik:ro
       - ${DOCKER_BASE_PATH}/traefik/certs:/var/traefik/certs/:rw
+      - ${DOCKER_BASE_PATH}/traefik/logs:/logs
     environment:
       CLOUDNS_SUB_AUTH_ID: ${CLOUDNS_SUB_AUTH_ID}
       CLOUDNS_AUTH_PASSWORD: ${CLOUDNS_AUTH_PASSWORD}
+      DOMAINNAME: ${DOMAINNAME}
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.traefik-rtr.entrypoints=websecure"
+      - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.${DOMAINNAME}`)"
+      # Services - API
+      - "traefik.http.routers.traefik-rtr.service=api@internal"
 
 networks:
   proxynet:
