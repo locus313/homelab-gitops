@@ -49,7 +49,7 @@ services:
       - 8181:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ${DOCKER_BASE_PATH}/traefik/config:/etc/traefik:ro
+      - ${DOCKER_BASE_PATH}/traefik/config:/etc/traefik
       - ${DOCKER_BASE_PATH}/traefik/certs:/var/traefik/certs/:rw
       - ${DOCKER_BASE_PATH}/traefik/logs:/logs
     environment:
