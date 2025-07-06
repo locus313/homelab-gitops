@@ -19,11 +19,11 @@ services:
       - ${DOCKER_BASE_PATH}/netbootxyz/assets:/assets
     labels:
       - traefik.enable=true
-      - traefik.http.services.metube.loadbalancer.server.port=3000
-      - traefik.http.routers.metube.rule=Host(`${TRAEFIK_HOSTNAME}`)
-      - traefik.http.routers.metube.entrypoints=websecure
-      - traefik.http.routers.metube.tls=true
-      - traefik.http.routers.metube.tls.certresolver=${TRAEFIK_CERTRESOLVER}
+      - traefik.http.services.netbootxyz.loadbalancer.server.port=3000
+      - traefik.http.routers.netbootxyz.rule=Host(`${TRAEFIK_HOSTNAME}`)
+      - traefik.http.routers.netbootxyz.entrypoints=websecure
+      - traefik.http.routers.netbootxyz.tls=true
+      - traefik.http.routers.netbootxyz.tls.certresolver=${TRAEFIK_CERTRESOLVER}
 
 networks:
   proxynet:
