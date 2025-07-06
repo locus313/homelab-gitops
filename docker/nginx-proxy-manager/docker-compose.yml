@@ -7,14 +7,33 @@ services:
       - proxynet
     ports:
       - '80:80'
-      # - '8181:81'
+      - '8181:81'
       - '443:443'
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
+      DB_MYSQL_HOST: ${DB_MYSQL_HOST}
+      DB_MYSQL_PORT: ${DB_MYSQL_PORT}
+      DB_MYSQL_USER: ${DB_MYSQL_USER}
+      DB_MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
+      DB_MYSQL_NAME: ${DB_MYSQL_NAME}
     volumes:
       - ${DOCKER_BASE_PATH}/nginx-proxy-manager/data:/data
       - ${DOCKER_BASE_PATH}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - db
+
+db:
+    image: jc21/mariadb-aria:10.11.5
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MARIADB_AUTO_UPGRADE: ${MARIADB_AUTO_UPGRADE}
+    volumes:
+      - ${DOCKER_BASE_PATH}/nginx-proxy-manager/mysql:/var/lib/mysql
 
 networks:
   proxynet:
