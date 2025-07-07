@@ -36,10 +36,10 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.services.stirling-pdf.loadbalancer.server.port=8080
-      - traefik.http.routers.stirling-pdf.rule=Host(`${TRAEFIK_HOSTNAME}`)
+      - traefik.http.routers.stirling-pdf.rule=Host(`stirling-pdf.${TRAEFIK_BASE_DOMAIN}`)
       - traefik.http.routers.stirling-pdf.entrypoints=websecure
       - traefik.http.routers.stirling-pdf.tls=true
-      - traefik.http.routers.stirling-pdf.tls.certresolver=${TRAEFIK_CERTRESOLVER}
+      - traefik.http.routers.stirling-pdf.tls.certresolver=cloudns
 
 networks:
   proxynet:
