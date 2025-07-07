@@ -16,10 +16,10 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.services.metube.loadbalancer.server.port=8081
-      - traefik.http.routers.metube.rule=Host(`${TRAEFIK_HOSTNAME}`)
+      - traefik.http.routers.metube.rule=Host(`metube.${TRAEFIK_BASE_DOMAIN}`)
       - traefik.http.routers.metube.entrypoints=websecure
       - traefik.http.routers.metube.tls=true
-      - traefik.http.routers.metube.tls.certresolver=${TRAEFIK_CERTRESOLVER}
+      - traefik.http.routers.metube.tls.certresolver=cloudns
 
 networks:
   proxynet:
