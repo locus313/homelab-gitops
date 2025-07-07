@@ -18,6 +18,7 @@ services:
       CLOUDNS_SUB_AUTH_ID: ${CLOUDNS_SUB_AUTH_ID}
       CLOUDNS_AUTH_PASSWORD: ${CLOUDNS_AUTH_PASSWORD}
       TRAEFIK_BASE_DOMAIN: ${TRAEFIK_BASE_DOMAIN}
+      TZ: ${TZ}
     labels:
       - traefik.enable=true
       - traefik.http.routers.traefik-rtr.entrypoints=websecure
