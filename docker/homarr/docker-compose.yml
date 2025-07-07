@@ -15,10 +15,10 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.services.homarr.loadbalancer.server.port=7575
-      - traefik.http.routers.homarr.rule=Host(`${TRAEFIK_HOSTNAME}`)
+      - traefik.http.routers.homarr.rule=Host(`homarr.${TRAEFIK_BASE_DOMAIN}`)
       - traefik.http.routers.homarr.entrypoints=websecure
       - traefik.http.routers.homarr.tls=true
-      - traefik.http.routers.homarr.tls.certresolver=${TRAEFIK_CERTRESOLVER}
+      - traefik.http.routers.homarr.tls.certresolver=cloudns
 networks:
   proxynet:
     external: true
