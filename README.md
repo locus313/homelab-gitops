@@ -76,11 +76,18 @@ README.md
 
 1. **Deploy a stack from this repository in Portainer:**
    - Use the Git repository option and specify the path to the desired service directory (e.g., `docker/traefik`).
-   - Portainer will automatically pull the latest `docker-compose.yml` and any referenced files.
+   - Portainer will automatically pull the latest `docker-compose.yml` and any referenced files, including static configuration files like `traefik.yml` if present.
 
 2. **Update configuration:**
-   - Make changes to `.env` or `docker-compose.yml` in your Git repository.
+   - Make changes to `.env`, `docker-compose.yml`, or static config files (such as `traefik.yml` in `config/`) in your Git repository.
    - In Portainer, click "Update the stack" to pull the latest changes and redeploy.
+   - **Note:** For Traefik, ensure your `docker-compose.yml` uses a relative bind mount for the config directory, for example:
+     ```yaml
+     volumes:
+       - ./config:/etc/traefik:ro
+     ```
+     This ensures that `traefik.yml` and any other config files in the `config` directory are available to the container when deployed via Portainer Git stacks.
+   - **Important:** The relative path bind mount feature for stacks is only available in Portainer Business Edition. If you are using Portainer Community Edition, you will need to use absolute paths or named volumes
 
 ### Manual Deployment
 
