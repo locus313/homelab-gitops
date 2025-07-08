@@ -1,0 +1,14 @@
+http:
+  routers:
+    storj-node-1:
+      entryPoints:
+        - websecure
+      rule: "Host(`storj-node-1.{{ env "TRAEFIK_BASE_DOMAIN" }}`)"
+      service: storj-node-1
+      tls:
+        certResolver: cloudns
+  services:
+    storj-node-1:
+      loadBalancer:
+        servers:
+          - url: "http://{{ env "NAS_IP" }}:14002"

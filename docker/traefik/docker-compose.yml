@@ -11,12 +11,13 @@ services:
       - 8181:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ${DOCKER_BASE_PATH}/traefik/config:/etc/traefik:ro
+      - ./docker/traefik/config:/etc/traefik:ro
       - ${DOCKER_BASE_PATH}/traefik/certs:/var/traefik/certs/:rw
       - ${DOCKER_BASE_PATH}/traefik/logs:/logs
     environment:
       CLOUDNS_SUB_AUTH_ID: ${CLOUDNS_SUB_AUTH_ID}
       CLOUDNS_AUTH_PASSWORD: ${CLOUDNS_AUTH_PASSWORD}
+      NAS_IP: ${NAS_IP}
       TRAEFIK_BASE_DOMAIN: ${TRAEFIK_BASE_DOMAIN}
       TZ: ${TZ}
     labels:

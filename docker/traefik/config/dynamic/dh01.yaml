@@ -1,0 +1,14 @@
+http:
+  routers:
+    dh01:
+      entryPoints:
+        - websecure
+      rule: "Host(`dh01.{{ env "TRAEFIK_BASE_DOMAIN" }}`)"
+      service: portainer
+      tls:
+        certResolver: cloudns
+  services:
+    portainer:
+      loadBalancer:
+        servers:
+          - url: "https://portainer:9443"
