@@ -34,13 +34,6 @@ entryPoints:
   websecure:
     address: :443
     http3: true
-    http:
-      tls:
-        certResolver: cloudns
-        domains:
-          - main: home.lo5t.com
-            sans:
-              - "*.home.lo5t.com"
   traefik:
     address: :8080
 
