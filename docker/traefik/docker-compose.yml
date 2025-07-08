@@ -11,7 +11,7 @@ services:
       - 8181:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - portainer_data:/etc/traefik:subpath=/data/compose/18/docker/traefik/config
+      - ./config:/etc/traefik:ro
       - ${DOCKER_BASE_PATH}/traefik/certs:/var/traefik/certs/:rw
       - ${DOCKER_BASE_PATH}/traefik/logs:/logs
     environment:
@@ -30,7 +30,4 @@ services:
 
 networks:
   proxynet:
-    external: true
-volumes:
-  portainer_data:
     external: true
