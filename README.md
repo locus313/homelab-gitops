@@ -21,6 +21,7 @@ This repository contains Docker Compose configurations and environment files for
 
 The following services are managed in this repository:
 
+- **HandBrake**: Video transcoder ([docker/handbrake](docker/handbrake))
 - **Homarr**: Dashboard for your homelab ([docker/homarr](docker/homarr))
 - **MeTube**: Web GUI for downloading videos from YouTube and other sites ([docker/metube](docker/metube))
 - **NetbootXYZ**: Network boot server for provisioning systems ([docker/netbootxyz](docker/netbootxyz))
@@ -36,6 +37,9 @@ Each service has its own directory with a `docker-compose.yml` and `.env` file f
 
 ```
 docker/
+  handbrake/
+    docker-compose.yml
+    .env
   homarr/
     docker-compose.yml
     .env
