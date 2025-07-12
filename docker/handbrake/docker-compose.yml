@@ -1,0 +1,29 @@
+services:
+  handbrake:
+    image: ghcr.io/jlesage/handbrake:v25.07.1
+    container_name: handbrake
+    restart: unless-stopped
+    networks:
+      - proxynet
+    devices:
+      - /dev/dri:/dev/dri
+    volumes:
+      - ${DOCKER_BASE_PATH}/handbrake:/config
+      - /mnt/h-syn-1_backups:/storage/Backups
+      - /mnt/h-syn-1_media:/storage/Media
+      - /mnt/h-syn-1_media/Videos/temp/Output:/output
+    environment:
+      USER_ID: ${USER_ID}
+      GROUP_ID: ${GROUP_ID}
+      UMASK: ${UMASK}
+      TZ: ${TZ}
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.handbrake.loadbalancer.server.port=5800
+      - traefik.http.routers.handbrake.rule=Host(`handbrake.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.handbrake.entrypoints=websecure
+      - traefik.http.routers.handbrake.tls=true
+      - traefik.http.routers.handbrake.tls.certresolver=cloudns
+networks:
+  proxynet:
+    external: true
