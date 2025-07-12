@@ -1,6 +1,6 @@
 services:
   nginx-proxy-manager:
-    image: docker.io/jc21/nginx-proxy-manager:2.12.4
+    image: docker.io/jc21/nginx-proxy-manager:2.12.6
     container_name: nginx-proxy-manager
     restart: unless-stopped
     networks:
