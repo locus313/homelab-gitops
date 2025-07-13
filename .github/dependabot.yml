@@ -4,6 +4,7 @@ updates:
     directories:
       - "/docker/handbrake"
       - "/docker/homarr"
+      - "/docker/iventoy"
       - "/docker/metube"
       - "/docker/netbootxyz"
       - "/docker/nginx-proxy-manager"
