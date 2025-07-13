@@ -1,0 +1,20 @@
+services:
+  iventoy:
+    image: garybowers/iventoy:1.0.20-6
+    container_name: iventoy
+    networks:
+      - proxynet
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - ${DOCKER_BASE_PATH}/iventoy/iso:/iventoy/iso
+      - ${DOCKER_BASE_PATH}/iventoy/data:/iventoy/data
+      - ${DOCKER_BASE_PATH}/iventoy/log:/iventoy/log
+    ports:
+      - 26000:26000
+      - 16000:16000
+      - 10809:10809
+      - 69:69/udp
+networks:
+  proxynet:
+    external: true
