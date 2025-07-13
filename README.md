@@ -23,6 +23,7 @@ The following services are managed in this repository:
 
 - **HandBrake**: Video transcoder ([docker/handbrake](docker/handbrake))
 - **Homarr**: Dashboard for your homelab ([docker/homarr](docker/homarr))
+- **iVentoy**: PXE and USB boot server ([docker/iventoy](docker/iventoy))
 - **MeTube**: Web GUI for downloading videos from YouTube and other sites ([docker/metube](docker/metube))
 - **NetbootXYZ**: Network boot server for provisioning systems ([docker/netbootxyz](docker/netbootxyz))
 - **Nginx Proxy Manager**: Reverse proxy with SSL support ([docker/nginx-proxy-manager](docker/nginx-proxy-manager))
@@ -41,6 +42,9 @@ docker/
     docker-compose.yml
     .env
   homarr/
+    docker-compose.yml
+    .env
+  iventoy/
     docker-compose.yml
     .env
   metube/
