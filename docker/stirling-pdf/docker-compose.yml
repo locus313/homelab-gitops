@@ -17,7 +17,8 @@ services:
       retries: 3
       start_period: 90s
     volumes:
-      - ${DOCKER_BASE_PATH}/stirling-pdf/data:/usr/share/tessdata:rw # Required for extra OCR languages
+      #  Required for extra OCR languages
+      - ${DOCKER_BASE_PATH}/stirling-pdf/data:/usr/share/tessdata:rw
       - ${DOCKER_BASE_PATH}/stirling-pdf/config:/configs:rw
       - ${DOCKER_BASE_PATH}/stirling-pdf/logs:/logs:rw
     environment:
@@ -26,7 +27,7 @@ services:
      DOCKER_ENABLE_SECURITY: ${DOCKER_ENABLE_SECURITY}
      SECURITY_ENABLELOGIN: ${SECURITY_ENABLELOGIN}
      SECURITY_INITIALLOGIN_USERNAME: ${SECURITY_INITIALLOGIN_USERNAME}
-     SECURITY_INITIALLOGIN_PASSWORD: ${SECURITY_INITIALLOGIN_PASSWORD}  
+     SECURITY_INITIALLOGIN_PASSWORD: ${SECURITY_INITIALLOGIN_PASSWORD}
      INSTALL_BOOK_AND_ADVANCED_HTML_OPS: ${INSTALL_BOOK_AND_ADVANCED_HTML_OPS}
      SECURITY_CSRFDISABLED: ${SECURITY_CSRFDISABLED}
      SYSTEM_DEFAULTLOCALE: ${SYSTEM_DEFAULTLOCALE}

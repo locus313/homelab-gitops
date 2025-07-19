@@ -13,7 +13,7 @@ services:
       PLEX_CLAIM: ${PLEX_CLAIM}
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/PlexMediaServer:/config 
+      - /docker/PlexMediaServer:/config
       - /mnt/h-syn-1_media/Videos:/shares/videos
       - /mnt/h-syn-1_media/Music:/shares/music
       - /mnt/h-syn-1_media/Pictures:/shares/photos

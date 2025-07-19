@@ -6,8 +6,8 @@ services:
     networks:
       - proxynet
     ports:
-    - 69:69/udp
-    - 8080:80
+      - 69:69/udp
+      - 8080:80
     environment:
       PUID: ${PUID}
       PGID: ${PGID}

@@ -5,14 +5,14 @@ global:
 
 # - level: [TRACE, DEBUG, INFO, WARN, ERROR, FATAL]
 log:
- filePath: "/logs/traefik.log"
- level: DEBUG
+  filePath: "/logs/traefik.log"
+  level: DEBUG
 
 accessLog:
   filePath: "/logs/access.log"
   bufferingSize: 100
   filters:
-    statusCodes: 
+    statusCodes:
       - "204-299"
       - "400-499"
       - "500-599"
