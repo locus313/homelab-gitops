@@ -7,7 +7,7 @@ services:
       - proxynet
     volumes:
       #  Optional, only if you want docker integration
-      - /var/run/docker.sock:/var/run/docker.sock 
+      - /var/run/docker.sock:/var/run/docker.sock
       - ${DOCKER_BASE_PATH}/homarr/appdata:/appdata
     environment:
       SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY}
