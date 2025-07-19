@@ -2,3 +2,8 @@ extends: default
 
 rules:
   document-start: disable
+
+overrides:
+  - files: ".github/**/*.yml"
+    rules:
+      truthy: disable
