@@ -26,4 +26,4 @@ jobs:
 
       - name: Run yamllint
         run: |
-          yamllint -c .github/.yamllint .
+          yamllint -v -c .github/.yamllint .
