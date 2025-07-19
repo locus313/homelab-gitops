@@ -8,6 +8,8 @@ services:
     volumes:
       - ${DOCKER_BASE_PATH}/beszel/data:/beszel_data
       - ${DOCKER_BASE_PATH}/beszel/socket:/beszel_socket
+    environment:
+      APP_URL: https://beszel.${TRAEFIK_BASE_DOMAIN}
     labels:
       - traefik.enable=true
       - traefik.http.services.beszel.loadbalancer.server.port=8090
