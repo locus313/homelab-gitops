@@ -22,8 +22,17 @@ find . -regex '.*/\(docker-\)?compose\(-[\w]+\)?\(?>\.[\w-]+\)?\.ya?ml' -print0 
       echo "      - \"/$dir\"" >> "$tmpfile"
     done
 
-# Append the schedule block
+# Append the schedule block for docker-compose
 cat >> "$tmpfile" <<'YAML'
+    schedule:
+      interval: "weekly"
+YAML
+
+# Append the GitHub Actions section
+cat >> "$tmpfile" <<'YAML'
+  - package-ecosystem: "github-actions"
+    directories:
+      - "/"
     schedule:
       interval: "weekly"
 YAML
