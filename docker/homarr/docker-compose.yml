@@ -1,6 +1,6 @@
 services:
   homarr:
-    image: ghcr.io/homarr-labs/homarr:v1.28.1
+    image: ghcr.io/homarr-labs/homarr:v1.29.0
     container_name: homarr
     restart: unless-stopped
     networks:
