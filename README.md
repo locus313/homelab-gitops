@@ -27,7 +27,6 @@ The following services are managed in this repository:
 - **iVentoy**: PXE and USB boot server ([docker/iventoy](docker/iventoy))
 - **MeTube**: Web GUI for downloading videos from YouTube and other sites ([docker/metube](docker/metube))
 - **NetbootXYZ**: Network boot server for provisioning systems ([docker/netbootxyz](docker/netbootxyz))
-- **Nginx Proxy Manager**: Reverse proxy with SSL support ([docker/nginx-proxy-manager](docker/nginx-proxy-manager))
 - **Plex**: Media server ([docker/plex](docker/plex))
 - **Stirling PDF**: PDF toolkit ([docker/stirling-pdf](docker/stirling-pdf))
 - **Watchtower**: Automated Docker container updates ([docker/watchtower](docker/watchtower))
@@ -55,9 +54,6 @@ docker/
     docker-compose.yml
     .env
   netbootxyz/
-    docker-compose.yml
-    .env
-  nginx-proxy-manager/
     docker-compose.yml
     .env
   plex/
