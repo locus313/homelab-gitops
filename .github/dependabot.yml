@@ -2,6 +2,7 @@ version: 2
 updates:
   - package-ecosystem: "docker-compose"
     directories:
+      - "/docker/beszel"
       - "/docker/handbrake"
       - "/docker/homarr"
       - "/docker/iventoy"
