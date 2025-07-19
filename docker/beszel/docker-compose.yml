@@ -1,0 +1,33 @@
+services:
+  beszel:
+    image: ghcr.io/henrygd/beszel/beszel:0.11.1
+    container_name: beszel
+    restart: unless-stopped
+    networks:
+      - proxynet
+    volumes:
+      - ${DOCKER_BASE_PATH}/beszel/data:/beszel_data
+      - ${DOCKER_BASE_PATH}/beszel/socket:/beszel_socket
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.beszel.loadbalancer.server.port=8090
+      - traefik.http.routers.beszel.rule=Host(`beszel.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.beszel.entrypoints=websecure
+      - traefik.http.routers.beszel.tls=true
+      - traefik.http.routers.beszel.tls.certresolver=cloudns
+
+  beszel-agent:
+    image: ghcr.io/henrygd/beszel/beszel-agent:0.11.1
+    container_name: beszel-agent
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ${DOCKER_BASE_PATH}/beszel/socket:/beszel_socket
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      LISTEN: /beszel_socket/beszel.sock
+      # Do not remove quotes around the key
+      KEY: '${BESZEL_PUBLIC_KEY}'
+networks:
+  proxynet:
+    external: true
