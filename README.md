@@ -21,6 +21,7 @@ This repository contains Docker Compose configurations and environment files for
 
 The following services are managed in this repository:
 
+- **Beszel**: Simple, lightweight server monitoring ([docker/beszel](docker/beszel))
 - **HandBrake**: Video transcoder ([docker/handbrake](docker/handbrake))
 - **Homarr**: Dashboard for your homelab ([docker/homarr](docker/homarr))
 - **iVentoy**: PXE and USB boot server ([docker/iventoy](docker/iventoy))
@@ -38,6 +39,9 @@ Each service has its own directory with a `docker-compose.yml` and `.env` file f
 
 ```
 docker/
+  beszel/
+    docker-compose.yml
+    .env
   handbrake/
     docker-compose.yml
     .env
@@ -95,7 +99,7 @@ README.md
        - ./config:/etc/traefik:ro
      ```
      This ensures that `traefik.yml` and any other config files in the `config` directory are available to the container when deployed via Portainer Git stacks.
-   - **Important:** The relative path bind mount feature for stacks is only available in Portainer Business Edition. If you are using Portainer Community Edition, you will need to use absolute paths or named volumes
+   - **Important:** The relative path bind mount feature for stacks is only available in Portainer Business Edition. If you are using Portainer Community Edition, you will need to use absolute paths or named volumes instead.
 
 ### Manual Deployment
 
