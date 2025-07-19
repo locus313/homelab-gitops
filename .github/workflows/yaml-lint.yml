@@ -1,11 +1,11 @@
 name: YAML Lint
 
-on:
+"on":
   push:
     paths:
       - '**/*.yml'
       - '**/*.yaml'
-      
+
   workflow_dispatch:
 
 jobs:

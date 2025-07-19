@@ -1,11 +1,11 @@
 name: Update Dependabot Config
 
-on:
+"on":
   push:
     branches:
       - main
     paths-ignore:
-    - '.github/dependabot.yml'
+      - '.github/dependabot.yml'
 
   workflow_dispatch:
 
