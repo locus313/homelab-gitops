@@ -78,6 +78,7 @@ docker/
     update-dependabot.yml
   scripts/
     generate-dependabot.sh
+  .yamllint
 LICENSE
 README.md
 ```
@@ -129,6 +130,25 @@ README.md
 - **GitHub Actions**: Workflow to update Dependabot config ([`.github/workflows/update-dependabot.yml`](.github/workflows/update-dependabot.yml)).
 - **Watchtower**: Automatically updates running containers.
 - **Portainer Stacks**: Enables GitOps-style updates for Docker Compose stacks.
+
+## Additional Features
+
+### YAML Linting
+- A `.github/.yamllint` configuration file is included to enforce YAML formatting rules.
+- A GitHub Actions workflow ([`.github/workflows/yaml-lint.yml`](.github/workflows/yaml-lint.yml)) automatically lints YAML files on every push.
+
+### Dependabot Enhancements
+- Dependabot configuration is automatically generated using the `generate-dependabot.sh` script located in `.github/scripts/`.
+- The `update-dependabot.yml` workflow ensures the `dependabot.yml` file stays up-to-date.
+
+### Service-Specific Notes
+- **Plex**: Requires a `PLEX_CLAIM` environment variable for server registration. Obtain it from [Plex](https://www.plex.tv/claim/).
+- **Stirling PDF**: Includes advanced security and configuration options such as `SECURITY_ENABLELOGIN` and `SYSTEM_MAXFILESIZE`.
+- **Homarr**: Requires a `SECRET_ENCRYPTION_KEY` for secure operations. Generate it using `openssl rand -hex 32`.
+
+### Traefik Configuration
+- Dynamic routing configurations are stored in `docker/traefik/config/dynamic/`.
+- Example files include `storj-node-1.yaml` and `dh01.yaml`, which define routing rules and services.
 
 ## Contributing
 
