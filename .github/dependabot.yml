@@ -3,6 +3,7 @@ updates:
   - package-ecosystem: "docker-compose"
     directories:
       - "/docker/beszel"
+      - "/docker/code-server"
       - "/docker/handbrake"
       - "/docker/homarr"
       - "/docker/it-tools"
