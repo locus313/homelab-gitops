@@ -17,8 +17,6 @@ services:
       - traefik.http.routers.beszel.entrypoints=websecure
       - traefik.http.routers.beszel.tls=true
       - traefik.http.routers.beszel.tls.certresolver=cloudns
-      - traefik.http.middlewares.add-x-forwarded-for.headers.customrequestheaders.X-Forwarded-For=client-ip
-      - traefik.http.routers.beszel.middlewares=add-x-forwarded-for
 
   beszel-agent:
     image: ghcr.io/henrygd/beszel/beszel-agent:0.11.1
