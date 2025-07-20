@@ -1,0 +1,17 @@
+services:
+  it-tools:
+    image: ghcr.io/corentinth/it-tools:2024.10.22-7ca5933
+    container_name: it-tools
+    restart: unless-stopped
+    networks:
+      - proxynet
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.homarr.loadbalancer.server.port=80
+      - traefik.http.routers.homarr.rule=Host(`it-tools.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.homarr.entrypoints=websecure
+      - traefik.http.routers.homarr.tls=true
+      - traefik.http.routers.homarr.tls.certresolver=cloudns
+networks:
+  proxynet:
+    external: true
