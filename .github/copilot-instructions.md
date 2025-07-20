@@ -1,6 +1,6 @@
 # Copilot Instructions for Homelab GitOps
 
-This document provides essential guidance for AI coding agents contributing to the Homelab GitOps repository. Follow these instructions to ensure consistency, quality, and alignment with project standards.
+This document provides comprehensive guidance for AI coding agents and contributors working with the Homelab GitOps repository. It ensures consistency, quality, and alignment with project standards.
 
 ## Project Overview
 
@@ -20,11 +20,6 @@ Homelab GitOps is a repository for managing self-hosted services using Docker Co
 - **Traefik**: Reverse proxy and load balancer.
 - **Watchtower**: Automated container updates.
 - **IT Tools**: Collection of handy online tools for developers, self-hosted using Docker Compose.
-
-### Automation
-- **Dependabot**: Keeps Docker images up to date via `.github/dependabot.yml`.
-- **GitHub Actions**: Includes workflows for YAML linting and Dependabot updates.
-- **Watchtower**: Automatically updates running containers.
 
 ## Developer Workflows
 
@@ -54,11 +49,13 @@ Homelab GitOps is a repository for managing self-hosted services using Docker Co
 - Use `docker logs <container-name>` to inspect logs for individual services.
 - For Traefik, check logs in `docker/traefik/logs/` for routing and certificate issues.
 
-## Project-Specific Conventions
+## Coding Conventions
 
+- Use meaningful variable and function names.
+- Follow the existing code style in each file.
+- Add comments for complex logic.
 - Use environment variables for sensitive data (e.g., `PLEX_CLAIM`, `SECRET_ENCRYPTION_KEY`).
 - Follow the existing directory structure and naming conventions.
-- Add meaningful comments for complex logic.
 - Use relative paths for volume mounts in `docker-compose.yml` files where possible.
 
 ## Integration Points
@@ -66,6 +63,13 @@ Homelab GitOps is a repository for managing self-hosted services using Docker Co
 - **Traefik**: Dynamic routing rules are defined in `docker/traefik/config/dynamic/`.
 - **GitHub Actions**: Workflows are located in `.github/workflows/`.
 - **Dependabot**: Configuration is auto-generated using `.github/scripts/generate-dependabot.sh`.
+
+## Contribution Guidelines
+
+- Include a clear description of changes in pull requests.
+- Reference related issues.
+- Ensure all tests pass before submission.
+- Update `CHANGELOG.md` with concise descriptions of changes.
 
 ## Examples
 
@@ -94,12 +98,3 @@ PGID=1000
 TZ=America/New_York
 PLEX_CLAIM=claim-abc123
 ```
-
-## Contribution Guidelines
-
-- Include a clear description of changes in pull requests.
-- Reference related issues.
-- Ensure all tests pass before submission.
-- Update `CHANGELOG.md` with concise descriptions of changes.
-
-This document serves as a quick reference for AI agents to contribute effectively to the Homelab GitOps repository.
