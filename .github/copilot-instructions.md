@@ -15,7 +15,6 @@ Homelab GitOps is a repository for managing self-hosted services using Docker Co
 - **iVentoy**: PXE and USB boot server.
 - **MeTube**: Video downloader.
 - **NetbootXYZ**: Network boot server.
-- **Nginx Proxy Manager**: Reverse proxy with SSL support.
 - **Plex**: Media server.
 - **Stirling PDF**: PDF toolkit.
 - **Traefik**: Reverse proxy and load balancer.
