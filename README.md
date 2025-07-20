@@ -31,6 +31,7 @@ The following services are managed in this repository:
 - **Stirling PDF**: PDF toolkit ([docker/stirling-pdf](docker/stirling-pdf))
 - **Watchtower**: Automated Docker container updates ([docker/watchtower](docker/watchtower))
 - **Traefik**: Modern reverse proxy and load balancer ([docker/traefik](docker/traefik))
+- **IT Tools**: Collection of handy online tools for developers ([docker/it-tools](docker/it-tools))
 
 Each service has its own directory with a `docker-compose.yml` and `.env` file for configuration.
 
@@ -66,6 +67,9 @@ docker/
     docker-compose.yml
     .env
   watchtower/
+    docker-compose.yml
+    .env
+  it-tools/
     docker-compose.yml
     .env
 .github/

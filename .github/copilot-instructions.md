@@ -20,6 +20,7 @@ Homelab GitOps is a repository for managing self-hosted services using Docker Co
 - **Stirling PDF**: PDF toolkit.
 - **Traefik**: Reverse proxy and load balancer.
 - **Watchtower**: Automated container updates.
+- **IT Tools**: Collection of handy online tools for developers, self-hosted using Docker Compose.
 
 ### Automation
 - **Dependabot**: Keeps Docker images up to date via `.github/dependabot.yml`.
