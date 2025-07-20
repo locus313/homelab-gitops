@@ -7,11 +7,11 @@ services:
       - proxynet
     labels:
       - traefik.enable=true
-      - traefik.http.services.homarr.loadbalancer.server.port=80
-      - traefik.http.routers.homarr.rule=Host(`it-tools.${TRAEFIK_BASE_DOMAIN}`)
-      - traefik.http.routers.homarr.entrypoints=websecure
-      - traefik.http.routers.homarr.tls=true
-      - traefik.http.routers.homarr.tls.certresolver=cloudns
+      - traefik.http.services.it-tools.loadbalancer.server.port=80
+      - traefik.http.routers.it-tools.rule=Host(`it-tools.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.it-tools.entrypoints=websecure
+      - traefik.http.routers.it-tools.tls=true
+      - traefik.http.routers.it-tools.tls.certresolver=cloudns
 networks:
   proxynet:
     external: true
