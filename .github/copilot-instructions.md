@@ -50,11 +50,16 @@ Homelab GitOps is a repository for managing self-hosted services using Docker Co
 - Ensure all YAML files pass linting using the `.github/.yamllint` configuration.
 - Run the `yaml-lint.yml` GitHub Actions workflow to validate YAML files.
 
+### Debugging
+- Use `docker logs <container-name>` to inspect logs for individual services.
+- For Traefik, check logs in `docker/traefik/logs/` for routing and certificate issues.
+
 ## Project-Specific Conventions
 
 - Use environment variables for sensitive data (e.g., `PLEX_CLAIM`, `SECRET_ENCRYPTION_KEY`).
 - Follow the existing directory structure and naming conventions.
 - Add meaningful comments for complex logic.
+- Use relative paths for volume mounts in `docker-compose.yml` files where possible.
 
 ## Integration Points
 
