@@ -5,6 +5,7 @@ updates:
       - "/docker/beszel"
       - "/docker/handbrake"
       - "/docker/homarr"
+      - "/docker/it-tools"
       - "/docker/iventoy"
       - "/docker/metube"
       - "/docker/netbootxyz"
