@@ -19,7 +19,7 @@ services:
       - sys_module
 
   code-server:
-    image: lscr.io/linuxserver/code-server:4.102.1
+    image: lscr.io/linuxserver/code-server:4.102.2
     container_name: code-server
     restart: unless-stopped
     network_mode: service:code-server-ts
