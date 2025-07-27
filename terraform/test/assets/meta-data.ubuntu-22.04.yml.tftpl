@@ -1,0 +1,7 @@
+dsmode: local
+local-hostname: "${name}"
+network-interfaces: |
+  auto lo
+  iface lo inet loopback
+  iface ens1 inet dhcp
+  iface ens3 inet dhcp
