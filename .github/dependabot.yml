@@ -16,8 +16,10 @@ updates:
       - "/docker/watchtower"
     schedule:
       interval: "weekly"
+      day: "saturday"
   - package-ecosystem: "github-actions"
     directories:
       - "/"
     schedule:
       interval: "weekly"
+      day: "saturday"

@@ -26,6 +26,7 @@ find . -regex '.*/\(docker-\)?compose\(-[\w]+\)?\(?>\.[\w-]+\)?\.ya?ml' -print0 
 cat >> "$tmpfile" <<'YAML'
     schedule:
       interval: "weekly"
+      day: "saturday"
 YAML
 
 # Append the GitHub Actions section
@@ -35,6 +36,7 @@ cat >> "$tmpfile" <<'YAML'
       - "/"
     schedule:
       interval: "weekly"
+      day: "saturday"
 YAML
 
 # Install if changed
