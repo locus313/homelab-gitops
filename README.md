@@ -22,6 +22,7 @@ This repository contains Docker Compose configurations and environment files for
 The following services are managed in this repository:
 
 - **Beszel**: Simple, lightweight server monitoring ([docker/beszel](docker/beszel))
+- **Code-Server**: IDE in the browser for development ([docker/code-server](docker/code-server))
 - **HandBrake**: Video transcoder ([docker/handbrake](docker/handbrake))
 - **Homarr**: Dashboard for your homelab ([docker/homarr](docker/homarr))
 - **iVentoy**: PXE and USB boot server ([docker/iventoy](docker/iventoy))
@@ -40,6 +41,9 @@ Each service has its own directory with a `docker-compose.yml` and `.env` file f
 ```
 docker/
   beszel/
+    docker-compose.yml
+    .env
+  code-server/
     docker-compose.yml
     .env
   handbrake/
