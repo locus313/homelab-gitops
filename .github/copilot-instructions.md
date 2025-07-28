@@ -10,6 +10,7 @@ Homelab GitOps is a repository for managing self-hosted services using Docker Co
 
 ### Services
 - **Beszel**: Lightweight server monitoring.
+- **Code-Server**: Browser-based IDE for development.
 - **HandBrake**: Video transcoder.
 - **Homarr**: Homelab dashboard.
 - **iVentoy**: PXE and USB boot server.
@@ -63,6 +64,7 @@ Homelab GitOps is a repository for managing self-hosted services using Docker Co
 - **Traefik**: Dynamic routing rules are defined in `docker/traefik/config/dynamic/`.
 - **GitHub Actions**: Workflows are located in `.github/workflows/`.
 - **Dependabot**: Configuration is auto-generated using `.github/scripts/generate-dependabot.sh`.
+- **Terraform**: Infrastructure as code configurations are located in `terraform/`.
 
 ## Contribution Guidelines
 
@@ -97,4 +99,16 @@ PUID=1000
 PGID=1000
 TZ=America/New_York
 PLEX_CLAIM=claim-abc123
+```
+
+### Terraform Example
+```hcl
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_instance" "example" {
+  ami           = "ami-12345678"
+  instance_type = "t2.micro"
+}
 ```
