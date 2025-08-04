@@ -1,4 +1,3 @@
----
 services:
   stirling-pdf:
     image: ghcr.io/stirling-tools/stirling-pdf:1.0.2
@@ -17,7 +16,7 @@ services:
       retries: 3
       start_period: 90s
     volumes:
-      #  Required for extra OCR languages
+      # Required for extra OCR languages
       - ${DOCKER_BASE_PATH}/stirling-pdf/data:/usr/share/tessdata:rw
       - ${DOCKER_BASE_PATH}/stirling-pdf/config:/configs:rw
       - ${DOCKER_BASE_PATH}/stirling-pdf/logs:/logs:rw

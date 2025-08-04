@@ -15,8 +15,8 @@ services:
     environment:
       USER_ID: ${USER_ID}
       GROUP_ID: ${GROUP_ID}
-      UMASK: ${UMASK}
       TZ: ${TZ}
+      UMASK: ${UMASK}
     labels:
       - traefik.enable=true
       - traefik.http.services.handbrake.loadbalancer.server.port=5800
@@ -24,6 +24,7 @@ services:
       - traefik.http.routers.handbrake.entrypoints=websecure
       - traefik.http.routers.handbrake.tls=true
       - traefik.http.routers.handbrake.tls.certresolver=cloudns
+
 networks:
   proxynet:
     external: true
