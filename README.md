@@ -1,163 +1,214 @@
-# homelab-gitops
+# Homelab GitOps
 
-This repository contains Docker Compose configurations and environment files for managing a self-hosted homelab using GitOps principles. It is designed for use with tools like Portainer Stacks (with Git integration) to enable automated, version-controlled deployments.
+A comprehensive repository for managing self-hosted services using Docker Compose and GitOps principles. This project provides configurations for various homelab services, automation scripts, and deployment workflows to streamline your self-hosted infrastructure management.
 
-## Features
+## Technology Stack
 
-- Easy deployment and management of popular homelab services
-- Environment-specific configuration using `.env` files
-- Automated updates with Watchtower and Dependabot
-- GitOps workflow for reproducible infrastructure
-- Portainer Stacks support with Git-based updates
+- **Containerization**: Docker, Docker Compose
+- **Reverse Proxy**: Traefik v3.4.4
+- **Orchestration**: Portainer (optional)
+- **Infrastructure as Code**: Terraform with HyperCore provider
+- **CI/CD**: GitHub Actions
+- **Configuration Management**: Environment variables, YAML configurations
+- **Monitoring**: Beszel (lightweight server monitoring)
+- **Development Tools**: Code-Server, IT Tools, Stirling PDF
+- **Media Services**: Plex, HandBrake, MeTube
+- **Network Boot**: iVentoy, NetbootXYZ
 
-## Prerequisites
+## Project Architecture
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/)
-- [Portainer](https://www.portainer.io/) (optional, for GitOps workflow)
-- Git
-
-## Overview
-
-The following services are managed in this repository:
-
-- **Beszel**: Simple, lightweight server monitoring ([docker/beszel](docker/beszel))
-- **Code-Server**: IDE in the browser for development ([docker/code-server](docker/code-server))
-- **HandBrake**: Video transcoder ([docker/handbrake](docker/handbrake))
-- **Homarr**: Dashboard for your homelab ([docker/homarr](docker/homarr))
-- **iVentoy**: PXE and USB boot server ([docker/iventoy](docker/iventoy))
-- **MeTube**: Web GUI for downloading videos from YouTube and other sites ([docker/metube](docker/metube))
-- **NetbootXYZ**: Network boot server for provisioning systems ([docker/netbootxyz](docker/netbootxyz))
-- **Plex**: Media server ([docker/plex](docker/plex))
-- **Stirling PDF**: PDF toolkit ([docker/stirling-pdf](docker/stirling-pdf))
-- **Watchtower**: Automated Docker container updates ([docker/watchtower](docker/watchtower))
-- **Traefik**: Modern reverse proxy and load balancer ([docker/traefik](docker/traefik))
-- **IT Tools**: Collection of handy online tools for developers ([docker/it-tools](docker/it-tools))
-
-Each service has its own directory with a `docker-compose.yml` and `.env` file for configuration.
-
-## Repository Structure
+The project follows a GitOps approach with Docker Compose configurations for each service. Traefik serves as the central reverse proxy, providing SSL termination and dynamic routing to all services. Each service is containerized and configured through environment variables for easy customization.
 
 ```
-docker/
-  beszel/
-    docker-compose.yml
-    .env
-  code-server/
-    docker-compose.yml
-    .env
-  handbrake/
-    docker-compose.yml
-    .env
-  homarr/
-    docker-compose.yml
-    .env
-  iventoy/
-    docker-compose.yml
-    .env
-  metube/
-    docker-compose.yml
-    .env
-  netbootxyz/
-    docker-compose.yml
-    .env
-  plex/
-    docker-compose.yml
-    .env
-  stirling-pdf/
-    docker-compose.yml
-    .env
-  traefik/
-    docker-compose.yml
-    .env
-  watchtower/
-    docker-compose.yml
-    .env
-  it-tools/
-    docker-compose.yml
-    .env
-.github/
-  dependabot.yml
-  workflows/
-    update-dependabot.yml
-  scripts/
-    generate-dependabot.sh
-  .yamllint
-LICENSE
-README.md
+┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
+│   Internet      │────│   Traefik    │────│   Services      │
+│                 │    │ (Reverse     │    │ - Plex          │
+└─────────────────┘    │  Proxy)      │    │ - Homarr        │
+                       │              │    │ - Code-Server   │
+                       └──────────────┘    │ - Beszel        │
+                                          │ - IT Tools      │
+                                          └─────────────────┘
 ```
 
-## Usage
+Services communicate through the `proxynet` external Docker network, with Traefik handling SSL certificates via Let's Encrypt and CloudNS DNS challenge.
 
-### With Portainer Stacks (GitOps)
+## Getting Started
 
-1. **Deploy a stack from this repository in Portainer:**
-   - Use the Git repository option and specify the path to the desired service directory (e.g., `docker/traefik`).
-   - Portainer will automatically pull the latest `docker-compose.yml` and any referenced files, including static configuration files like `traefik.yml` if present.
+### Prerequisites
 
-2. **Update configuration:**
-   - Make changes to `.env`, `docker-compose.yml`, or static config files (such as `traefik.yml` in `config/`) in your Git repository.
-   - In Portainer, click "Update the stack" to pull the latest changes and redeploy.
-   - **Note:** For Traefik, ensure your `docker-compose.yml` uses a relative bind mount for the config directory, for example:
-     ```yaml
-     volumes:
-       - ./config:/etc/traefik:ro
-     ```
-     This ensures that `traefik.yml` and any other config files in the `config` directory are available to the container when deployed via Portainer Git stacks.
-   - **Important:** The relative path bind mount feature for stacks is only available in Portainer Business Edition. If you are using Portainer Community Edition, you will need to use absolute paths or named volumes instead.
+- Docker and Docker Compose installed
+- Git for repository management
+- (Optional) Portainer for web-based stack management
+- Domain name with DNS provider support (for SSL certificates)
 
-### Manual Deployment
+### Installation
 
-1. **Clone the repository:**
-   ```sh
+#### Option 1: Portainer Stacks (Recommended)
+
+1. **Set up Portainer** with Git repository integration
+2. **Create a new stack** using Git repository option
+3. **Repository URL**: `https://github.com/yourusername/homelab-gitops.git`
+4. **Compose path**: Specify the path to desired service (e.g., `docker/traefik`)
+5. **Deploy** and Portainer will automatically pull configurations
+
+#### Option 2: Manual Deployment
+
+1. **Clone the repository**:
+   ```bash
    git clone https://github.com/yourusername/homelab-gitops.git
    cd homelab-gitops
    ```
 
-2. **Configure environment variables:**
-   - Edit the `.env` files in each service directory under `docker/` to match your environment.
-
-3. **Start a service:**
-   ```sh
+2. **Configure environment variables**:
+   ```bash
    cd docker/<service-name>
+   cp .env.example .env  # If available
+   # Edit .env file with your specific values
+   ```
+
+3. **Deploy services**:
+   ```bash
    docker compose up -d
    ```
 
-4. **Stop a service:**
-   ```sh
-   docker compose down
+### Initial Configuration
+
+1. **Set up external network**:
+   ```bash
+   docker network create proxynet
    ```
 
-## Automation
+2. **Configure DNS and SSL**:
+   - Set up CloudNS credentials in Traefik environment variables
+   - Configure `TRAEFIK_BASE_DOMAIN` for your domain
 
-- **Dependabot**: Keeps Docker images up to date via [`.github/dependabot.yml`](.github/dependabot.yml).
-- **GitHub Actions**: Workflow to update Dependabot config ([`.github/workflows/update-dependabot.yml`](.github/workflows/update-dependabot.yml)).
-- **Watchtower**: Automatically updates running containers.
-- **Portainer Stacks**: Enables GitOps-style updates for Docker Compose stacks.
+3. **Deploy Traefik first** (acts as the reverse proxy for other services)
 
-## Additional Features
+## Project Structure
 
-### YAML Linting
-- A `.github/.yamllint` configuration file is included to enforce YAML formatting rules.
-- A GitHub Actions workflow ([`.github/workflows/yaml-lint.yml`](.github/workflows/yaml-lint.yml)) automatically lints YAML files on every push.
+```
+homelab-gitops/
+├── docker/                 # Service configurations
+│   ├── traefik/            # Reverse proxy and SSL termination
+│   │   ├── config/         # Static and dynamic configurations
+│   │   └── docker-compose.yml
+│   ├── plex/               # Media server
+│   ├── homarr/             # Homelab dashboard
+│   ├── beszel/             # System monitoring
+│   ├── code-server/        # Browser-based IDE
+│   └── [other-services]/   # Individual service directories
+├── terraform/              # Infrastructure as code
+│   ├── modules/            # Reusable Terraform modules
+│   ├── templates/          # VM template configurations
+│   └── test/               # Test environment configs
+├── .github/                # GitHub workflows and documentation
+│   ├── workflows/          # CI/CD pipelines
+│   ├── scripts/            # Automation scripts
+│   └── prompts/            # AI assistant prompts
+└── README.md              # Project documentation
+```
 
-### Dependabot Enhancements
-- Dependabot configuration is automatically generated using the `generate-dependabot.sh` script located in `.github/scripts/`.
-- The `update-dependabot.yml` workflow ensures the `dependabot.yml` file stays up-to-date.
+## Key Features
 
-### Service-Specific Notes
-- **Plex**: Requires a `PLEX_CLAIM` environment variable for server registration. Obtain it from [Plex](https://www.plex.tv/claim/).
-- **Stirling PDF**: Includes advanced security and configuration options such as `SECURITY_ENABLELOGIN` and `SYSTEM_MAXFILESIZE`.
-- **Homarr**: Requires a `SECRET_ENCRYPTION_KEY` for secure operations. Generate it using `openssl rand -hex 32`.
+- **Automated Service Management**: Pre-configured Docker Compose setups for popular homelab services
+- **SSL Certificate Automation**: Traefik integration with Let's Encrypt for automatic HTTPS
+- **GitOps Workflow**: Version-controlled infrastructure with Portainer integration
+- **Monitoring and Dashboards**: Beszel for system monitoring, Homarr for service management
+- **Development Environment**: Code-Server for browser-based development
+- **Media Stack**: Plex media server with HandBrake transcoding
+- **Network Boot Services**: iVentoy and NetbootXYZ for PXE boot scenarios
+- **Infrastructure as Code**: Terraform configurations for VM provisioning
+- **Automated Updates**: Watchtower for container updates, Dependabot for dependency management
 
-### Traefik Configuration
-- Dynamic routing configurations are stored in `docker/traefik/config/dynamic/`.
-- Example files include `storj-node-1.yaml` and `dh01.yaml`, which define routing rules and services.
+## Development Workflow
+
+### GitOps Deployment Process
+
+1. **Configuration Changes**: Edit service configurations in respective directories
+2. **Version Control**: Commit changes to Git repository
+3. **Automated Deployment**: Portainer pulls changes and redeploys services
+4. **Monitoring**: Use service logs and Traefik dashboard for validation
+
+### Testing and Validation
+
+- **YAML Linting**: Automated validation using `.github/.yamllint` configuration
+- **GitHub Actions**: `yaml-lint.yml` workflow validates all YAML files
+- **Service Health Checks**: Individual service health checks in Docker Compose files
+- **Log Analysis**: Centralized logging through Docker and Traefik
+
+### Infrastructure Management
+
+- **Terraform Workflows**: Manage VM templates and infrastructure provisioning
+- **Environment Separation**: Separate configurations for test and production environments
+- **Backup Strategies**: Volume mapping for persistent data preservation
+
+## Coding Standards
+
+- **Environment Variables**: Use `.env` files for all configuration values
+- **Naming Conventions**: Follow existing directory structure and service naming patterns
+- **Docker Compose Structure**: Maintain consistent service definitions with proper networks and volumes
+- **Security Practices**: Implement proper secrets management and security configurations
+- **Documentation**: Include clear descriptions and comments for complex configurations
+- **Relative Paths**: Use relative volume mounts where possible for Portainer compatibility
+
+### Configuration Guidelines
+
+- Use meaningful variable and function names
+- Follow existing code style in each configuration file
+- Add comments for complex logic or unusual configurations
+- Use environment variables for sensitive data (e.g., `PLEX_CLAIM`, `SECRET_ENCRYPTION_KEY`)
+- Maintain consistency with existing service patterns
+
+## Testing
+
+### Automated Testing
+
+- **YAML Validation**: GitHub Actions workflow using yamllint
+- **Container Health Checks**: Built-in Docker Compose health check configurations
+- **Service Validation**: Automated testing through Traefik routing verification
+
+### Manual Testing
+
+- **Service Deployment**: Test individual service deployment with `docker compose up -d`
+- **Network Connectivity**: Verify service accessibility through Traefik proxy
+- **Configuration Validation**: Test environment variable substitution and service configuration
+
+### Debugging Tools
+
+- **Container Logs**: `docker logs <container-name>` for service-specific debugging
+- **Traefik Dashboard**: Access at `traefik.${TRAEFIK_BASE_DOMAIN}` for routing inspection
+- **Beszel Monitoring**: System-level monitoring and alerting
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
+### Getting Started
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/new-service`
+3. Make your changes following the coding standards
+4. Test your changes locally
+5. Update documentation as needed
+6. Submit a pull request with clear description
+
+### Contribution Guidelines
+
+- **Code Quality**: Follow existing patterns and conventions
+- **Documentation**: Update `CHANGELOG.md` with concise descriptions of changes
+- **Testing**: Ensure all tests pass and add new tests for new functionality
+- **Service Addition**: Follow the established directory structure in `docker/`
+- **Environment Variables**: Document all required environment variables in service `.env` files
+
+### Code Examples
+
+Reference existing service configurations for implementation patterns:
+- **Traefik Routing**: See `docker/traefik/config/dynamic/` for routing examples
+- **Service Labels**: Follow Traefik label patterns in existing `docker-compose.yml` files
+- **Environment Configuration**: Use existing `.env` files as templates
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+For detailed service-specific documentation and advanced configuration options, refer to individual service directories and the [Copilot Instructions](.github/copilot-instructions.md).
