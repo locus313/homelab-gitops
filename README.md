@@ -26,8 +26,8 @@ The project follows a GitOps approach with Docker Compose configurations for eac
 └─────────────────┘    │  Proxy)      │    │ - Homarr        │
                        │              │    │ - Code-Server   │
                        └──────────────┘    │ - Beszel        │
-                                          │ - IT Tools      │
-                                          └─────────────────┘
+                                           │ - IT Tools      │
+                                           └─────────────────┘
 ```
 
 Services communicate through the `proxynet` external Docker network, with Traefik handling SSL certificates via Let's Encrypt and CloudNS DNS challenge.
