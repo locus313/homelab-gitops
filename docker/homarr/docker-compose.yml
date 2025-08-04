@@ -6,13 +6,13 @@ services:
     networks:
       - proxynet
     volumes:
-      #  Optional, only if you want docker integration
+      # Optional, only if you want docker integration
       - /var/run/docker.sock:/var/run/docker.sock
       - ${DOCKER_BASE_PATH}/homarr/appdata:/appdata
     environment:
-      SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY}
       PUID: ${PUID}
       PGID: ${PGID}
+      SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY}
     labels:
       - traefik.enable=true
       - traefik.http.services.homarr.loadbalancer.server.port=7575
@@ -20,6 +20,7 @@ services:
       - traefik.http.routers.homarr.entrypoints=websecure
       - traefik.http.routers.homarr.tls=true
       - traefik.http.routers.homarr.tls.certresolver=cloudns
+
 networks:
   proxynet:
     external: true

@@ -1,5 +1,5 @@
 resource "hypercore_virtual_disk" "ubuntu-server-20-04-focal" {
-  name       = "ubuntu-server-22.04-focal.img"
+  name       = "ubuntu-server-20.04-focal.img"
   source_url = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
 }
 

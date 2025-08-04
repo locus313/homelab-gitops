@@ -30,6 +30,7 @@ services:
       LISTEN: /beszel_socket/beszel.sock
       # Do not remove quotes around the key
       KEY: '${BESZEL_PUBLIC_KEY}'
+
 networks:
   proxynet:
     external: true
