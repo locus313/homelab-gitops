@@ -45,6 +45,9 @@ services:
       PGID: ${PGID}
       TZ: ${TZ}
       OLLAMA_HOST: 0.0.0.0
+      # Intel GPU acceleration settings
+      OLLAMA_GPU_LAYERS: 999
+      OLLAMA_GPU_DRIVER: intel
     labels:
       - traefik.enable=true
       - traefik.http.services.ollama.loadbalancer.server.port=11434
