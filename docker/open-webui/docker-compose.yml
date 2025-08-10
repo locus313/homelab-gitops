@@ -19,7 +19,7 @@ services:
       # Optional: Enable authentication (remove to disable)
       ENABLE_SIGNUP: true
       # Optional: Set default models (comma-separated)
-      # DEFAULT_MODELS: "llama2,codellama"
+      DEFAULT_MODELS: "llama2,codellama"
     depends_on:
       - ollama
     labels:
