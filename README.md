@@ -12,7 +12,7 @@ A comprehensive repository for managing self-hosted services using Docker Compos
 - **Configuration Management**: Environment variables, YAML configurations
 - **Monitoring**: Beszel (lightweight server monitoring)
 - **Development Tools**: Code-Server, IT Tools, Stirling PDF
-- **Media Services**: Plex, HandBrake, MeTube
+- **Media Services**: Plex, Ombi, HandBrake, MeTube
 - **Network Boot**: iVentoy, NetbootXYZ
 
 ## Project Architecture
@@ -23,9 +23,10 @@ The project follows a GitOps approach with Docker Compose configurations for eac
 ┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
 │   Internet      │────│   Traefik    │────│   Services      │
 │                 │    │ (Reverse     │    │ - Plex          │
-└─────────────────┘    │  Proxy)      │    │ - Homarr        │
-                       │              │    │ - Code-Server   │
-                       └──────────────┘    │ - Beszel        │
+└─────────────────┘    │  Proxy)      │    │ - Ombi          │
+                       │              │    │ - Homarr        │
+                       └──────────────┘    │ - Code-Server   │
+                                           │ - Beszel        │
                                            │ - IT Tools      │
                                            └─────────────────┘
 ```
@@ -93,6 +94,7 @@ homelab-gitops/
 │   │   ├── config/         # Static and dynamic configurations
 │   │   └── docker-compose.yml
 │   ├── plex/               # Media server
+│   ├── ombi/               # Media request management
 │   ├── homarr/             # Homelab dashboard
 │   ├── beszel/             # System monitoring
 │   ├── code-server/        # Browser-based IDE
@@ -115,7 +117,7 @@ homelab-gitops/
 - **GitOps Workflow**: Version-controlled infrastructure with Portainer integration
 - **Monitoring and Dashboards**: Beszel for system monitoring, Homarr for service management
 - **Development Environment**: Code-Server for browser-based development
-- **Media Stack**: Plex media server with HandBrake transcoding
+- **Media Stack**: Plex media server with Ombi request management and HandBrake transcoding
 - **Network Boot Services**: iVentoy and NetbootXYZ for PXE boot scenarios
 - **Infrastructure as Code**: Terraform configurations for VM provisioning
 - **Automated Updates**: Watchtower for container updates, Dependabot for dependency management

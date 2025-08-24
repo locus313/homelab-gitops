@@ -1,0 +1,24 @@
+services:
+  ombi:
+    image: lscr.io/linuxserver/ombi:4.47.1
+    container_name: ombi
+    restart: unless-stopped
+    networks:
+      - proxynet
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${DOCKER_BASE_PATH}/ombi/config:/config
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.ombi.loadbalancer.server.port=3579
+      - traefik.http.routers.ombi.rule=Host(`ombi.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.ombi.entrypoints=websecure
+      - traefik.http.routers.ombi.tls=true
+      - traefik.http.routers.ombi.tls.certresolver=cloudns
+
+networks:
+  proxynet:
+    external: true
