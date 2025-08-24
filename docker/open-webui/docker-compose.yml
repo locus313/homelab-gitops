@@ -1,0 +1,61 @@
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:0.6.25
+    container_name: open-webui
+    restart: unless-stopped
+    networks:
+      - proxynet
+    volumes:
+      - ${DOCKER_BASE_PATH}/open-webui/data:/app/backend/data
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      # Ollama API URL - adjust if using external Ollama instance
+      OLLAMA_BASE_URL: http://ollama:11434
+      # Environment variables for Open WebUI configuration
+      WEBUI_NAME: "Open WebUI"
+      WEBUI_URL: https://open-webui.${TRAEFIK_BASE_DOMAIN}
+      # Optional: Enable authentication (remove to disable)
+      ENABLE_SIGNUP: true
+      # Optional: Set default models (comma-separated)
+      DEFAULT_MODELS: "llama2,codellama"
+    depends_on:
+      - ollama
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.open-webui.loadbalancer.server.port=8080
+      - traefik.http.routers.open-webui.rule=Host(`open-webui.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.open-webui.entrypoints=websecure
+      - traefik.http.routers.open-webui.tls=true
+      - traefik.http.routers.open-webui.tls.certresolver=cloudns
+
+  ollama:
+    image: ollama/ollama:0.11.6
+    container_name: ollama
+    restart: unless-stopped
+    networks:
+      - proxynet
+    devices:
+      - /dev/dri:/dev/dri
+    volumes:
+      - ${DOCKER_BASE_PATH}/ollama/data:/root/.ollama
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      OLLAMA_HOST: 0.0.0.0
+      # CPU optimization settings
+      OLLAMA_NUM_PARALLEL: 3
+      OLLAMA_MAX_LOADED_MODELS: 1
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.ollama.loadbalancer.server.port=11434
+      - traefik.http.routers.ollama.rule=Host(`ollama.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.ollama.entrypoints=websecure
+      - traefik.http.routers.ollama.tls=true
+      - traefik.http.routers.ollama.tls.certresolver=cloudns
+
+networks:
+  proxynet:
+    external: true
