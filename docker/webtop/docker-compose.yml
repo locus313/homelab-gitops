@@ -1,0 +1,34 @@
+services:
+  webtop:
+    # Available Fedora desktop environment options:
+    # fedora-i3    - i3 window manager
+    # fedora-kde   - KDE Plasma desktop
+    # fedora-mate  - MATE desktop environment  
+    # fedora-xfce  - XFCE desktop environment
+    # latest       - XFCE Alpine (default)
+    image: lscr.io/linuxserver/webtop:${WEBTOP_TAG:-fedora-kde}
+    container_name: webtop
+    restart: unless-stopped
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      SUBFOLDER: ${SUBFOLDER}
+      TITLE: ${TITLE}
+      DRINODE: ${DRINODE}
+      CUSTOM_USER: ${CUSTOM_USER}
+      PASSWORD: ${PASSWORD}
+    volumes:
+      - ${DOCKER_BASE_PATH}/webtop/config:/config
+      - /var/run/docker.sock:/var/run/docker.sock
+    devices:
+      - /dev/dri:/dev/dri
+    shm_size: "1gb"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webtop.entrypoints=websecure"
+      - "traefik.http.routers.webtop.rule=Host(`webtop.${TRAEFIK_BASE_DOMAIN}`)"
+      - "traefik.http.routers.webtop.tls.certresolver=cloudns"
+      - "traefik.http.services.webtop.loadbalancer.server.port=3000"

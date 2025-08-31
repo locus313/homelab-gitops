@@ -11,7 +11,7 @@ A comprehensive repository for managing self-hosted services using Docker Compos
 - **CI/CD**: GitHub Actions
 - **Configuration Management**: Environment variables, YAML configurations
 - **Monitoring**: Beszel (lightweight server monitoring)
-- **Development Tools**: Code-Server, IT Tools, Stirling PDF
+- **Development Tools**: Code-Server, IT Tools, Stirling PDF, Webtop
 - **Media Services**: Plex, Ombi, HandBrake, MeTube
 - **Network Boot**: iVentoy, NetbootXYZ
 
@@ -26,6 +26,7 @@ The project follows a GitOps approach with Docker Compose configurations for eac
 └─────────────────┘    │  Proxy)      │    │ - Ombi          │
                        │              │    │ - Homarr        │
                        └──────────────┘    │ - Code-Server   │
+                                           │ - Webtop        │
                                            │ - Beszel        │
                                            │ - IT Tools      │
                                            └─────────────────┘
@@ -98,6 +99,7 @@ homelab-gitops/
 │   ├── homarr/             # Homelab dashboard
 │   ├── beszel/             # System monitoring
 │   ├── code-server/        # Browser-based IDE
+│   ├── webtop/             # Linux desktop environment in browser
 │   └── [other-services]/   # Individual service directories
 ├── terraform/              # Infrastructure as code
 │   ├── modules/            # Reusable Terraform modules
@@ -116,7 +118,8 @@ homelab-gitops/
 - **SSL Certificate Automation**: Traefik integration with Let's Encrypt for automatic HTTPS
 - **GitOps Workflow**: Version-controlled infrastructure with Portainer integration
 - **Monitoring and Dashboards**: Beszel for system monitoring, Homarr for service management
-- **Development Environment**: Code-Server for browser-based development
+- **Development Environment**: Code-Server for browser-based development, Webtop for full Linux desktop environments
+- **Desktop Access**: Webtop provides browser-accessible Linux desktops with GPU acceleration support
 - **Media Stack**: Plex media server with Ombi request management and HandBrake transcoding
 - **Network Boot Services**: iVentoy and NetbootXYZ for PXE boot scenarios
 - **Infrastructure as Code**: Terraform configurations for VM provisioning
