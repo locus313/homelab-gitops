@@ -27,7 +27,7 @@ services:
       - /dev/dri:/dev/dri
     networks:
       - proxynet
-    shm_size: "1gb"
+    shm_size: "3gb"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.webtop.entrypoints=websecure"
