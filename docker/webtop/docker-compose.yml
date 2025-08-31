@@ -3,7 +3,7 @@ services:
     # Available Fedora desktop environment options:
     # fedora-i3    - i3 window manager
     # fedora-kde   - KDE Plasma desktop
-    # fedora-mate  - MATE desktop environment  
+    # fedora-mate  - MATE desktop environment
     # fedora-xfce  - XFCE desktop environment
     # latest       - XFCE Alpine (default)
     image: lscr.io/linuxserver/webtop:${WEBTOP_TAG:-fedora-kde}
