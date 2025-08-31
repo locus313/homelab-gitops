@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-08-31]
+
+### Added
+- Added Webtop service with full desktop environment in browser support.
+- Added Ombi service for media request management.
+- Added comprehensive `.env.example` files for all services for better configuration management.
+- Added Webtop service with GPU acceleration support (DRI3) and multiple desktop environments.
+- Added documentation for all services including setup instructions and configuration details.
+
+### Changed
+- Updated MeTube Docker image to version `2025.08.28`.
+- Updated Plex Docker image to version `1.42.1.10060-4e8b05daf`.
+- Updated Traefik from version `3.5.0` to `3.5.1`.
+- Updated Webtop configuration to increase shared memory size from 1GB to 3GB for better performance.
+- Improved environment variable consistency across all services.
+- Enhanced service documentation with detailed configuration options.
+
+### Fixed
+- Fixed Docker Compose comment formatting for MATE desktop environment in Webtop.
+- Removed unused `.env` files and standardized `.env.example` files across services.
+- Corrected Webtop network configuration to use `proxynet` external network.
+
+### Dependencies
+- Bumped `open-webui/open-webui` to latest version.
+- Bumped `ollama/ollama` to latest version.
+- Bumped `henrygd/beszel/beszel` to latest version.
+- Bumped `henrygd/beszel/beszel-agent` to latest version.
+- Bumped `homarr-labs/homarr` to latest version.
+- Bumped `linuxserver/code-server` to latest version.
+- Bumped `alexta69/metube` to latest version.
+
 ## [2025-07-27]
 
 ### Added
