@@ -9,12 +9,12 @@ services:
       - /dev/dri:/dev/dri
     volumes:
       - ${DOCKER_BASE_PATH}/handbrake:/config
-      - /mnt/h-syn-1_backups:/storage/Backups
-      - /mnt/h-syn-1_media:/storage/Media
-      - /mnt/h-syn-1_media/Videos/temp/Output:/output
+      - ${BACKUP_PATH}:/storage/Backups
+      - ${MEDIA_PATH}:/storage/Media
+      - ${MEDIA_PATH}/Videos/temp/Output:/output
     environment:
-      USER_ID: ${USER_ID}
-      GROUP_ID: ${GROUP_ID}
+      USER_ID: ${PUID}
+      GROUP_ID: ${PGID}
       TZ: ${TZ}
       UMASK: ${UMASK}
     labels:

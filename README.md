@@ -64,7 +64,7 @@ Services communicate through the `proxynet` external Docker network, with Traefi
 2. **Configure environment variables**:
    ```bash
    cd docker/<service-name>
-   cp .env.example .env  # If available
+   cp .env.example .env
    # Edit .env file with your specific values
    ```
 
@@ -85,6 +85,39 @@ Services communicate through the `proxynet` external Docker network, with Traefi
    - Configure `TRAEFIK_BASE_DOMAIN` for your domain
 
 3. **Deploy Traefik first** (acts as the reverse proxy for other services)
+
+## Environment Variables
+
+Each service has its own environment configuration file. To configure a service:
+
+1. Navigate to the service directory: `cd docker/<service-name>/`
+2. Copy the example file: `cp .env.example .env`
+3. Edit `.env` with your specific values
+
+### Core Variables
+
+Most services use these common environment variables:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DOCKER_BASE_PATH` | Base path for Docker volumes | `/docker` |
+| `PUID` | User ID for file permissions | `1000` |
+| `PGID` | Group ID for file permissions | `1000` |
+| `TZ` | Timezone | `America/Los_Angeles` |
+| `TRAEFIK_BASE_DOMAIN` | Base domain for services | `example.com` |
+
+### Service-Specific Variables
+
+| Service | Additional Variables | Description |
+|---------|---------------------|-------------|
+| **Traefik** | `CLOUDNS_SUB_AUTH_ID`, `CLOUDNS_AUTH_PASSWORD` | SSL certificate automation |
+| **Plex** | `PLEX_CLAIM`, `MEDIA_PATH` | Media server setup and storage |
+| **Homarr** | `SECRET_ENCRYPTION_KEY` | Dashboard encryption |
+| **Beszel** | `BESZEL_PUBLIC_KEY` | Monitoring agent authentication |
+| **HandBrake** | `MEDIA_PATH`, `BACKUP_PATH` | Video transcoding storage |
+| **Code-Server** | `PASSWORD`, `TS_AUTHKEY` | IDE access and Tailscale |
+
+Refer to each service's `.env.example` file for complete variable documentation.
 
 ## Project Structure
 

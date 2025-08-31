@@ -6,7 +6,7 @@ services:
     networks:
       - proxynet
     volumes:
-      - /mnt/h-syn-1_media/Videos/converted:/downloads
+      - ${MEDIA_PATH}/Videos/converted:/downloads
     environment:
       PUID: ${PUID}
       PGID: ${PGID}

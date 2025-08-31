@@ -1,20 +1,20 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+# Create virtual disk from Ubuntu 22.04 cloud image
 resource "hypercore_virtual_disk" "ubuntu-2204" {
   name       = "ubuntu-2204-server-cloudimg-amd64.img"
   source_url = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
 }
 
-
-# After we have virtual disk, we use it to create new VM from it
-# First create VM without any disk.
+# Create VM from template with cloud-init configuration
 resource "hypercore_vm" "test-vm" {
-  tags       = ["test"]
+  tags        = ["test"]
   name        = "test-vm"
-  description = "test VM"
+  description = "Test VM for development and experimentation"
   vcpu        = 4
-  memory      = 4096  # MiB
+  memory      = 4096 # MiB
+  
   clone = {
     source_vm_uuid = data.hypercore_vms.template-vm.vms.0.uuid
     meta_data = templatefile("assets/meta-data.ubuntu-22.04.yml.tftpl", {
@@ -28,24 +28,23 @@ resource "hypercore_vm" "test-vm" {
   }
 
   # snapshot_schedule_uuid = hypercore_vm_snapshot_schedule.demo1.id
-  # TODO update, "" -> null
+  # TODO: update "" -> null
 
-  # Pin VM to the first node in cluster
-  # If preferred_node fails, run VM on any other node.
+  # Pin VM to the first node in cluster for performance
+  # If preferred_node fails, run VM on any other node
   affinity_strategy = {
-    strict_affinity = true
+    strict_affinity     = true
     preferred_node_uuid = data.hypercore_nodes.node_1.nodes.0.uuid
-    backup_node_uuid = ""
+    backup_node_uuid    = null
     # backup_node_uuid = data.hypercore_nodes.node_2.id
   }
 }
 
-# Next clone existing virtual_disk, and attach it to the VM.
-# POST rest/v1/VirtualDisk/{uuid}/attach
+# Attach cloned virtual disk to the VM as OS disk
 resource "hypercore_disk" "os" {
   vm_uuid                = hypercore_vm.test-vm.id
   type                   = "VIRTIO_DISK"
-  size                   = 20.5  # GB
+  size                   = 20.5 # GB
   source_virtual_disk_id = hypercore_virtual_disk.ubuntu-2204.id
 }
 

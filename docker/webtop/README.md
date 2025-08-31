@@ -20,7 +20,7 @@ The following environment variables can be configured in your `.env` file:
 
 - `PUID`: User ID for file permissions (default: 1000)
 - `PGID`: Group ID for file permissions (default: 1000)
-- `TZ`: Timezone (e.g., America/New_York)
+- `TZ`: Timezone (e.g., America/Los_Angeles)
 - `SUBFOLDER`: Optional subfolder for reverse proxy setup
 - `TITLE`: Custom title for the desktop environment
 - `DRINODE`: Optional specific GPU device for DRI3 acceleration

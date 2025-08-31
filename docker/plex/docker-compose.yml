@@ -13,9 +13,9 @@ services:
       PLEX_CLAIM: ${PLEX_CLAIM}
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/PlexMediaServer:/config
-      - /mnt/h-syn-1_media/Videos:/shares/videos
-      - /mnt/h-syn-1_media/Music:/shares/music
-      - /mnt/h-syn-1_media/Pictures:/shares/photos
-      - /docker/PlexMediaServer/transcode:/transcode
-      - /mnt/h-syn-1_media:/data
+      - ${DOCKER_BASE_PATH}/plex/config:/config
+      - ${MEDIA_PATH}/Videos:/shares/videos
+      - ${MEDIA_PATH}/Music:/shares/music
+      - ${MEDIA_PATH}/Pictures:/shares/photos
+      - ${DOCKER_BASE_PATH}/plex/transcode:/transcode
+      - ${MEDIA_PATH}:/data
