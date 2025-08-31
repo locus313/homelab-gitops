@@ -16,6 +16,7 @@ updates:
       - "/docker/stirling-pdf"
       - "/docker/traefik"
       - "/docker/watchtower"
+      - "/docker/webtop"
     schedule:
       interval: "weekly"
       day: "saturday"
