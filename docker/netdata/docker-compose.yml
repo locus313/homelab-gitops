@@ -15,7 +15,7 @@ services:
       - ${DOCKER_BASE_PATH}/netdata/config:/etc/netdata
       - ${DOCKER_BASE_PATH}/netdata/lib:/var/lib/netdata
       - ${DOCKER_BASE_PATH}/netdata/cache:/var/cache/netdata
-      
+
       # Host system monitoring
       - /:/host/root:ro,rslave
       - /etc/passwd:/host/etc/passwd:ro
@@ -25,7 +25,7 @@ services:
       - /sys:/host/sys:ro
       - /etc/os-release:/host/etc/os-release:ro
       - /var/log:/host/var/log:ro
-      
+
       # Docker monitoring
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /run/dbus:/run/dbus:ro
@@ -34,10 +34,10 @@ services:
       NETDATA_CLAIM_TOKEN: ${NETDATA_CLAIM_TOKEN}
       NETDATA_CLAIM_URL: ${NETDATA_CLAIM_URL}
       NETDATA_CLAIM_ROOMS: ${NETDATA_CLAIM_ROOMS}
-      
+
       # Optional: Disable telemetry if desired
       # DO_NOT_TRACK: 1
     labels:
-      # Note: Since this uses host networking, Traefik labels won't work as expected
+      # Note: Since this uses host networking, Traefik labels won't work
       # Access directly via http://host-ip:19999
       - traefik.enable=false
