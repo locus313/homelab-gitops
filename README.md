@@ -10,7 +10,7 @@ A comprehensive repository for managing self-hosted services using Docker Compos
 - **Infrastructure as Code**: Terraform with HyperCore provider
 - **CI/CD**: GitHub Actions
 - **Configuration Management**: Environment variables, YAML configurations
-- **Monitoring**: Beszel (lightweight server monitoring)
+- **Monitoring**: Beszel (lightweight server monitoring), Netdata (comprehensive system monitoring)
 - **Development Tools**: Code-Server, IT Tools, Stirling PDF, Webtop
 - **Media Services**: Plex, Ombi, HandBrake, MeTube
 - **Network Boot**: iVentoy, NetbootXYZ
@@ -30,6 +30,11 @@ The project follows a GitOps approach with Docker Compose configurations for eac
                                            │ - Beszel        │
                                            │ - IT Tools      │
                                            └─────────────────┘
+                                           
+┌─────────────────┐    ┌──────────────┐
+│   Host System   │────│   Netdata    │  (Host Network)
+│   Monitoring    │    │ :19999       │
+└─────────────────┘    └──────────────┘
 ```
 
 Services communicate through the `proxynet` external Docker network, with Traefik handling SSL certificates via Let's Encrypt and CloudNS DNS challenge.
@@ -114,6 +119,7 @@ Most services use these common environment variables:
 | **Plex** | `PLEX_CLAIM`, `MEDIA_PATH` | Media server setup and storage |
 | **Homarr** | `SECRET_ENCRYPTION_KEY` | Dashboard encryption |
 | **Beszel** | `BESZEL_PUBLIC_KEY` | Monitoring agent authentication |
+| **Netdata** | `NETDATA_CLAIM_TOKEN`, `NETDATA_CLAIM_ROOMS` | System monitoring and cloud integration |
 | **HandBrake** | `MEDIA_PATH`, `BACKUP_PATH` | Video transcoding storage |
 | **Code-Server** | `PASSWORD`, `TS_AUTHKEY` | IDE access and Tailscale |
 
@@ -131,6 +137,7 @@ homelab-gitops/
 │   ├── ombi/               # Media request management
 │   ├── homarr/             # Homelab dashboard
 │   ├── beszel/             # System monitoring
+│   ├── netdata/            # Real-time system monitoring
 │   ├── code-server/        # Browser-based IDE
 │   ├── webtop/             # Linux desktop environment in browser
 │   └── [other-services]/   # Individual service directories
@@ -150,7 +157,8 @@ homelab-gitops/
 - **Automated Service Management**: Pre-configured Docker Compose setups for popular homelab services
 - **SSL Certificate Automation**: Traefik integration with Let's Encrypt for automatic HTTPS
 - **GitOps Workflow**: Version-controlled infrastructure with Portainer integration
-- **Monitoring and Dashboards**: Beszel for system monitoring, Homarr for service management
+- **Comprehensive Monitoring**: Beszel for lightweight system monitoring, Netdata for real-time system analytics
+- **Service Dashboards**: Homarr for service management, Netdata for system performance monitoring
 - **Development Environment**: Code-Server for browser-based development, Webtop for full Linux desktop environments
 - **Desktop Access**: Webtop provides browser-accessible Linux desktops with GPU acceleration support
 - **Media Stack**: Plex media server with Ombi request management and HandBrake transcoding

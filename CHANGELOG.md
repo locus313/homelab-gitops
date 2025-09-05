@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-09-05]
+
+### Added
+- Added Netdata service for comprehensive real-time system monitoring.
+- Added Docker container monitoring capabilities through Netdata.
+- Added Netdata Cloud integration support for remote monitoring and alerts.
+- Added comprehensive documentation for Netdata setup and configuration.
+
+### Changed
+- Updated project documentation to include Netdata service information.
+
 ## [2025-08-31]
 
 ### Added
