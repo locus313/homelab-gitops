@@ -10,6 +10,7 @@ updates:
       - "/docker/iventoy"
       - "/docker/metube"
       - "/docker/netbootxyz"
+      - "/docker/netdata"
       - "/docker/ombi"
       - "/docker/open-webui"
       - "/docker/plex"
