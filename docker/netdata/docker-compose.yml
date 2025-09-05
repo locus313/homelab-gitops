@@ -1,0 +1,43 @@
+services:
+  netdata:
+    image: netdata/netdata:v2.6.3
+    container_name: netdata
+    restart: unless-stopped
+    pid: host
+    network_mode: host
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      # Netdata configuration and data
+      - ${DOCKER_BASE_PATH}/netdata/config:/etc/netdata
+      - ${DOCKER_BASE_PATH}/netdata/lib:/var/lib/netdata
+      - ${DOCKER_BASE_PATH}/netdata/cache:/var/cache/netdata
+      
+      # Host system monitoring
+      - /:/host/root:ro,rslave
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/log:/host/var/log:ro
+      
+      # Docker monitoring
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /run/dbus:/run/dbus:ro
+    environment:
+      # Netdata Cloud configuration
+      NETDATA_CLAIM_TOKEN: ${NETDATA_CLAIM_TOKEN}
+      NETDATA_CLAIM_URL: ${NETDATA_CLAIM_URL}
+      NETDATA_CLAIM_ROOMS: ${NETDATA_CLAIM_ROOMS}
+      
+      # Optional: Disable telemetry if desired
+      # DO_NOT_TRACK: 1
+    labels:
+      # Note: Since this uses host networking, Traefik labels won't work as expected
+      # Access directly via http://host-ip:19999
+      - traefik.enable=false
