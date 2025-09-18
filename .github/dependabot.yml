@@ -6,6 +6,7 @@ updates:
       - "/docker/code-server"
       - "/docker/handbrake"
       - "/docker/homarr"
+      - "/docker/home-assistant"
       - "/docker/it-tools"
       - "/docker/iventoy"
       - "/docker/metube"
