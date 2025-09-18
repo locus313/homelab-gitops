@@ -2,6 +2,8 @@
 
 Home Assistant is an open-source home automation platform that focuses on privacy and local control. It provides a unified interface to monitor and control smart home devices from various manufacturers.
 
+This configuration uses the **LinuxServer.io** image which provides additional benefits including proper file permissions, regular updates, and consistent behavior with other LinuxServer.io containers in the homelab.
+
 ## Features
 
 - **Local Control**: All processing happens locally, no cloud dependency required
@@ -23,7 +25,8 @@ Home Assistant is an open-source home automation platform that focuses on privac
 
 2. Edit the `.env` file with your specific values:
    - `DOCKER_BASE_PATH`: Base path for Docker volumes (e.g., `/opt/docker`)
-   - `TZ`: Your timezone (e.g., `America/New_York`)
+   - `PUID` and `PGID`: User and group IDs for file permissions (typically `1000`)
+   - `TZ`: Your timezone (standardized to `America/Los_Angeles`)
    - `TRAEFIK_BASE_DOMAIN`: Your domain for Traefik routing
 
 3. Deploy the service:
@@ -45,6 +48,14 @@ Home Assistant is an open-source home automation platform that focuses on privac
 5. Start adding integrations for your devices
 
 ## Important Notes
+
+### LinuxServer.io Image Benefits
+This configuration uses the LinuxServer.io Home Assistant image which provides:
+- **Proper File Permissions**: PUID/PGID support for consistent file ownership
+- **Pinned Versions**: Uses specific version tags for stability and predictable deployments
+- **Regular Updates**: Timely security updates and Home Assistant releases via Dependabot
+- **Consistent Architecture**: Follows LinuxServer.io standards used by other homelab services
+- **Better Documentation**: Comprehensive documentation and community support
 
 ### Privileged Mode
 This configuration runs Home Assistant in privileged mode to support:
@@ -84,15 +95,21 @@ Regular backups of this directory are recommended. Home Assistant also provides 
 
 ## Updating
 
-The service will be automatically updated by Watchtower if configured. Manual updates can be performed by:
+This service uses pinned version tags for stability. Updates are managed through:
 
-1. Pull the latest image:
-   ```bash
-   docker compose pull
+1. **Dependabot**: Automated pull requests for new versions
+2. **Manual Updates**: Update the version tag in `docker-compose.yml` and redeploy
+
+To manually update to a newer version:
+
+1. Edit `docker-compose.yml` and update the image tag:
+   ```yaml
+   image: lscr.io/linuxserver/homeassistant:2024.10.1  # Update version here
    ```
 
-2. Restart the service:
+2. Pull the new image and restart:
    ```bash
+   docker compose pull
    docker compose up -d
    ```
 

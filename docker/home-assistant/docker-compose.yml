@@ -1,6 +1,6 @@
 services:
   home-assistant:
-    image: ghcr.io/home-assistant/home-assistant:2025.9.2
+    image: lscr.io/linuxserver/homeassistant:2024.9.3
     container_name: home-assistant
     restart: unless-stopped
     networks:
@@ -10,6 +10,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
     environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
     privileged: true
     labels:

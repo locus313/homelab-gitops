@@ -14,6 +14,8 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Updated repository documentation to enforce `America/Los_Angeles` timezone standard.
 - Updated Copilot instructions to include timezone consistency requirements.
+- Updated Home Assistant to use LinuxServer.io image (`lscr.io/linuxserver/homeassistant:2024.9.3`) for better file permissions and consistency with other services.
+- Changed Home Assistant from `latest` tag to pinned version `2024.9.3` for stability and predictable deployments.
 
 ## [2025-09-05]
 
