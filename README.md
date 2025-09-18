@@ -13,6 +13,7 @@ A comprehensive repository for managing self-hosted services using Docker Compos
 - **Monitoring**: Beszel (lightweight server monitoring), Netdata (comprehensive system monitoring)
 - **Development Tools**: Code-Server, IT Tools, Stirling PDF, Webtop
 - **Media Services**: Plex, Ombi, HandBrake, MeTube
+- **Home Automation**: Home Assistant
 - **Network Boot**: iVentoy, NetbootXYZ
 
 ## Project Architecture
@@ -29,6 +30,7 @@ The project follows a GitOps approach with Docker Compose configurations for eac
                                            │ - Webtop        │
                                            │ - Beszel        │
                                            │ - IT Tools      │
+                                           │ - Home Assistant│
                                            └─────────────────┘
                                            
 ┌─────────────────┐    ┌──────────────┐
@@ -108,8 +110,10 @@ Most services use these common environment variables:
 | `DOCKER_BASE_PATH` | Base path for Docker volumes | `/docker` |
 | `PUID` | User ID for file permissions | `1000` |
 | `PGID` | Group ID for file permissions | `1000` |
-| `TZ` | Timezone | `America/Los_Angeles` |
+| `TZ` | Timezone (standardized) | `America/Los_Angeles` |
 | `TRAEFIK_BASE_DOMAIN` | Base domain for services | `example.com` |
+
+**Note**: All services should use `TZ=America/Los_Angeles` for consistency across the homelab environment.
 
 ### Service-Specific Variables
 
@@ -191,6 +195,7 @@ homelab-gitops/
 ## Coding Standards
 
 - **Environment Variables**: Use `.env` files for all configuration values
+- **Timezone Standardization**: Always use `TZ=America/Los_Angeles` for consistency across all services
 - **Naming Conventions**: Follow existing directory structure and service naming patterns
 - **Docker Compose Structure**: Maintain consistent service definitions with proper networks and volumes
 - **Security Practices**: Implement proper secrets management and security configurations

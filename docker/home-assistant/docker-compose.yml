@@ -1,0 +1,25 @@
+services:
+  home-assistant:
+    image: ghcr.io/home-assistant/home-assistant:2025.9.2
+    container_name: home-assistant
+    restart: unless-stopped
+    networks:
+      - proxynet
+    volumes:
+      - ${DOCKER_BASE_PATH}/home-assistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    environment:
+      TZ: ${TZ}
+    privileged: true
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.home-assistant.loadbalancer.server.port=8123
+      - traefik.http.routers.home-assistant.rule=Host(`home-assistant.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.home-assistant.entrypoints=websecure
+      - traefik.http.routers.home-assistant.tls=true
+      - traefik.http.routers.home-assistant.tls.certresolver=cloudns
+
+networks:
+  proxynet:
+    external: true

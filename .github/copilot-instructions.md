@@ -148,6 +148,7 @@ docker logs service-name
 ### Environment Variables
 - **ALWAYS** use `.env` files, never hardcode values
 - **Common variables**: `DOCKER_BASE_PATH`, `PUID`, `PGID`, `TZ`, `TRAEFIK_BASE_DOMAIN`
+- **Timezone Standard**: Always use `TZ=America/Los_Angeles` for consistency across all services
 - **Sensitive data**: Use descriptive placeholder names (e.g., `your_secure_password_here`)
 
 ### Volume Mapping Standards

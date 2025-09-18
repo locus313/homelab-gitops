@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-09-17]
+
+### Added
+- Added Home Assistant service for home automation and IoT device management.
+- Added comprehensive Home Assistant documentation with device integration guidance.
+- Added privileged mode support for USB device access (Zigbee/Z-Wave dongles).
+- Added network discovery capabilities for smart home device integration.
+- Added timezone standardization guidance requiring `TZ=America/Los_Angeles` across all services.
+
+### Changed
+- Updated repository documentation to enforce `America/Los_Angeles` timezone standard.
+- Updated Copilot instructions to include timezone consistency requirements.
+
 ## [2025-09-05]
 
 ### Added
