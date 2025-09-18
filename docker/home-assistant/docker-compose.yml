@@ -1,6 +1,6 @@
 services:
   home-assistant:
-    image: ghcr.io/home-assistant/home-assistant:2025.9.2
+    image: ghcr.io/home-assistant/home-assistant:2025.9.3
     container_name: home-assistant
     restart: unless-stopped
     networks:
