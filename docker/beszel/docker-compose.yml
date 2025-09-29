@@ -26,7 +26,7 @@ services:
     cap_add:
       - CAP_PERFMON
     devices:
-      - /dev/dri/card0:/dev/dri/card0
+      - /dev/dri/card1:/dev/dri/card1
     volumes:
       - ${DOCKER_BASE_PATH}/beszel/socket:/beszel_socket
       - /var/run/docker.sock:/var/run/docker.sock:ro
