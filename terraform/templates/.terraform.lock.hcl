@@ -5,6 +5,7 @@ provider "registry.terraform.io/scalecomputing/hypercore" {
   version     = "1.1.0"
   constraints = "1.1.0"
   hashes = [
+    "h1:Wj2MKOmfPW4GwmlziZ6ok3zv3/1YcYo4uhKHs61qTJc=",
     "h1:ZoU6bnZNC+T5APRosNGCeVGpKOHwABNcluKSLcjik2g=",
     "zh:051c3b6939fb735e0d49202ea7c383725805a0a9be07daa21247192e3a93f3a3",
     "zh:0ffa7849bbbf4522504da9f6a5cb4131681d95680070012ddcfd66a16ff35771",

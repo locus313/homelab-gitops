@@ -46,6 +46,7 @@ resource "hypercore_disk" "os" {
   type                   = "VIRTIO_DISK"
   size                   = 20.5 # GB
   source_virtual_disk_id = hypercore_virtual_disk.ubuntu-2204.id
+  depends_on = [ hypercore_vm.test-vm ]
 }
 
 # resource "hypercore_disk" "iso" {
