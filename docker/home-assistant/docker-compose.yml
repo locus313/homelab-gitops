@@ -1,6 +1,6 @@
 services:
   home-assistant:
-    image: lscr.io/linuxserver/homeassistant:2025.10.2
+    image: lscr.io/linuxserver/homeassistant:2025.10.3
     container_name: home-assistant
     restart: unless-stopped
     networks:
