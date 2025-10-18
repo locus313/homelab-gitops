@@ -1,6 +1,6 @@
 services:
   handbrake:
-    image: ghcr.io/jlesage/handbrake:v25.09.2
+    image: ghcr.io/jlesage/handbrake:v25.10.1
     container_name: handbrake
     restart: unless-stopped
     networks:
