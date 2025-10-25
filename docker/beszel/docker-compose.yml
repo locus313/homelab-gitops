@@ -19,7 +19,7 @@ services:
       - traefik.http.routers.beszel.tls.certresolver=cloudns
 
   beszel-agent:
-    image: ghcr.io/henrygd/beszel/beszel-agent-intel:0.13.2
+    image: ghcr.io/henrygd/beszel/beszel-agent-intel:0.14.1
     container_name: beszel-agent
     restart: unless-stopped
     network_mode: host
