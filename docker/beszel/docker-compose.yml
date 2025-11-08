@@ -33,15 +33,18 @@ services:
       - ${DOCKER_BASE_PATH}/beszel/socket:/beszel_socket
       - ${DOCKER_BASE_PATH}/beszel/agent_data:/var/lib/beszel-agent
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      # Monitor other disks/partitions by mounting a folder in /extra-filesystems
+      # Monitor other disks/partitions by mounting a folder in
+      # /extra-filesystems
       # - /mnt/disk/.beszel:/extra-filesystems/sda1:ro
     environment:
       LISTEN: /beszel_socket/beszel.sock
       # Do not remove quotes around the key
       KEY: '${BESZEL_PUBLIC_KEY}'
-      # Optional: Exclude containers from monitoring (comma-separated glob patterns)
+      # Optional: Exclude containers from monitoring
+      # (comma-separated glob patterns)
       # EXCLUDE_CONTAINERS: ${EXCLUDE_CONTAINERS:-}
-      # Optional: Control access to container logs and info APIs (default: true)
+      # Optional: Control access to container logs and info APIs
+      # (default: true)
       # CONTAINER_DETAILS: ${CONTAINER_DETAILS:-true}
       # Optional: Specify Intel GPU device for monitoring
       # INTEL_GPU_DEVICE: ${INTEL_GPU_DEVICE:-}
