@@ -27,6 +27,8 @@ services:
       - CAP_PERFMON
       - CAP_SYS_ADMIN
       - CAP_DAC_OVERRIDE
+    security_opt:
+      - apparmor:unconfined
     devices:
       - /dev/dri:/dev/dri
     volumes:
