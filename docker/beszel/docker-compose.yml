@@ -33,6 +33,7 @@ services:
       - ${DOCKER_BASE_PATH}/beszel/socket:/beszel_socket
       - ${DOCKER_BASE_PATH}/beszel/agent_data:/var/lib/beszel-agent
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:ro
       # Monitor other disks/partitions by mounting a folder in
       # /extra-filesystems
       # - /mnt/disk/.beszel:/extra-filesystems/sda1:ro
