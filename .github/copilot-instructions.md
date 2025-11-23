@@ -54,6 +54,15 @@ services:
       - traefik.http.routers.service-name.tls.certresolver=cloudns
 ```
 
+**Image Version Pinning:**
+- **ALWAYS pin to specific versions** - never use `latest` tag
+- **Check the source registry** for available tags before pinning:
+  - Docker Hub: `https://hub.docker.com/r/vendor/image/tags`
+  - GitHub Container Registry: `https://github.com/owner/repo/pkgs/container/image`
+- **Verify tag format**: Some images use `v1.2.3`, others use `1.2.3` (without `v` prefix)
+- **Check release notes**: Review GitHub releases or registry documentation for version-specific changes
+- **Update README.md**: Document the pinned version in the service's README
+
 ## Key Components
 
 ### Services
