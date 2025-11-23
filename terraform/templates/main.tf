@@ -7,7 +7,7 @@ resource "hypercore_vm" "template-vm" {
   name        = "template-vm"
   description = "template VM"
 
-  vcpu              = 4
-  memory            = 4096 # MiB
+  vcpu   = 4
+  memory = 4096  # MiB (4 GB)
   affinity_strategy = {}
 }

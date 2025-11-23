@@ -4,7 +4,7 @@ resource "hypercore_virtual_disk" "ubuntu-server-20-04-focal" {
   source_url = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
 }
 
-# Ubuntu 22.04 LTS (Jammy) cloud image  
+# Ubuntu 22.04 LTS (Jammy) cloud image
 resource "hypercore_virtual_disk" "ubuntu-server-22-04-jammy" {
   name       = "ubuntu-server-22.04-jammy.img"
   source_url = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"

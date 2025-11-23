@@ -4,6 +4,7 @@ services:
     container_name: netdata
     restart: unless-stopped
     pid: host
+    # Uses host network for direct system-level monitoring access
     network_mode: host
     cap_add:
       - SYS_PTRACE

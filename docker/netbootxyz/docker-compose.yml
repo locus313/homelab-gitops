@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     networks:
       - proxynet
+    # TFTP requires UDP port 69 for network boot
     ports:
       - 69:69/udp
       - 8080:80

@@ -8,10 +8,10 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 8181:8080
+      - 8181:8080  # Traefik dashboard
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      # Portainer "Enable relative path volumes" requires Business Edition
+      # Note: Portainer "Enable relative path volumes" requires Business Edition
       - ./config:/etc/traefik:ro
       - ${DOCKER_BASE_PATH}/traefik/certs:/var/traefik/certs/:rw
       - ${DOCKER_BASE_PATH}/traefik/logs:/logs

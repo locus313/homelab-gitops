@@ -13,7 +13,7 @@ resource "hypercore_vm" "test-vm" {
   name        = "test-vm"
   description = "Test VM for development and experimentation"
   vcpu        = 4
-  memory      = 4096 # MiB
+  memory      = 4096  # MiB (4 GB)
   
   clone = {
     source_vm_uuid = data.hypercore_vms.template-vm.vms.0.uuid

@@ -3,10 +3,11 @@ global:
   checkNewVersion: false
   sendAnonymousUsage: false
 
-# - level: [TRACE, DEBUG, INFO, WARN, ERROR, FATAL]
+# Log levels: TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+# Use INFO for production, DEBUG for troubleshooting
 log:
   filePath: "/logs/traefik.log"
-  level: DEBUG
+  level: INFO
 
 accessLog:
   filePath: "/logs/access.log"

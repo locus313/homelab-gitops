@@ -23,6 +23,7 @@ services:
     image: ghcr.io/henrygd/beszel/beszel-agent-intel:0.16.1
     container_name: beszel-agent
     restart: unless-stopped
+    # Uses host network for comprehensive system monitoring
     network_mode: host
     cap_add:
       - CAP_PERFMON

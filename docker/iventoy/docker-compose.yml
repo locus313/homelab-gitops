@@ -12,6 +12,7 @@ services:
       - ${DOCKER_BASE_PATH}/iventoy/iso:/iventoy/iso
       - ${DOCKER_BASE_PATH}/iventoy/data:/iventoy/data
       - ${DOCKER_BASE_PATH}/iventoy/log:/iventoy/log
+    # iVentoy requires direct port access for PXE/TFTP/HTTP boot services
     ports:
       - 26000:26000
       - 16000:16000

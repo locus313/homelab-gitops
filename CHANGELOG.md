@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 ## [2025-11-23]
 
 ### Added
+- Added descriptive comments to docker-compose files explaining host network mode usage (Plex, Netdata, Beszel-agent).
+- Added comment explaining iVentoy direct port mappings for PXE/TFTP/HTTP boot services.
+- Added comment for netbootxyz TFTP UDP port requirement.
+- Added comment for Traefik dashboard port mapping (8181:8080).
+
+### Changed
+- Improved Traefik configuration log level from DEBUG to INFO for production readiness.
+- Enhanced traefik.yaml log level documentation with usage guidance.
+- Standardized Traefik label ordering across all services (enable, service port, router rule, entrypoints, tls, certresolver).
+- Improved Terraform code formatting and comment consistency across modules.
+- Enhanced memory unit comments in Terraform configurations (added GB conversion).
+- Improved Portainer note formatting in Traefik docker-compose.yml.
+
+### Fixed
+- Fixed trailing whitespace in cloud-images module comments.
+- Standardized comment formatting for better maintainability.
+
+### Added
 - Added comprehensive GitHub Copilot prompts for educational commenting, memory keeping, and project documentation.
 - Added prompts for folder structure analysis, GitHub setup, and coding standards generation.
 
