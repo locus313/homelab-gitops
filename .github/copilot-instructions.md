@@ -34,7 +34,7 @@ Every service follows this exact pattern in `docker-compose.yml`:
 ```yaml
 services:
   service-name:
-    image: vendor/image:tag
+    image: vendor/image:1.2.3  # Always pin versions, never use 'latest'
     container_name: service-name
     restart: unless-stopped
     networks:
@@ -44,7 +44,7 @@ services:
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
-      # Service-specific vars
+      TZ: ${TZ}  # Always America/Los_Angeles
     labels:
       - traefik.enable=true
       - traefik.http.services.service-name.loadbalancer.server.port=INTERNAL_PORT
@@ -52,7 +52,17 @@ services:
       - traefik.http.routers.service-name.entrypoints=websecure
       - traefik.http.routers.service-name.tls=true
       - traefik.http.routers.service-name.tls.certresolver=cloudns
+
+networks:
+  proxynet:
+    external: true
 ```
+
+**Pattern Exceptions:**
+- **Plex**: Uses `network_mode: host` instead of proxynet (requires direct network access for discovery)
+- **Netdata**: Uses host network with direct port `:19999` for system-level monitoring
+- **GPU Services** (Webtop, HandBrake): Mount `/dev/dri:/dev/dri` for hardware acceleration
+- **Docker Integration** (Homarr, Webtop): Mount `/var/run/docker.sock:/var/run/docker.sock` for container management
 
 **Image Version Pinning:**
 - **ALWAYS pin to specific versions** - never use `latest` tag
@@ -86,8 +96,8 @@ services:
 ### Environment Configuration Pattern
 Every service directory contains:
 - `docker-compose.yml` - Service definition
-- `.env.example` - Template with ALL required variables
-- `README.md` - Service-specific documentation
+- `.env.example` - Template with ALL required variables (18 services have this)
+- `README.md` - Service-specific documentation with setup instructions
 
 **Workflow:**
 ```bash
@@ -96,6 +106,8 @@ cp .env.example .env
 # Edit .env with your values
 docker compose up -d
 ```
+
+**Critical**: All services reference environment variables in their compose files - NEVER hardcode values. The `.env.example` files document all required and optional variables with descriptive placeholder values.
 
 ### Deployment Patterns
 
@@ -179,8 +191,11 @@ docker logs service-name
 
 ### GitHub Automation
 - **Dependabot**: Auto-generated config via `.github/scripts/generate-dependabot.sh`
-- **YAML validation**: Enforced on all commits
-- **Weekly dependency updates**: Scheduled for Saturdays
+  - Runs on push to main, creates PR with updated `dependabot.yml`
+  - Automatically discovers all `docker-compose.yml` files
+  - Weekly updates scheduled for Saturdays
+- **YAML validation**: Enforced on all commits via `yaml-lint.yml` workflow
+  - Uses `.github/.yamllint` configuration (extends default, disables document-start)
 
 ### External Dependencies
 - **CloudNS**: DNS provider for SSL certificate automation
