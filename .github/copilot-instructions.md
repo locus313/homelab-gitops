@@ -206,7 +206,12 @@ docker logs service-name
 
 1. **Follow the service pattern**: Use existing services as templates
 2. **Test locally**: Verify service starts and Traefik routing works
-3. **Update CHANGELOG.md**: Document all changes with clear descriptions
+3. **Update CHANGELOG.md**: Document all changes following the established format:
+   - Use date-based sections: `## [YYYY-MM-DD]`
+   - Categorize changes: `### Added`, `### Changed`, `### Fixed`, `### Dependencies`
+   - Include specific version numbers for image updates
+   - Document configuration changes and new features comprehensively
+   - Reference service names and file paths clearly
 4. **Validate YAML**: Ensure all files pass linting
 5. **Environment examples**: Always provide complete `.env.example` files
 
