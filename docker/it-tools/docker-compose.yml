@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     networks:
       - proxynet
+    environment:
+      TZ: ${TZ}
     labels:
       - traefik.enable=true
       - traefik.http.services.it-tools.loadbalancer.server.port=80

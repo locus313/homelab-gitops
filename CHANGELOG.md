@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-11-23]
+
+### Changed
+- Added `TZ` environment variable to Homarr service for timezone consistency.
+- Added `TZ` environment variable to Stirling-PDF service for timezone consistency.
+- Added `TZ` environment variable to MeTube service for timezone consistency.
+- Added `TZ` environment variable to Beszel service for timezone consistency.
+- Added `TZ` environment variable to Watchtower service for timezone consistency.
+- Added `TZ` environment variable to IT Tools service for timezone consistency.
+- Added `TZ` environment variable to iVentoy service for timezone consistency.
+- Updated README.md to reflect correct Traefik version (v3.6.2 instead of v3.4.4).
+
+### Fixed
+- Added missing `TZ=America/Los_Angeles` variable to Homarr `.env.example`.
+- Added missing `TZ=America/Los_Angeles` variable to Beszel `.env.example`.
+- Added missing `TZ=America/Los_Angeles` variable to MeTube `.env.example`.
+- Added missing `TZ=America/Los_Angeles` variable to Stirling-PDF `.env.example`.
+- Added missing `TZ=America/Los_Angeles` variable to IT Tools `.env.example`.
+- Added missing `TZ=America/Los_Angeles` variable to iVentoy `.env.example`.
+- Added missing `TZ=America/Los_Angeles` variable to Watchtower `.env.example`.
+- Added missing `TZ=America/Los_Angeles` variable to Netdata `.env.example`.
+- Standardized timezone configuration across all services to ensure compliance with architecture standards.
+
 ## [2025-11-22]
 
 ### Added

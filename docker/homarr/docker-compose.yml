@@ -12,6 +12,7 @@ services:
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
+      TZ: ${TZ}
       SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY}
     labels:
       - traefik.enable=true

@@ -6,6 +6,8 @@ services:
     networks:
       - proxynet
     privileged: true
+    environment:
+      TZ: ${TZ}
     volumes:
       - ${DOCKER_BASE_PATH}/iventoy/iso:/iventoy/iso
       - ${DOCKER_BASE_PATH}/iventoy/data:/iventoy/data

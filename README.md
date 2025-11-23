@@ -5,7 +5,7 @@ A comprehensive repository for managing self-hosted services using Docker Compos
 ## Technology Stack
 
 - **Containerization**: Docker, Docker Compose
-- **Reverse Proxy**: Traefik v3.4.4
+- **Reverse Proxy**: Traefik v3.6.2
 - **Orchestration**: Portainer (optional)
 - **Infrastructure as Code**: Terraform with HyperCore provider
 - **CI/CD**: GitHub Actions
