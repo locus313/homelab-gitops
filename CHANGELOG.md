@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [2025-11-23]
 
+### Added
+- Added comprehensive GitHub Copilot prompts for educational commenting, memory keeping, and project documentation.
+- Added prompts for folder structure analysis, GitHub setup, and coding standards generation.
+
 ### Changed
 - Added `TZ` environment variable to Homarr service for timezone consistency.
 - Added `TZ` environment variable to Stirling-PDF service for timezone consistency.
@@ -13,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - Added `TZ` environment variable to IT Tools service for timezone consistency.
 - Added `TZ` environment variable to iVentoy service for timezone consistency.
 - Updated README.md to reflect correct Traefik version (v3.6.2 instead of v3.4.4).
+- Enhanced Copilot instructions with detailed CHANGELOG.md update guidelines and version pinning requirements.
 
 ### Fixed
 - Added missing `TZ=America/Los_Angeles` variable to Homarr `.env.example`.
@@ -25,6 +30,17 @@ All notable changes to this project will be documented in this file.
 - Added missing `TZ=America/Los_Angeles` variable to Netdata `.env.example`.
 - Standardized timezone configuration across all services to ensure compliance with architecture standards.
 
+### Dependencies
+- Bumped `stirling-tools/stirling-pdf` from 1.3.2 to 1.5.0.
+- Bumped `traefik` from 3.5.2 to 3.6.2.
+- Bumped `ollama/ollama` from 0.12.0 to 0.13.0.
+- Bumped `open-webui/open-webui` from 0.6.30 to 0.6.36.
+- Bumped `netdata/netdata` from v2.7.3 to v2.8.1.
+- Bumped `linuxserver/code-server` from 4.105.1 to 4.106.2.
+- Bumped `tailscale/tailscale` from v1.90.6 to v1.90.8.
+- Bumped `homarr-labs/homarr` from v1.43.3 to v1.44.0.
+- Bumped `alexta69/metube` from 2025.11.13 to 2025.11.16.
+
 ## [2025-11-22]
 
 ### Added
@@ -32,6 +48,116 @@ All notable changes to this project will be documented in this file.
 - Added Docker Compose configuration for Lissy93 Networking Toolbox with 100+ tools.
 - Added comprehensive documentation for DNS, SSL/TLS, conversion, and security tools.
 - Added offline-first, privacy-focused web interface accessible via Traefik.
+
+### Changed
+- Enhanced image version pinning guidelines in Copilot instructions with registry checking steps.
+
+### Fixed
+- Corrected image tag format in README and docker-compose files for consistency.
+
+### Dependencies
+- Bumped `actions/checkout` from 5 to 6 in GitHub Actions workflows.
+
+## [2025-11-15]
+
+### Changed
+- Added apparmor security option to Beszel-Agent for enhanced security.
+- Added D-Bus system bus socket volume to Beszel-Agent for system integration.
+
+### Dependencies
+- Bumped `henrygd/beszel/beszel` from 0.15.4 to 0.16.1.
+- Bumped `henrygd/beszel/beszel-agent-intel` from 0.15.4 to 0.16.1.
+- Bumped `homarr-labs/homarr` from v1.43.2 to v1.43.3.
+- Bumped `linuxserver/homeassistant` from 2025.11.1 to 2025.11.2.
+- Bumped `alexta69/metube` from 2025.10.23 to 2025.11.13.
+
+## [2025-11-08]
+
+### Changed
+- Improved comments in Beszel docker-compose.yml for better clarity.
+- Updated README and .env.example with new optional configuration options for Beszel.
+
+### Dependencies
+- Bumped `henrygd/beszel/beszel` to 0.15.4.
+- Bumped `henrygd/beszel/beszel-agent-intel` to 0.15.4.
+- Bumped `homarr-labs/homarr` to v1.43.2.
+- Bumped `linuxserver/homeassistant` to 2025.11.1.
+- Bumped `netdata/netdata` to v2.7.3.
+
+## [2025-11-01]
+
+### Dependencies
+- Bumped `henrygd/beszel/beszel` to 0.14.3.
+- Bumped `henrygd/beszel/beszel-agent-intel` to 0.14.3.
+- Bumped `tailscale/tailscale` to v1.90.6.
+- Bumped `homarr-labs/homarr` to v1.43.1.
+- Bumped `alexta69/metube` to 2025.10.23.
+
+## [2025-10-25]
+
+### Dependencies
+- Bumped `henrygd/beszel/beszel` to 0.14.0.
+- Bumped `henrygd/beszel/beszel-agent-intel` to 0.14.0.
+- Bumped `linuxserver/code-server` to 4.105.1.
+- Bumped `homarr-labs/homarr` to v1.43.0.
+- Bumped `linuxserver/homeassistant` to 2025.10.3.
+
+## [2025-10-18]
+
+### Dependencies
+- Bumped `linuxserver/code-server` to 4.104.2.
+- Bumped `tailscale/tailscale` to v1.88.0.
+- Bumped `jlesage/handbrake` to v25.10.1.
+- Bumped `homarr-labs/homarr` to v1.42.1.
+- Bumped `linuxserver/homeassistant` to 2025.10.1.
+
+## [2025-10-12]
+
+### Changed
+- Updated Terraform provider configurations and hashes in templates.
+
+## [2025-10-11]
+
+### Dependencies
+- Bumped `henrygd/beszel/beszel` to 0.13.1.
+- Bumped `henrygd/beszel/beszel-agent-intel` to 0.13.1.
+- Bumped `linuxserver/code-server` to 4.104.1.
+- Bumped `homarr-labs/homarr` to v1.42.0.
+- Bumped `linuxserver/homeassistant` to 2025.9.3.
+
+## [2025-10-04]
+
+### Dependencies
+- Bumped `henrygd/beszel/beszel` to 0.13.0.
+- Bumped `henrygd/beszel/beszel-agent-intel` to 0.13.0.
+- Bumped `tailscale/tailscale` to v1.86.0.
+- Bumped `homarr-labs/homarr` to v1.41.0.
+- Bumped `jlesage/handbrake` to v25.09.1.
+
+## [2025-09-28]
+
+### Changed
+- Switched Beszel-Agent to Intel-specific image (`beszel-agent-intel`) for hardware acceleration support.
+- Added GPU device mapping (`/dev/dri`) to Beszel-Agent for Intel GPU metrics.
+- Added additional capabilities (CAP_PERFMON, CAP_SYS_ADMIN, CAP_DAC_OVERRIDE) to Beszel-Agent for system monitoring.
+
+## [2025-09-27]
+
+### Dependencies
+- Bumped `henrygd/beszel/beszel` to 0.12.12.
+- Bumped `henrygd/beszel/beszel-agent-intel` to 0.12.12 (first Intel-specific version).
+- Bumped `linuxserver/code-server` to 4.103.1.
+- Bumped `homarr-labs/homarr` to v1.40.0.
+- Bumped `alexta69/metube` to 2025.09.27.
+
+## [2025-09-20]
+
+### Dependencies
+- Bumped `tailscale/tailscale` to v1.84.0.
+- Bumped `linuxserver/code-server` to 4.103.0.
+- Bumped `homarr-labs/homarr` to v1.39.0.
+- Bumped `linuxserver/homeassistant` to 2025.9.2.
+- Bumped `ollama/ollama` to 0.12.0.
 
 ## [2025-09-17]
 
@@ -48,6 +174,29 @@ All notable changes to this project will be documented in this file.
 - Updated Home Assistant to use LinuxServer.io image (`lscr.io/linuxserver/homeassistant:2024.9.3`) for better file permissions and consistency with other services.
 - Changed Home Assistant from `latest` tag to pinned version `2024.9.3` for stability and predictable deployments.
 
+### Dependencies
+- Bumped `open-webui/open-webui` to 0.6.30.
+- Bumped `linuxserver/code-server` to 4.102.1.
+- Bumped `henrygd/beszel/beszel` to 0.12.11.
+- Bumped `henrygd/beszel/beszel-agent` to 0.12.11 (last non-Intel version).
+
+## [2025-09-13]
+
+### Dependencies
+- Bumped `homarr-labs/homarr` to v1.38.0.
+- Bumped `open-webui/open-webui` to 0.6.28.
+- Bumped `traefik` from 3.5.1 to 3.5.2.
+- Bumped `jlesage/handbrake` to v25.08.1.
+
+## [2025-09-06]
+
+### Dependencies
+- Bumped `henrygd/beszel/beszel` to 0.12.9.
+- Bumped `henrygd/beszel/beszel-agent` to 0.12.9.
+- Bumped `homarr-labs/homarr` to v1.37.0.
+- Bumped `alexta69/metube` to 2025.09.06.
+- Bumped `stirling-tools/stirling-pdf` to 1.3.2.
+
 ## [2025-09-05]
 
 ### Added
@@ -58,6 +207,16 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Updated project documentation to include Netdata service information.
+- Removed unnecessary blank lines in docker-compose files for consistency.
+
+### Fixed
+- Improved comments in docker-compose.yml files for better clarity.
+
+### Dependencies
+- Bumped `stirling-tools/stirling-pdf` to 1.3.1.
+- Bumped `ollama/ollama` to 0.11.0.
+- Bumped `homarr-labs/homarr` to v1.36.0.
+- Bumped `actions/setup-python` from 5 to 6 in GitHub Actions workflows.
 
 ## [2025-08-31]
 
