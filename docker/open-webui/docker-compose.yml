@@ -1,6 +1,6 @@
 services:
   open-webui:
-    image: ghcr.io/open-webui/open-webui:0.6.30
+    image: ghcr.io/open-webui/open-webui:0.6.36
     container_name: open-webui
     restart: unless-stopped
     networks:
