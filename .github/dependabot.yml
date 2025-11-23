@@ -12,6 +12,7 @@ updates:
       - "/docker/metube"
       - "/docker/netbootxyz"
       - "/docker/netdata"
+      - "/docker/networking-toolbox"
       - "/docker/ombi"
       - "/docker/open-webui"
       - "/docker/plex"
