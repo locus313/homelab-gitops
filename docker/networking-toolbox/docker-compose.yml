@@ -1,0 +1,20 @@
+services:
+  networking-toolbox:
+    image: lissy93/networking-toolbox:v1.6.0
+    container_name: networking-toolbox
+    restart: unless-stopped
+    networks:
+      - proxynet
+    environment:
+      TZ: ${TZ}
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.networking-toolbox.loadbalancer.server.port=3000
+      - traefik.http.routers.networking-toolbox.rule=Host(`networking-toolbox.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.networking-toolbox.entrypoints=websecure
+      - traefik.http.routers.networking-toolbox.tls=true
+      - traefik.http.routers.networking-toolbox.tls.certresolver=cloudns
+
+networks:
+  proxynet:
+    external: true

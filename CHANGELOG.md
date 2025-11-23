@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-11-22]
+
+### Added
+- Added Networking Toolbox service (Lissy93) for web-based network diagnostics and utilities.
+- Added Docker Compose configuration for Lissy93 Networking Toolbox with 100+ tools.
+- Added comprehensive documentation for DNS, SSL/TLS, conversion, and security tools.
+- Added offline-first, privacy-focused web interface accessible via Traefik.
+
 ## [2025-09-17]
 
 ### Added
