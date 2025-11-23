@@ -1,6 +1,6 @@
 services:
   networking-toolbox:
-    image: lissy93/networking-toolbox:v1.6.0
+    image: lissy93/networking-toolbox:1.6.0
     container_name: networking-toolbox
     restart: unless-stopped
     networks:

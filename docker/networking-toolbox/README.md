@@ -99,7 +99,7 @@ This service is configured to use the `proxynet` external network for Traefik in
 
 ## Networking Toolbox Image
 
-This deployment uses the Lissy93 Networking Toolbox image (`lissy93/networking-toolbox:v1.6.0`) which provides:
+This deployment uses the Lissy93 Networking Toolbox image (`lissy93/networking-toolbox:1.6.0`) which provides:
 
 - 100+ networking tools and utilities
 - Beautiful, intuitive web interface
