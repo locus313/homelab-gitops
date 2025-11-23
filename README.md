@@ -14,6 +14,7 @@ A comprehensive repository for managing self-hosted services using Docker Compos
 - **Development Tools**: Code-Server, IT Tools, Stirling PDF, Webtop
 - **Media Services**: Plex, Ombi, HandBrake, MeTube
 - **Home Automation**: Home Assistant
+- **Network Tools**: Networking Toolbox (100+ diagnostic utilities)
 - **Network Boot**: iVentoy, NetbootXYZ
 
 ## Project Architecture
@@ -21,17 +22,18 @@ A comprehensive repository for managing self-hosted services using Docker Compos
 The project follows a GitOps approach with Docker Compose configurations for each service. Traefik serves as the central reverse proxy, providing SSL termination and dynamic routing to all services. Each service is containerized and configured through environment variables for easy customization.
 
 ```
-┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
-│   Internet      │────│   Traefik    │────│   Services      │
-│                 │    │ (Reverse     │    │ - Plex          │
-└─────────────────┘    │  Proxy)      │    │ - Ombi          │
-                       │              │    │ - Homarr        │
-                       └──────────────┘    │ - Code-Server   │
-                                           │ - Webtop        │
-                                           │ - Beszel        │
-                                           │ - IT Tools      │
-                                           │ - Home Assistant│
-                                           └─────────────────┘
+┌─────────────────┐    ┌──────────────┐    ┌─────────────────────┐
+│   Internet      │────│   Traefik    │────│   Services          │
+│                 │    │ (Reverse     │    │ - Plex              │
+└─────────────────┘    │  Proxy)      │    │ - Ombi              │
+                       │              │    │ - Homarr            │
+                       └──────────────┘    │ - Code-Server       │
+                                           │ - Webtop            │
+                                           │ - Beszel            │
+                                           │ - IT Tools          │
+                                           │ - Networking Toolbox│
+                                           │ - Home Assistant    │
+                                           └─────────────────────┘
                                            
 ┌─────────────────┐    ┌──────────────┐
 │   Host System   │────│   Netdata    │  (Host Network)
@@ -144,6 +146,7 @@ homelab-gitops/
 │   ├── netdata/            # Real-time system monitoring
 │   ├── code-server/        # Browser-based IDE
 │   ├── webtop/             # Linux desktop environment in browser
+│   ├── networking-toolbox/ # Network diagnostics and utilities
 │   └── [other-services]/   # Individual service directories
 ├── terraform/              # Infrastructure as code
 │   ├── modules/            # Reusable Terraform modules
@@ -165,6 +168,7 @@ homelab-gitops/
 - **Service Dashboards**: Homarr for service management, Netdata for system performance monitoring
 - **Development Environment**: Code-Server for browser-based development, Webtop for full Linux desktop environments
 - **Desktop Access**: Webtop provides browser-accessible Linux desktops with GPU acceleration support
+- **Network Diagnostics**: Networking Toolbox with 100+ tools for DNS, SSL/TLS, subnet calculations, and network analysis
 - **Media Stack**: Plex media server with Ombi request management and HandBrake transcoding
 - **Network Boot Services**: iVentoy and NetbootXYZ for PXE boot scenarios
 - **Infrastructure as Code**: Terraform configurations for VM provisioning
