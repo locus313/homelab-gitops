@@ -44,9 +44,9 @@ resource "hypercore_vm" "test-vm" {
   # Pin VM to the first node in cluster for performance
   # If preferred_node fails, run VM on any other node
   affinity_strategy = {
-    strict_affinity     = true
-    preferred_node_uuid = data.hypercore_nodes.node_1.nodes.0.uuid
-    backup_node_uuid    = null
+    # strict_affinity     = true
+    # preferred_node_uuid = data.hypercore_nodes.node_1.nodes.0.uuid
+    # backup_node_uuid    = data.hypercore_nodes.node_2.nodes.0.uuid
     # backup_node_uuid = data.hypercore_nodes.node_2.id
   }
 }
