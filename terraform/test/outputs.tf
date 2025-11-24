@@ -1,7 +1,7 @@
 # Output the generated password (marked as sensitive)
 output "ubuntu_password" {
   description = "Generated password for the ubuntu user"
-  value       = random_password.ubuntu_password.result
+  value       = module.test_vm.user_password
   sensitive   = true
 }
 
