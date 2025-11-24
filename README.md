@@ -359,6 +359,10 @@ http:
 #### Terraform Integration
 
 - **HyperCore provider** for VM provisioning
+- **VM module**: Reusable module for VM creation with cloud-init support in `terraform/modules/vm/`
+  - Automatic password generation
+  - Configurable CPU, memory, disk, and network settings
+  - Cloud-init integration for automated provisioning
 - **Cloud images**: Ubuntu LTS versions in `terraform/modules/cloud-images/`
 - **VM templates**: Standardized configurations in `terraform/templates/`
 - **Test environment**: Configurations in `terraform/test/`

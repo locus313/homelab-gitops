@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Added comment explaining iVentoy direct port mappings for PXE/TFTP/HTTP boot services.
 - Added comment for netbootxyz TFTP UDP port requirement.
 - Added comment for Traefik dashboard port mapping (8181:8080).
+- Added comprehensive VM module documentation (`terraform/modules/vm/README.md`) with 126 lines detailing configuration options, usage examples, and best practices.
+- Added complete VM module structure with `main.tf`, `variables.tf`, `outputs.tf`, and `versions.tf` files.
+- Added random password generation for Ubuntu VM users in Terraform test configuration.
+- Added new outputs for VM password and configuration details in `terraform/test/outputs.tf`.
 
 ### Changed
 - Improved Traefik configuration log level from DEBUG to INFO for production readiness.
@@ -17,10 +21,16 @@ All notable changes to this project will be documented in this file.
 - Improved Terraform code formatting and comment consistency across modules.
 - Enhanced memory unit comments in Terraform configurations (added GB conversion).
 - Improved Portainer note formatting in Traefik docker-compose.yml.
+- Refactored VM configuration in `terraform/test/main.tf` to use local Ubuntu server templates instead of remote resources.
+- Updated VM affinity strategy to include node 2 for better load distribution.
+- Enabled package upgrades in cloud-config for Ubuntu user data templates.
+- Cleaned up VM configuration by removing commented-out code and unused affinity settings (28 lines removed).
+- Updated Terraform provider versions in `terraform/test/.terraform.lock.hcl`.
 
 ### Fixed
 - Fixed trailing whitespace in cloud-images module comments.
 - Standardized comment formatting for better maintainability.
+- Removed deprecated virtual disk resource from VM configuration in favor of cloud-init approach.
 
 ### Added
 - Added comprehensive GitHub Copilot prompts for educational commenting, memory keeping, and project documentation.
