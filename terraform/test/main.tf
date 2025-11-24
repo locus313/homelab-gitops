@@ -11,12 +11,6 @@ resource "random_password" "ubuntu_password" {
   numeric = true
 }
 
-# Create virtual disk from Ubuntu 22.04 cloud image
-resource "hypercore_virtual_disk" "ubuntu-2204" {
-  name       = "ubuntu-2204-server-cloudimg-amd64.img"
-  source_url = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
-}
-
 # Create VM from template with cloud-init configuration
 resource "hypercore_vm" "test-vm" {
   tags        = ["test"]
@@ -56,7 +50,7 @@ resource "hypercore_disk" "os" {
   vm_uuid                = hypercore_vm.test-vm.id
   type                   = "VIRTIO_DISK"
   size                   = 20.5 # GB
-  source_virtual_disk_id = hypercore_virtual_disk.ubuntu-2204.id
+  source_virtual_disk_id = local.ubuntu_server_templates["22-04-jammy"].id
   depends_on = [ hypercore_vm.test-vm ]
 }
 
