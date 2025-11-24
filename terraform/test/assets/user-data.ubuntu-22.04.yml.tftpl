@@ -11,9 +11,9 @@ Content-Disposition: attachment; filename="cloud-config.txt"
 
 # Tested with Ubuntu 22.04 cloud image.
 
-# Uncomment for password login
+# Password login enabled with generated password
 # Username: ubuntu (image jammy-server-cloudimg-amd64.img)
-password: "password"
+password: "${password}"
 chpasswd: { expire: False }
 ssh_pwauth: True
 

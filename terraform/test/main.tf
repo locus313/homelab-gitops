@@ -1,6 +1,16 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+# Generate a random password for the ubuntu user
+# Easy to type: only alphanumeric characters
+resource "random_password" "ubuntu_password" {
+  length  = 12
+  special = false
+  upper   = true
+  lower   = true
+  numeric = true
+}
+
 # Create virtual disk from Ubuntu 22.04 cloud image
 resource "hypercore_virtual_disk" "ubuntu-2204" {
   name       = "ubuntu-2204-server-cloudimg-amd64.img"
@@ -24,6 +34,7 @@ resource "hypercore_vm" "test-vm" {
       name                = "test-vm",
       ssh_authorized_keys = "",
       ssh_import_id       = "",
+      password            = random_password.ubuntu_password.result,
     })
   }
 
@@ -60,7 +71,7 @@ resource "hypercore_disk" "os" {
 resource "hypercore_nic" "hc3-vlan" {
   vm_uuid                = hypercore_vm.test-vm.id
   type                   = "VIRTIO"
-  vlan                   = 12
+  vlan                   = 0
 }
 
 # import {
