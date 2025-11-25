@@ -8,6 +8,7 @@ services:
       TS_AUTHKEY: ${TS_AUTHKEY}
       TS_EXTRA_ARGS: ${TS_EXTRA_ARGS}
       TS_SERVE_CONFIG: ${TS_SERVE_CONFIG}
+      TS_SOCKET: ${TS_SOCKET}
       TS_STATE_DIR: ${TS_STATE_DIR}
       TS_USERSPACE: ${TS_USERSPACE}
     volumes:
