@@ -55,7 +55,32 @@ Code Server provides a browser-based Visual Studio Code experience, allowing you
 
 ## Deployment
 
-### Initial Deployment
+### Initial Setup (Required)
+
+Since this uses Portainer GitOps, you need to manually deploy the custom init script to your Docker host:
+
+```bash
+# On your Docker host, create the custom-cont-init.d directory
+mkdir -p ${DOCKER_BASE_PATH}/code-server/custom-cont-init.d
+
+# Copy the script from the repository to your host
+# Option 1: Using curl (replace URL with your raw GitHub file URL)
+curl -o ${DOCKER_BASE_PATH}/code-server/custom-cont-init.d/install-additional-tools.sh \
+  https://raw.githubusercontent.com/locus313/homelab-gitops/main/docker/code-server/custom-cont-init.d/install-additional-tools.sh
+
+# Option 2: Manually copy the file from docker/code-server/custom-cont-init.d/install-additional-tools.sh
+
+# Make it executable
+chmod +x ${DOCKER_BASE_PATH}/code-server/custom-cont-init.d/install-additional-tools.sh
+```
+
+### Deploy via Portainer
+```bash
+# Portainer will automatically deploy from your GitOps repository
+# The compose file references: ${DOCKER_BASE_PATH}/code-server/custom-cont-init.d
+```
+
+### Manual Deployment
 ```bash
 cd docker/code-server
 docker compose up -d
