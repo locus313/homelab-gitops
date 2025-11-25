@@ -32,7 +32,17 @@ services:
       PASSWORD: ${PASSWORD}
       SUDO_PASSWORD: ${SUDO_PASSWORD}
       DEFAULT_WORKSPACE: ${DEFAULT_WORKSPACE}
+      DOCKER_MODS: >-
+        linuxserver/mods:code-server-powershell|
+        linuxserver/mods:universal-docker|
+        linuxserver/mods:code-server-awscli|
+        linuxserver/mods:code-server-terraform|
+        linuxserver/mods:code-server-python3|
+        linuxserver/mods:universal-package-install
+      INSTALL_PACKAGES: >-
+        acl|apt-transport-https|direnv|gpg|make|
+        software-properties-common|vim|wget|unzip|clang|git
     volumes:
       - ${DOCKER_BASE_PATH}/code-server:/config
-      - ${DOCKER_BASE_PATH}/code-server/workspace/locus313/code-server-scripts/custom-cont-init.d:/custom-cont-init.d:ro
+      - ./custom-cont-init.d:/custom-cont-init.d:ro
       - /var/run/docker.sock:/var/run/docker.sock

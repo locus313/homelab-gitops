@@ -1,0 +1,2 @@
+# Ensure shell scripts have LF line endings and are executable
+*.sh text eol=lf

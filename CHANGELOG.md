@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-11-24]
+
+### Changed
+- Migrated Code-Server from external custom-cont-init.d scripts to LinuxServer.io docker-mods architecture.
+- Replaced external `code-server-scripts` repository dependency with local initialization scripts.
+- Implemented hybrid installation approach using docker-mods, universal-package-install, and custom scripts.
+- Updated Code-Server docker-compose.yml to use 6 docker-mods for core development tools.
+- Consolidated all Code-Server documentation into single README.md with table of contents.
+- Enhanced Code-Server README.md with comprehensive sections for deployment, verification, troubleshooting, and customization.
+
+### Added
+- Added docker-mods for Code-Server: PowerShell, Docker CLI, AWS CLI, Terraform, Python3, and universal-package-install.
+- Added `INSTALL_PACKAGES` environment variable for system utilities installation (11 packages).
+- Added `custom-cont-init.d/install-additional-tools.sh` script for 1Password CLI, Packer, AWS Session Manager, aws-vault, tfenv, lacework-cli, and k9s.
+- Added `custom-cont-init.d/README.md` documenting custom initialization script functionality.
+- Added `custom-cont-init.d/.gitattributes` to ensure proper line endings for shell scripts.
+
+### Removed
+- Removed volume mount to external `code-server-scripts` repository.
+- Removed dependency on external GitHub repository for initialization scripts.
+- Removed MIGRATION.md and QUICK-REFERENCE.md in favor of consolidated README.md.
+
 ## [2025-11-23]
 
 ### Added
