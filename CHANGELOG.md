@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-11-25]
+
+### Changed
+- Added `TS_SOCKET` environment variable to Code-Server Tailscale configuration for explicit socket path control.
+- Updated Code-Server `.env.example` with `TS_SOCKET=/var/run/tailscale/tailscaled.sock` default value.
+
 ## [2025-11-24]
 
 ### Changed
