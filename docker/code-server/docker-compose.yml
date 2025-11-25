@@ -44,5 +44,5 @@ services:
         software-properties-common|vim|wget|unzip|clang|git
     volumes:
       - ${DOCKER_BASE_PATH}/code-server:/config
-      - ${DOCKER_BASE_PATH}/code-server/custom-cont-init.d:/custom-cont-init.d:ro
+      - ./custom-cont-init.d:/custom-cont-init.d:ro
       - /var/run/docker.sock:/var/run/docker.sock
