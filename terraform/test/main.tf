@@ -18,7 +18,7 @@ module "test_cluster" {
   user_data_template_path = "assets/user-data.ubuntu-22.04.yml.tftpl"
   
   ssh_authorized_keys = ""
-  ssh_import_id       = ""  # e.g., "gh:yourusername"
+  ssh_import_id       = "gh:locus313"  # e.g., "gh:yourusername"
   
   disk_type              = "VIRTIO_DISK"
   disk_size              = 20.5  # GB per node
