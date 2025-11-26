@@ -363,9 +363,14 @@ http:
   - Automatic password generation
   - Configurable CPU, memory, disk, and network settings
   - Cloud-init integration for automated provisioning
+- **VM Cluster module**: Deploy multiple identical VMs as a cluster in `terraform/modules/vm-cluster/`
+  - Automatic node naming (`<cluster_name>-node-N`)
+  - Configurable node count (1-10 nodes, default: 3)
+  - Cluster-specific tagging and outputs
+  - Individual password generation per node
 - **Cloud images**: Ubuntu LTS versions in `terraform/modules/cloud-images/`
 - **VM templates**: Standardized configurations in `terraform/templates/`
-- **Test environment**: Configurations in `terraform/test/`
+- **Test environment**: 3-node cluster configuration in `terraform/test/`
 
 #### GitHub Automation
 

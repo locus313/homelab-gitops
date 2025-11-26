@@ -4,7 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [2025-11-25]
 
+### Added
+- Added `vm-cluster` Terraform module for deploying clusters of multiple identical VMs (default: 3 nodes, configurable 1-10).
+- Added automatic cluster node naming (`<cluster_name>-node-N`) and tagging (`cluster:<name>`, `node:<number>`).
+- Added comprehensive cluster outputs: node information, VM names, and individual passwords.
+
 ### Changed
+- Updated `terraform/test/main.tf` to use `vm-cluster` module instead of single VM example.
+- Updated `terraform/test/outputs.tf` with cluster-specific outputs (nodes, VM names, passwords).
 - Added `TS_SOCKET` environment variable to Code-Server Tailscale configuration for explicit socket path control.
 - Updated Code-Server `.env.example` with `TS_SOCKET=/var/run/tailscale/tailscaled.sock` default value.
 
