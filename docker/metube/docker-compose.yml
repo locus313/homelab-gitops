@@ -1,6 +1,6 @@
 services:
   metube:
-    image: ghcr.io/alexta69/metube:2025.12.09
+    image: ghcr.io/alexta69/metube:2025.12.26
     container_name: metube
     restart: unless-stopped
     networks:
