@@ -20,6 +20,7 @@ updates:
       - "/docker/traefik"
       - "/docker/watchtower"
       - "/docker/webtop"
+      - "/docker/zerobyte"
     schedule:
       interval: "weekly"
       day: "saturday"
