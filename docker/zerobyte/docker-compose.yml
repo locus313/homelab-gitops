@@ -22,7 +22,7 @@ services:
       # RESTIC_HOSTNAME: zerobyte
       # LOG_LEVEL: info
       # SERVER_IDLE_TIMEOUT: 60
-      # TRUSTED_ORIGINS: 
+      # TRUSTED_ORIGINS:
     labels:
       - traefik.enable=true
       - traefik.http.services.zerobyte.loadbalancer.server.port=4096
