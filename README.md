@@ -11,6 +11,7 @@ A comprehensive repository for managing self-hosted services using Docker Compos
 - **CI/CD**: GitHub Actions
 - **Configuration Management**: Environment variables, YAML configurations
 - **Monitoring**: Beszel (lightweight server monitoring), Netdata (comprehensive system monitoring)
+- **Backup & Recovery**: Zerobyte (Restic-based backup automation)
 - **Development Tools**: Code-Server, IT Tools, Stirling PDF, Webtop
 - **Media Services**: Plex, Ombi, HandBrake, MeTube
 - **Home Automation**: Home Assistant
@@ -53,6 +54,7 @@ Internet (HTTPS:443)
         ├─► Code-Server (Browser IDE)
         ├─► Webtop (Linux Desktop)
         ├─► Beszel (Monitoring Hub)
+        ├─► Zerobyte (Backup Automation)
         ├─► IT Tools (Developer Utilities)
         ├─► Networking Toolbox (Network Diagnostics)
         ├─► Home Assistant (Home Automation)
@@ -224,6 +226,7 @@ homelab-gitops/
 │   ├── homarr/             # Homelab dashboard
 │   ├── beszel/             # System monitoring
 │   ├── netdata/            # Real-time system monitoring
+│   ├── zerobyte/           # Backup automation with Restic
 │   ├── code-server/        # Browser-based IDE
 │   ├── webtop/             # Linux desktop environment in browser
 │   ├── networking-toolbox/ # Network diagnostics and utilities
@@ -244,6 +247,7 @@ homelab-gitops/
 - **Automated Service Management**: Pre-configured Docker Compose setups for popular homelab services
 - **SSL Certificate Automation**: Traefik integration with Let's Encrypt for automatic HTTPS
 - **GitOps Workflow**: Version-controlled infrastructure with Portainer integration
+- **Backup & Recovery**: Zerobyte for automated encrypted backups with Restic to multiple storage backends
 - **Comprehensive Monitoring**: Beszel for lightweight system monitoring, Netdata for real-time system analytics
 - **Service Dashboards**: Homarr for service management, Netdata for system performance monitoring
 - **Development Environment**: Code-Server for browser-based development, Webtop for full Linux desktop environments

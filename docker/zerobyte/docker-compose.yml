@@ -1,0 +1,36 @@
+services:
+  zerobyte:
+    image: ghcr.io/nicotsx/zerobyte:v0.21.1
+    container_name: zerobyte
+    restart: unless-stopped
+    networks:
+      - proxynet
+    cap_add:
+      - SYS_ADMIN
+    devices:
+      - /dev/fuse:/dev/fuse
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKER_BASE_PATH}/zerobyte:/var/lib/zerobyte
+      - ${DOCKER_BASE_PATH}:/docker
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      # Optional: Uncomment and configure in .env if needed
+      # PORT: 4096
+      # RESTIC_HOSTNAME: zerobyte
+      # LOG_LEVEL: info
+      # SERVER_IDLE_TIMEOUT: 60
+      # TRUSTED_ORIGINS: 
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.zerobyte.loadbalancer.server.port=4096
+      - traefik.http.routers.zerobyte.rule=Host(`zerobyte.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.zerobyte.entrypoints=websecure
+      - traefik.http.routers.zerobyte.tls=true
+      - traefik.http.routers.zerobyte.tls.certresolver=cloudns
+
+networks:
+  proxynet:
+    external: true
