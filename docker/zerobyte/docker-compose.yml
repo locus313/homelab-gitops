@@ -13,6 +13,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ${DOCKER_BASE_PATH}/zerobyte:/var/lib/zerobyte
       - ${DOCKER_BASE_PATH}:/docker
+      - /mnt:/mnt
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
