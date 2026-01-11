@@ -1,6 +1,6 @@
 services:
   ombi:
-    image: lscr.io/linuxserver/ombi:4.47.1
+    image: lscr.io/linuxserver/ombi:4.53.4
     container_name: ombi
     restart: unless-stopped
     networks:
