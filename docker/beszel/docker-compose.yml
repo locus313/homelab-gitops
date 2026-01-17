@@ -20,7 +20,7 @@ services:
       - traefik.http.routers.beszel.tls.certresolver=cloudns
 
   beszel-agent:
-    image: ghcr.io/henrygd/beszel/beszel-agent-intel:0.17.0
+    image: ghcr.io/henrygd/beszel/beszel-agent-intel:0.18.2
     container_name: beszel-agent
     restart: unless-stopped
     # Uses host network for comprehensive system monitoring
