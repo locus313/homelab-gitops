@@ -5,7 +5,7 @@ A comprehensive repository for managing self-hosted services using Docker Compos
 ## Technology Stack
 
 - **Containerization**: Docker, Docker Compose
-- **Reverse Proxy**: Traefik v3.6.2
+- **Reverse Proxy**: Traefik v3.6.7
 - **Orchestration**: Portainer (optional)
 - **Infrastructure as Code**: Terraform with HyperCore provider
 - **CI/CD**: GitHub Actions
@@ -17,6 +17,8 @@ A comprehensive repository for managing self-hosted services using Docker Compos
 - **Home Automation**: Home Assistant
 - **Network Tools**: Networking Toolbox (100+ diagnostic utilities)
 - **Network Boot**: iVentoy, NetbootXYZ
+- **AI Services**: Open-WebUI (local LLM interface with Ollama backend)
+- **Container Management**: Watchtower (automated container updates)
 
 ## Project Architecture
 
