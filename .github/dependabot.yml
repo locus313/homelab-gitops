@@ -22,8 +22,7 @@ updates:
       - "/docker/webtop"
       - "/docker/zerobyte"
     schedule:
-      interval: "weekly"
-      day: "saturday"
+      interval: "daily"
   - package-ecosystem: "github-actions"
     directories:
       - "/"
