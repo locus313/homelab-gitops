@@ -35,6 +35,8 @@ Powerful backup automation for your remote storage. Built on top of Restic, Zero
    - Set `DOCKER_BASE_PATH` to your Docker data directory
    - Configure `TRAEFIK_BASE_DOMAIN` for your domain
    - Adjust `TZ` to your timezone (crucial for accurate backup scheduling)
+   - **Generate `APP_SECRET`**: Run `openssl rand -hex 32` to generate a secure 64-character hex string
+   - **Set `BASE_URL`**: Must match your primary access URL (e.g., `https://zerobyte.example.com`)
 
 3. **Start the service**:
    ```bash
@@ -49,14 +51,20 @@ Powerful backup automation for your remote storage. Built on top of Restic, Zero
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Internal port for web interface and API | `4096` |
-| `RESTIC_HOSTNAME` | Hostname used by Restic when creating snapshots | `zerobyte` |
-| `TZ` | Timezone for accurate backup scheduling | `America/Los_Angeles` |
-| `LOG_LEVEL` | Logging verbosity (debug, info, warn, error) | `info` |
-| `SERVER_IDLE_TIMEOUT` | Idle timeout for the server in seconds | `60` |
-| `TRUSTED_ORIGINS` | Comma-separated list of trusted origins for CORS | (empty) |
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `APP_SECRET` | Secret for encrypting database data (v0.23+) | - | **Yes** |
+| `BASE_URL` | Base URL for accessing Zerobyte (v0.24+) | - | **Yes** |
+| `PORT` | Internal port for web interface and API | `4096` | No |
+| `RESTIC_HOSTNAME` | Hostname used by Restic when creating snapshots | `zerobyte` | No |
+| `TZ` | Timezone for accurate backup scheduling | `America/Los_Angeles` | No |
+| `LOG_LEVEL` | Logging verbosity (debug, info, warn, error) | `info` | No |
+| `SERVER_IDLE_TIMEOUT` | Idle timeout for the server in seconds | `60` | No |
+| `TRUSTED_ORIGINS` | Comma-separated list of trusted origins for CORS | (empty) | No |
+
+**Required Variables (v0.23+):**
+- **`APP_SECRET`**: Generate with `openssl rand -hex 32`. Used to encrypt sensitive data in the database (passwords, access keys). This replaced the previous method of reusing Restic passwords.
+- **`BASE_URL`**: Your primary access URL (e.g., `https://zerobyte.example.com`). Ensures consistent authentication behavior. Use `TRUSTED_ORIGINS` for additional whitelisted domains (must use https if BASE_URL uses https).
 
 ### Capabilities and Devices
 
