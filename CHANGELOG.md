@@ -2,6 +2,125 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-01-31]
+
+### Changed
+- Enhanced Copilot instructions with detailed environment configuration documentation.
+- Improved Dependabot automation details in documentation.
+- Changed Dependabot docker-compose update schedule from weekly to daily for faster security updates.
+- Added `APP_SECRET` and `BASE_URL` environment variables to Zerobyte configuration.
+
+### Dependencies
+- Bumped `traefik` from 3.6.6 to 3.6.7.
+- Bumped `plexinc/pms-docker` to 1.43.0.10467-2b1ba6e69.
+- Bumped `nickfedor/watchtower` to 1.14.0.
+- Bumped `nicotsx/zerobyte` to v0.24.2.
+- Bumped `homarr-labs/homarr` to v1.52.0.
+- Bumped `alexta69/metube` to 2026.01.30.
+- Bumped `ollama/ollama` to 0.15.2.
+- Bumped `stirling-tools/stirling-pdf` to 2.4.2.
+- Bumped `linuxserver/code-server` to 4.108.2.
+
+## [2026-01-24]
+
+### Dependencies
+- Bumped `homarr-labs/homarr` to v1.51.0.
+- Bumped `linuxserver/homeassistant` to 2026.1.3.
+- Bumped `alexta69/metube` to 2026.01.24.
+- Bumped `netdata/netdata` to v2.8.5.
+- Bumped `ollama/ollama` to 0.15.1.
+
+## [2026-01-17]
+
+### Dependencies
+- Bumped `henrygd/beszel/beszel-agent-intel` to 0.18.2.
+- Bumped `henrygd/beszel/beszel` to 0.18.2.
+- Bumped `linuxserver/code-server` to 4.108.1.
+- Bumped `homarr-labs/homarr` to v1.50.0.
+- Bumped `linuxserver/homeassistant` to 2026.1.2.
+
+## [2026-01-10]
+
+### Added
+- Added Zerobyte service for automated backup management and file versioning.
+- Added comprehensive Zerobyte documentation with environment configuration details.
+- Added `/mnt` volume mount to Zerobyte for flexible backup target configuration.
+
+### Fixed
+- Corrected formatting of `TRUSTED_ORIGINS` comment in Zerobyte docker-compose.yml.
+
+### Dependencies
+- Bumped `open-webui/open-webui` to v0.7.2.
+- Bumped `stirling-tools/stirling-pdf` to 2.4.1.
+- Bumped `traefik` from 3.6.2 to 3.6.6.
+- Bumped `alexta69/metube` to 2026.01.10.
+- Bumped `linuxserver/ombi` from 4.47.1 to 4.53.4.
+- Bumped `linuxserver/code-server` to 4.107.1.
+- Bumped `tailscale/tailscale` to v1.92.5.
+- Bumped `jlesage/handbrake` to v26.01.1.
+- Bumped `homarr-labs/homarr` to v1.49.0.
+- Bumped `linuxserver/homeassistant` to 2026.1.1.
+
+## [2026-01-07]
+
+### Fixed
+- Updated Watchtower image to version 1.13.1.
+
+## [2026-01-03]
+
+### Dependencies
+- Bumped `homarr-labs/homarr` to v1.48.0.
+- Bumped `linuxserver/homeassistant` to 2025.12.5.
+- Bumped `alexta69/metube` to 2026.01.03.
+- Bumped `ollama/ollama` to 0.15.0.
+- Bumped `stirling-tools/stirling-pdf` to 2.4.0.
+
+## [2025-12-27]
+
+### Dependencies
+- Bumped `jlesage/handbrake` to v25.12.1.
+- Bumped `homarr-labs/homarr` to v1.47.0.
+- Bumped `alexta69/metube` to 2025.12.27.
+- Bumped `netdata/netdata` to v2.8.4.
+- Bumped `open-webui/open-webui` to v0.6.43.
+
+## [2025-12-20]
+
+### Dependencies
+- Bumped `tailscale/tailscale` to v1.92.0.
+- Bumped `jlesage/handbrake` to v25.11.2.
+- Bumped `homarr-labs/homarr` to v1.46.0.
+- Bumped `linuxserver/code-server` to 4.107.0.
+- Bumped `linuxserver/homeassistant` to 2025.12.3.
+
+## [2025-12-13]
+
+### Dependencies
+- Bumped `jlesage/handbrake` to v25.11.1.
+- Bumped `homarr-labs/homarr` to v1.45.0.
+- Bumped `peter-evans/create-pull-request` from 7 to 8 in GitHub Actions workflows.
+- Bumped `linuxserver/homeassistant` to 2025.12.2.
+- Bumped `netdata/netdata` to v2.8.3.
+- Bumped `alexta69/metube` to 2025.12.13.
+
+## [2025-12-06]
+
+### Dependencies
+- Bumped `henrygd/beszel/beszel-agent-intel` to 0.18.0.
+- Bumped `henrygd/beszel/beszel` to 0.18.0.
+- Bumped `linuxserver/code-server` to 4.106.2.
+- Bumped `homarr-labs/homarr` to v1.44.0.
+- Bumped `linuxserver/homeassistant` to 2025.12.1.
+
+## [2025-11-29]
+
+### Dependencies
+- Bumped `homarr-labs/homarr` to v1.43.4.
+- Bumped `alexta69/metube` to 2025.11.29.
+- Bumped `open-webui/open-webui` to v0.6.42.
+- Bumped `stirling-tools/stirling-pdf` to 1.6.0.
+- Bumped `tailscale/tailscale` to v1.90.8.
+
 ## [2025-11-25]
 
 ### Added
