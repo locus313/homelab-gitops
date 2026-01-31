@@ -96,7 +96,7 @@ networks:
 ### Environment Configuration Pattern
 Every service directory contains:
 - `docker-compose.yml` - Service definition
-- `.env.example` - Template with ALL required variables (18 services have this)
+- `.env.example` - Template with ALL required variables (19 services have this)
 - `README.md` - Service-specific documentation with setup instructions
 
 **Workflow:**
@@ -108,6 +108,13 @@ docker compose up -d
 ```
 
 **Critical**: All services reference environment variables in their compose files - NEVER hardcode values. The `.env.example` files document all required and optional variables with descriptive placeholder values.
+
+**Common Environment Variables Pattern:**
+- `DOCKER_BASE_PATH` - Root path for all service data (default: `/docker`)
+- `PUID`/`PGID` - User/group IDs for file ownership (check with `id` command)
+- `TZ` - **Always** set to `America/Los_Angeles` for consistency
+- `TRAEFIK_BASE_DOMAIN` - Base domain for service routing (e.g., `example.com`)
+- Service-specific variables use SCREAMING_SNAKE_CASE with service prefix
 
 ### Deployment Patterns
 
@@ -190,12 +197,20 @@ docker logs service-name
 - **VM templates**: Standardized configurations in `terraform/templates/`
 
 ### GitHub Automation
-- **Dependabot**: Auto-generated config via `.github/scripts/generate-dependabot.sh`
-  - Runs on push to main, creates PR with updated `dependabot.yml`
-  - Automatically discovers all `docker-compose.yml` files
-  - Weekly updates scheduled for Saturdays
-- **YAML validation**: Enforced on all commits via `yaml-lint.yml` workflow
-  - Uses `.github/.yamllint` configuration (extends default, disables document-start)
+
+**Dependabot Auto-Configuration:**
+- Script: `.github/scripts/generate-dependabot.sh` auto-discovers all compose files
+- Trigger: Runs on push to `main` branch (via `update-dependabot.yml` workflow)
+- Output: Creates PR with updated `.github/dependabot.yml` if changes detected
+- Pattern matching: Finds `docker-compose.yml`, `compose.yml`, and variants
+- Schedule: Docker compose updates daily, GitHub Actions weekly (Saturdays)
+- **Critical**: Script uses regex `'.*/\(docker-\)?compose\(-[\w]+\)?\(?>\.[\w-]+\)?\.ya?ml'` to find compose files
+
+**YAML Validation:**
+- Workflow: `yaml-lint.yml` runs `yamllint` on all YAML files
+- Configuration: `.github/.yamllint` (extends default, disables `document-start` rule)
+- Trigger: Every push/PR affecting YAML files
+- **Usage**: Run locally with `yamllint -c .github/.yamllint .` before committing
 
 ### External Dependencies
 - **CloudNS**: DNS provider for SSL certificate automation
