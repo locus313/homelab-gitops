@@ -9,6 +9,7 @@ updates:
       - "/docker/home-assistant"
       - "/docker/it-tools"
       - "/docker/iventoy"
+      - "/docker/kasm"
       - "/docker/metube"
       - "/docker/netbootxyz"
       - "/docker/netdata"
