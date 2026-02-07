@@ -44,7 +44,12 @@
    - Or direct access: `https://your-ip:3000` (note: uses HTTPS with self-signed cert)
    - Follow the installation wizard
    - Configure admin credentials and initial settings
-   - **Important**: After setup, set "Proxy Port" to `0` in default zone settings ([docs](https://www.kasmweb.com/docs/latest/how_to/reverse_proxy.html#update-zones))
+   - **Important**: After setup, configure reverse proxy settings:
+     - Login as admin
+     - Go to **Admin** → **Infrastructure** → **Deployment Zones**
+     - Edit the **default** zone
+     - Set **Proxy Port** to `0`
+     - Save changes ([docs](https://www.kasmweb.com/docs/latest/how_to/reverse_proxy.html#update-zones))
 
 5. **Access web interface**:
    - After setup completion: `https://kasm.yourdomain.com` (via Traefik)
