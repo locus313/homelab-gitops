@@ -40,14 +40,19 @@
    ```
 
 4. **Access setup wizard**:
-   - Navigate to `http://your-ip:3000`
+   - **Via Traefik** (recommended): `https://kasm-setup.yourdomain.com`
+   - Or direct access: `https://your-ip:3000` (note: uses HTTPS with self-signed cert)
    - Follow the installation wizard
    - Configure admin credentials and initial settings
    - **Important**: After setup, set "Proxy Port" to `0` in default zone settings ([docs](https://www.kasmweb.com/docs/latest/how_to/reverse_proxy.html#update-zones))
 
 5. **Access web interface**:
-   - After setup completion: `https://kasm.example.com` (via Traefik)
+   - After setup completion: `https://kasm.yourdomain.com` (via Traefik)
    - Or direct access: `https://your-ip:8443`
+
+6. **Post-Setup** (optional):
+   - Remove the setup wizard Traefik labels from `docker-compose.yml` (lines with `kasm-setup`)
+   - Redeploy the stack to clean up the temporary setup route
 
 ## Default Credentials
 
