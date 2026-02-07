@@ -18,12 +18,20 @@ services:
       - ${KASM_PORT}:${KASM_PORT}
     labels:
       - traefik.enable=true
+      # Main Kasm interface
       - traefik.http.services.kasm.loadbalancer.server.port=${KASM_PORT}
       - traefik.http.services.kasm.loadbalancer.server.scheme=https
       - traefik.http.routers.kasm.rule=Host(`kasm.${TRAEFIK_BASE_DOMAIN}`)
       - traefik.http.routers.kasm.entrypoints=websecure
       - traefik.http.routers.kasm.tls=true
       - traefik.http.routers.kasm.tls.certresolver=cloudns
+      # Setup wizard (temporary)
+      - traefik.http.services.kasm-setup.loadbalancer.server.port=3000
+      - traefik.http.routers.kasm-setup.rule=Host(`kasm-setup.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.kasm-setup.entrypoints=websecure
+      - traefik.http.routers.kasm-setup.tls=true
+      - traefik.http.routers.kasm-setup.tls.certresolver=cloudns
+      - traefik.http.routers.kasm-setup.service=kasm-setup
     networks:
       - proxynet
       - default
