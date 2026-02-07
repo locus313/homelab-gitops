@@ -25,6 +25,7 @@ services:
       - traefik.http.routers.kasm.entrypoints=websecure
       - traefik.http.routers.kasm.tls=true
       - traefik.http.routers.kasm.tls.certresolver=cloudns
+      - traefik.http.routers.kasm.service=kasm
       # Setup wizard (temporary)
       - traefik.http.services.kasm-setup.loadbalancer.server.port=3000
       - traefik.http.services.kasm-setup.loadbalancer.server.scheme=https
