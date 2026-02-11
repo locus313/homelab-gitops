@@ -13,6 +13,8 @@ services:
     volumes:
       - ${DOCKER_BASE_PATH}/kasm/opt:/opt
       - ${DOCKER_BASE_PATH}/kasm/profiles:/profiles
+    devices:
+      - /dev/dri:/dev/dri
     ports:
       - ${KASM_SETUP_PORT:-3000}:3000
       - ${KASM_PORT}:${KASM_PORT}
