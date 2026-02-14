@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-02-14]
+
+### Changed
+- Identified and documented Dependabot limitation with Plex's non-standard versioning scheme (`MAJOR.MINOR.PATCH.BUILD-COMMITHASH`).
+- Established manual update process for Plex version management going forward.
+
+### Dependencies
+- Bumped `plexinc/pms-docker` to 1.43.0.10492-121068a07 (manual update, Dependabot cannot handle Plex's non-standard versioning).
+
 ## [2026-01-31]
 
 ### Changed

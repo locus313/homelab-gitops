@@ -102,7 +102,7 @@ Consider a Plex Pass subscription for:
 
 ## Official Plex Image
 
-This deployment uses the official Plex image (`plexinc/pms-docker:1.41.8.9834-071366d65`) which provides:
+This deployment uses the official Plex image (`plexinc/pms-docker:1.43.0.10492-121068a07`) which provides:
 
 - Official support from Plex Inc.
 - Regular updates and security patches
