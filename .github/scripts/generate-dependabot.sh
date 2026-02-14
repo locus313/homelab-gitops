@@ -13,30 +13,19 @@ updates:
     directories:
 YAML
 
-# Find and sort all docker-compose.yml directories, excluding Plex
+# Find and sort all docker-compose.yml directories
 find . -regex '.*/\(docker-\)?compose\(-[\w]+\)?\(?>\.[\w-]+\)?\.ya?ml' -print0 \
   | xargs -0 -n1 dirname \
   | sed 's|^\./||' \
   | sort \
-  | grep -v '^docker/plex$' \
   | while read -r dir; do
       echo "      - \"/$dir\"" >> "$tmpfile"
     done
 
-# Append the schedule block for general docker-compose
+# Append the schedule block for docker-compose
 cat >> "$tmpfile" <<'YAML'
     schedule:
       interval: "daily"
-YAML
-
-# Add separate Plex configuration with versioning strategy
-cat >> "$tmpfile" <<'YAML'
-  - package-ecosystem: "docker-compose"
-    directories:
-      - "/docker/plex"
-    schedule:
-      interval: "daily"
-    versioning-strategy: increase
 YAML
 
 # Append the GitHub Actions section
