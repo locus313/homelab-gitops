@@ -16,7 +16,6 @@ updates:
       - "/docker/networking-toolbox"
       - "/docker/ombi"
       - "/docker/open-webui"
-      - "/docker/plex"
       - "/docker/stirling-pdf"
       - "/docker/traefik"
       - "/docker/watchtower"
@@ -24,6 +23,12 @@ updates:
       - "/docker/zerobyte"
     schedule:
       interval: "daily"
+  - package-ecosystem: "docker-compose"
+    directories:
+      - "/docker/plex"
+    schedule:
+      interval: "daily"
+    versioning-strategy: increase
   - package-ecosystem: "github-actions"
     directories:
       - "/"
