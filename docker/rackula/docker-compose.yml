@@ -8,7 +8,7 @@ services:
     environment:
       - API_HOST=rackula-api
       - API_PORT=${RACKULA_API_PORT:-3001}
-      - RACKULA_LISTEN_PORT=8080
+      - RACKULA_LISTEN_PORT=80
       - API_WRITE_TOKEN=${RACKULA_API_WRITE_TOKEN:-}
       - RACKULA_AUTH_MODE=${RACKULA_AUTH_MODE:-none}
     depends_on:
@@ -16,7 +16,7 @@ services:
         condition: service_healthy
     labels:
       - traefik.enable=true
-      - traefik.http.services.rackula.loadbalancer.server.port=8080
+      - traefik.http.services.rackula.loadbalancer.server.port=80
       - traefik.http.routers.rackula.rule=Host(`rackula.${TRAEFIK_BASE_DOMAIN}`)
       - traefik.http.routers.rackula.entrypoints=websecure
       - traefik.http.routers.rackula.tls=true
