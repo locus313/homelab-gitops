@@ -17,6 +17,7 @@ updates:
       - "/docker/ombi"
       - "/docker/open-webui"
       - "/docker/plex"
+      - "/docker/rackula"
       - "/docker/stirling-pdf"
       - "/docker/traefik"
       - "/docker/watchtower"
