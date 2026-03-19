@@ -2,7 +2,72 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-03-18]
+
+### Added
+- Added Rackula service (`docker/rackula/`) — drag-and-drop rack layout designer with persistent storage.
+  - Frontend: `ghcr.io/rackulalives/rackula:v0.9.2-persist` served via Traefik at `rackula.${TRAEFIK_BASE_DOMAIN}`
+  - API sidecar: `ghcr.io/rackulalives/rackula-api:0.9.2` for layout persistence
+  - Supports optional local and OIDC authentication modes
+  - Data persisted to `${DOCKER_BASE_PATH}/rackula/data`
+
+### Dependencies
+- Bumped `stirling-tools/stirling-pdf` from 2.7.1 to 2.7.2.
+- Bumped `nicotsx/zerobyte` from v0.32.0 to v0.32.1.
+- Bumped `jlesage/handbrake` from v26.02.2 to v26.03.2.
+- Bumped `homarr-labs/homarr` from v1.55.0 to v1.56.0.
+- Bumped `alexta69/metube` from 2026.03.08 to 2026.03.18.
+- Bumped `ollama/ollama` from 0.17.7 to 0.18.1.
+- Bumped `nickfedor/watchtower` from 1.14.3 to 1.14.4.
+- Bumped `linuxserver/homeassistant` from 2026.3.1 to 2026.3.2.
+
+## [2026-03-12]
+
+### Dependencies
+- Bumped `stirling-tools/stirling-pdf` from 2.5.3 to 2.7.0.
+- Bumped `linuxserver/homeassistant` from 2026.2.3 to 2026.3.1.
+- Bumped `ollama/ollama` from 0.17.6 to 0.17.7.
+- Bumped `homarr-labs/homarr` from v1.54.0 to v1.55.0.
+- Bumped `alexta69/metube` from 2026.03.03 to 2026.03.08.
+- Bumped `open-webui/open-webui` from 0.8.8 to v0.8.10.
+- Bumped `linuxserver/code-server` from 4.109.5 to 4.111.0.
+- Bumped `traefik` from 3.6.9 to v3.6.10.
+- Bumped `nicotsx/zerobyte` from v0.29.2 to v0.31.0.
+
+## [2026-03-04]
+
+### Dependencies
+- Bumped `nicotsx/zerobyte` from v0.28.2 to v0.29.2.
+- Bumped `ollama/ollama` from 0.17.0 to 0.17.6.
+- Bumped `alexta69/metube` from 2026.02.22 to 2026.03.03.
+- Bumped `open-webui/open-webui` from 0.8.5 to 0.8.8.
+- Bumped `homarr-labs/homarr` from v1.53.2 to v1.54.0.
+- Bumped `linuxserver/code-server` from 4.109.2 to 4.109.5.
+- Bumped `nickfedor/watchtower` from 1.14.2 to 1.14.3.
+
+## [2026-02-24]
+
+### Dependencies
+- Bumped `netdata/netdata` from v2.8.5 to v2.9.0.
+- Bumped `stirling-tools/stirling-pdf` from 2.4.6 to 2.5.3.
+- Bumped `open-webui/open-webui` from 0.8.1 to 0.8.5.
+- Bumped `ollama/ollama` from 0.16.1 to 0.17.0.
+- Bumped `alexta69/metube` from 2026.02.14 to 2026.02.22.
+- Bumped `nicotsx/zerobyte` from v0.27.0 to v0.28.2.
+- Bumped `nickfedor/watchtower` from 1.14.1 to 1.14.2.
+- Bumped `jlesage/handbrake` from v26.01.1 to v26.02.2.
+- Bumped `henrygd/beszel` and `henrygd/beszel-agent-intel` from 0.18.3 to 0.18.4.
+- Bumped `homarr-labs/homarr` from v1.53.1 to v1.53.2.
+- Bumped `linuxserver/homeassistant` from 2026.2.2 to 2026.2.3.
+- Bumped `traefik` from 3.6.8 to 3.6.9.
+
 ## [2026-02-14]
+
+### Added
+- Added Kasm Workspaces service (`docker/kasm/`) — browser-based Linux desktop environment with GPU acceleration.
+  - Image: `lscr.io/linuxserver/kasm:1.18.0` served via Traefik at `kasm.${TRAEFIK_BASE_DOMAIN}`
+  - Configured with `/dev/dri` device mapping for GPU hardware acceleration and dual Traefik router (main + setup wizard)
+  - Data persisted to `${DOCKER_BASE_PATH}/kasm`
 
 ### Changed
 - Identified and documented Dependabot limitation with Plex's non-standard versioning scheme (`MAJOR.MINOR.PATCH.BUILD-COMMITHASH`).
@@ -10,6 +75,18 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bumped `plexinc/pms-docker` to 1.43.0.10492-121068a07 (manual update, Dependabot cannot handle Plex's non-standard versioning).
+- Bumped `homarr-labs/homarr` from v1.52.0 to v1.53.1.
+- Bumped `linuxserver/homeassistant` from 2026.1.3 to 2026.2.2.
+- Bumped `alexta69/metube` from 2026.01.30 to 2026.02.14.
+- Bumped `ollama/ollama` from 0.15.2 to 0.16.1.
+- Bumped `stirling-tools/stirling-pdf` from 2.4.2 to 2.4.6.
+- Bumped `linuxserver/code-server` from 4.108.2 to 4.109.2.
+- Bumped `open-webui/open-webui` from v0.7.2 to 0.8.1.
+- Bumped `tailscale/tailscale` from v1.92.5 to v1.94.2.
+- Bumped `nicotsx/zerobyte` from v0.24.2 to v0.27.0.
+- Bumped `traefik` from 3.6.7 to 3.6.8.
+- Bumped `henrygd/beszel` and `henrygd/beszel-agent-intel` from 0.18.2 to 0.18.3.
+- Bumped `nickfedor/watchtower` from 1.14.0 to 1.14.1.
 
 ## [2026-01-31]
 

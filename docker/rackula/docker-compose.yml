@@ -1,0 +1,55 @@
+services:
+  rackula:
+    image: ghcr.io/rackulalives/rackula:v0.9.2-persist
+    container_name: rackula
+    restart: unless-stopped
+    networks:
+      - proxynet
+    environment:
+      - API_HOST=rackula-api
+      - API_PORT=${RACKULA_API_PORT:-3001}
+      - RACKULA_LISTEN_PORT=8080
+      - API_WRITE_TOKEN=${RACKULA_API_WRITE_TOKEN:-}
+      - RACKULA_AUTH_MODE=${RACKULA_AUTH_MODE:-none}
+    depends_on:
+      rackula-api:
+        condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.rackula.loadbalancer.server.port=8080
+      - traefik.http.routers.rackula.rule=Host(`rackula.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.rackula.entrypoints=websecure
+      - traefik.http.routers.rackula.tls=true
+      - traefik.http.routers.rackula.tls.certresolver=cloudns
+
+  rackula-api:
+    image: ghcr.io/rackulalives/rackula-api:0.9.2
+    container_name: rackula-api
+    restart: unless-stopped
+    networks:
+      - proxynet
+    volumes:
+      - ${DOCKER_BASE_PATH}/rackula/data:/data
+    environment:
+      - DATA_DIR=/data
+      - RACKULA_API_PORT=${RACKULA_API_PORT:-3001}
+      - CORS_ORIGIN=https://rackula.${TRAEFIK_BASE_DOMAIN}
+      - RACKULA_API_WRITE_TOKEN=${RACKULA_API_WRITE_TOKEN:-}
+      - RACKULA_AUTH_MODE=${RACKULA_AUTH_MODE:-none}
+      - RACKULA_AUTH_SESSION_SECRET=${RACKULA_AUTH_SESSION_SECRET:-}
+      - RACKULA_LOCAL_USERNAME=${RACKULA_LOCAL_USERNAME:-}
+      - RACKULA_LOCAL_PASSWORD=${RACKULA_LOCAL_PASSWORD:-}
+      - RACKULA_AUTH_SESSION_COOKIE_SECURE=${RACKULA_AUTH_SESSION_COOKIE_SECURE:-true}
+      - ALLOW_INSECURE_CORS=${ALLOW_INSECURE_CORS:-false}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3001/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 5s
+      retries: 3
+    expose:
+      - "3001"
+
+networks:
+  proxynet:
+    external: true
