@@ -35,11 +35,12 @@ resource "hypercore_vm" "vm" {
 
 # Attach cloned virtual disk to the VM as OS disk
 resource "hypercore_disk" "os" {
+  depends_on = [hypercore_vm.vm]
+
   vm_uuid                = hypercore_vm.vm.id
   type                   = var.disk_type
   size                   = var.disk_size
   source_virtual_disk_id = var.source_virtual_disk_id
-  depends_on             = [hypercore_vm.vm]
 }
 
 # Create network interface
@@ -51,25 +52,26 @@ resource "hypercore_nic" "nic" {
 
 # Set boot order
 resource "hypercore_vm_boot_order" "boot_order" {
+  depends_on = [
+    hypercore_disk.os,
+    hypercore_nic.nic,
+  ]
+
   vm_uuid = hypercore_vm.vm.id
   boot_devices = [
     hypercore_disk.os.id,
     hypercore_nic.nic.id,
   ]
-
-  depends_on = [
-    hypercore_disk.os,
-    hypercore_nic.nic,
-  ]
 }
 
 # Power on VM
 resource "hypercore_vm_power_state" "vm_power" {
-  vm_uuid = hypercore_vm.vm.id
-  state   = var.power_state
   depends_on = [
     hypercore_disk.os,
     hypercore_nic.nic,
     hypercore_vm_boot_order.boot_order,
   ]
+
+  vm_uuid = hypercore_vm.vm.id
+  state   = var.power_state
 }

@@ -1,5 +1,11 @@
 #!/bin/bash
-# https://medium.com/@svenvanginkel/automating-dependabot-for-docker-compose-13acdff61133
+
+# ============================================================================
+# Generates .github/dependabot.yml by auto-discovering all docker-compose
+# files in the repository and creating Dependabot configuration entries.
+# Reference: https://medium.com/@svenvanginkel/automating-dependabot-for-docker-compose-13acdff61133
+# ============================================================================
+
 set -euo pipefail
 
 tmpfile=$(mktemp)

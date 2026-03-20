@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# ============================================================================
+# Install additional development tools for the code-server container.
+# Runs as a custom container init script on first start.
+# ============================================================================
+
+set -euo pipefail
+
 echo "**** Installing additional development tools ****"
 
 # Install 1Password CLI
