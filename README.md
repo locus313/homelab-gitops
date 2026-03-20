@@ -34,43 +34,47 @@ This project implements a **Traefik-First Architecture** using GitOps principles
 
 ### Architecture Diagram
 
-```
-Internet (HTTPS:443)
-        │
-        ▼
-┌───────────────────────────────────────────────────────────┐
-│                       Traefik                              │
-│  - SSL Termination (Let's Encrypt + CloudNS)              │
-│  - Dynamic Service Discovery (Docker labels)              │
-│  - Automatic HTTPS Routing                                 │
-└───────────────────────────────────────────────────────────┘
-        │
-        ▼
-┌───────────────────────────────────────────────────────────┐
-│                 proxynet (External Network)                │
-└───────────────────────────────────────────────────────────┘
-        │
-        ├─► Plex (Media Server)
-        ├─► Ombi (Media Requests)
-        ├─► Homarr (Dashboard)
-        ├─► Code-Server (Browser IDE)
-        ├─► Webtop (Linux Desktop)
-        ├─► Beszel (Monitoring Hub)
-        ├─► Zerobyte (Backup Automation)
-        ├─► IT Tools (Developer Utilities)
-        ├─► Networking Toolbox (Network Diagnostics)
-        ├─► Home Assistant (Home Automation)
-        ├─► HandBrake (Video Transcoding)
-        ├─► MeTube (Video Downloader)
-        ├─► Stirling PDF (PDF Tools)
-        ├─► Open-WebUI (AI Interface)
-        └─► Watchtower (Container Updates)
+```mermaid
+graph LR
+    classDef traefik fill:#e94560,stroke:#fff,color:#fff,font-weight:bold
+    classDef group fill:#1565c0,stroke:#90caf9,color:#fff
+    classDef gpu fill:#6a1b9a,stroke:#ce93d8,color:#fff
+    classDef hostnet fill:#4e342e,stroke:#ffcc02,color:#fff
+    classDef external fill:#1b5e20,stroke:#a5d6a7,color:#eee
+    classDef dock fill:#0277bd,stroke:#4fc3f7,color:#fff
 
-┌───────────────────────────────────────────────────────────┐
-│  Netdata (Host Network - Direct Port :19999)              │
-│  - System monitoring with real-time metrics               │
-└───────────────────────────────────────────────────────────┘
+    INTERNET(["🌐 Internet / LAN"]):::external
+    CLOUDNS(["☁️ CloudNS\nLet's Encrypt DNS-01"]):::external
+    NAS(["💾 NAS · Storj Node\n:14002"]):::external
+    DOCKER[("🐳 /var/run/docker.sock")]:::dock
+
+    TRAEFIK["🔀 Traefik v3.6.11\n:80 HTTP→redirect\n:443 HTTPS+HTTP/3\n:8181 Dashboard"]:::traefik
+
+    INTERNET -->|":80 / :443"| TRAEFIK
+    CLOUDNS -.->|"cert challenge"| TRAEFIK
+
+    TRAEFIK --> DASH["📊 Dashboard & Management\nHomarr :7575 · Portainer :9443 · Rackula :80"]:::group
+    TRAEFIK --> MEDIA["🎬 Media & Downloads\nOmbi :3579 · MeTube :8081 · HandBrake :5800 🎮"]:::gpu
+    TRAEFIK --> AI["🤖 AI / LLM\nOpen-WebUI :8080 → Ollama :11434 🎮"]:::gpu
+    TRAEFIK --> TOOLS["🛠️ Developer Tools\nIT-Tools :80 · Stirling-PDF :8080\nNet-Toolbox :3000 · Code-Server (Tailscale)"]:::group
+    TRAEFIK --> DESKTOP["🖥️ Remote Desktop\nWebtop :3000 🎮 · Kasm :KASM_PORT 🎮"]:::gpu
+    TRAEFIK --> INFRA["⚙️ Infrastructure & Monitoring\nHome-Assistant :8123 · Beszel Hub :8090\nZerobyte :4096 · Watchtower"]:::group
+    TRAEFIK --> BOOT["🔧 Network Boot / PXE\nNetbootXYZ UDP:69 + :3000 web\niVentoy UDP:69 + :26000"]:::group
+    TRAEFIK -->|"dynamic config"| NAS
+
+    HOSTNET["🔌 Host Network\nPlex :32400 🎮\nNetdata :19999\nBeszel Agent 🎮"]:::hostnet
+
+    INFRA -.->|"Unix socket"| HOSTNET
+
+    TRAEFIK -.->|":ro discovery"| DOCKER
+    DASH -.->|"widget data"| DOCKER
+    INFRA -.->|"auto-update / monitoring"| DOCKER
+    DESKTOP -.->|"Docker management"| DOCKER
+    TOOLS -.->|"Docker management"| DOCKER
+    HOSTNET -.->|":ro monitoring"| DOCKER
 ```
+
+> **Color key:** Red = Traefik ingress · Blue = proxynet service groups · Purple = GPU-accelerated groups · Brown/yellow = host-network services
 
 ### Standard Service Pattern
 
