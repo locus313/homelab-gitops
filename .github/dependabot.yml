@@ -1,33 +1,43 @@
 version: 2
+
 updates:
   - package-ecosystem: "docker-compose"
     directories:
-      - "/docker/beszel"
-      - "/docker/code-server"
-      - "/docker/handbrake"
-      - "/docker/homarr"
-      - "/docker/home-assistant"
-      - "/docker/it-tools"
-      - "/docker/iventoy"
-      - "/docker/kasm"
-      - "/docker/metube"
-      - "/docker/netbootxyz"
-      - "/docker/netdata"
-      - "/docker/networking-toolbox"
-      - "/docker/ombi"
-      - "/docker/open-webui"
-      - "/docker/plex"
-      - "/docker/rackula"
-      - "/docker/stirling-pdf"
-      - "/docker/traefik"
-      - "/docker/watchtower"
-      - "/docker/webtop"
-      - "/docker/zerobyte"
+      - "/docker/*"
     schedule:
       interval: "daily"
+    groups:
+      docker-images:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "terraform"
+    directories:
+      - "/terraform/**"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      terraform-providers:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
   - package-ecosystem: "github-actions"
     directories:
       - "/"
     schedule:
       interval: "weekly"
       day: "saturday"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
