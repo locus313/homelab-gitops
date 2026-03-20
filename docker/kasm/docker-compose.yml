@@ -6,10 +6,10 @@ services:
     privileged: true
     restart: unless-stopped
     environment:
-      - KASM_PORT=${KASM_PORT}
-      - DOCKER_HUB_USERNAME=${DOCKER_HUB_USERNAME}
-      - DOCKER_HUB_PASSWORD=${DOCKER_HUB_PASSWORD}
-      - DOCKER_MTU=${DOCKER_MTU:-1500}
+      KASM_PORT: ${KASM_PORT}
+      DOCKER_HUB_USERNAME: ${DOCKER_HUB_USERNAME}
+      DOCKER_HUB_PASSWORD: ${DOCKER_HUB_PASSWORD}
+      DOCKER_MTU: ${DOCKER_MTU:-1500}
     volumes:
       - ${DOCKER_BASE_PATH}/kasm/opt:/opt
       - ${DOCKER_BASE_PATH}/kasm/profiles:/profiles
