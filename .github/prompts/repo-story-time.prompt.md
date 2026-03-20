@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: 'agent'
 description: 'Generate a comprehensive repository summary and narrative story from commit history'
 tools: ['changes', 'codebase', 'editFiles', 'githubRepo', 'runCommands', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection']
 ---

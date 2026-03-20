@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: 'agent'
 model: Claude Sonnet 4
 tools: ['edit', 'githubRepo', 'changes', 'problems', 'search', 'runCommands', 'fetch']
 description: 'Set up complete GitHub Copilot configuration for a new project based on technology stack'
