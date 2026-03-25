@@ -1,6 +1,6 @@
 services:
   watchtower:
-    image: nickfedor/watchtower:1.14.4
+    image: nickfedor/watchtower:1.15.0
     container_name: watchtower
     restart: unless-stopped
     networks:
