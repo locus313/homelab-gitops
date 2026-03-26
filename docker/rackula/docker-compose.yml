@@ -1,6 +1,6 @@
 services:
   rackula:
-    image: ghcr.io/rackulalives/rackula:v0.9.2-persist
+    image: ghcr.io/rackulalives/rackula:v0.9.3-persist
     container_name: rackula
     restart: unless-stopped
     networks:
@@ -23,7 +23,7 @@ services:
       - traefik.http.routers.rackula.tls.certresolver=cloudns
 
   rackula-api:
-    image: ghcr.io/rackulalives/rackula-api:0.9.2
+    image: ghcr.io/rackulalives/rackula-api:0.9.3
     container_name: rackula-api
     restart: unless-stopped
     networks:
