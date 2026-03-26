@@ -1,6 +1,6 @@
 services:
   open-webui:
-    image: ghcr.io/open-webui/open-webui:v0.8.10
+    image: ghcr.io/open-webui/open-webui:v0.8.11
     container_name: open-webui
     restart: unless-stopped
     networks:
@@ -31,7 +31,7 @@ services:
       - traefik.http.routers.open-webui.tls.certresolver=cloudns
 
   ollama:
-    image: ollama/ollama:0.18.2
+    image: ollama/ollama:0.18.3
     container_name: ollama
     restart: unless-stopped
     networks:
