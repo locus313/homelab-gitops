@@ -1,0 +1,30 @@
+services:
+  storj-node:
+    image: storjlabs/storagenode:9109fd2
+    container_name: storj-node
+    restart: unless-stopped
+    networks:
+      - proxynet
+    # Port 28967 must be publicly accessible (TCP port-forwarded from router)
+    ports:
+      - "28967:28967/tcp"
+      - "28967:28967/udp"
+    volumes:
+      - ${DOCKER_BASE_PATH}/storj-node/identity:/app/identity
+      - ${STORAGE_PATH}:/app/data
+    environment:
+      WALLET: ${WALLET}
+      EMAIL: ${EMAIL}
+      ADDRESS: ${ADDRESS}
+      STORAGE: ${STORAGE}
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.storj-node.loadbalancer.server.port=14002
+      - traefik.http.routers.storj-node.rule=Host(`storj-node.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.storj-node.entrypoints=websecure
+      - traefik.http.routers.storj-node.tls=true
+      - traefik.http.routers.storj-node.tls.certresolver=cloudns
+
+networks:
+  proxynet:
+    external: true

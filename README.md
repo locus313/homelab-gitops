@@ -58,7 +58,7 @@ graph LR
     TRAEFIK --> AI["🤖 AI / LLM\nOpen-WebUI :8080 → Ollama :11434 🎮"]:::gpu
     TRAEFIK --> TOOLS["🛠️ Developer Tools\nIT-Tools :80 · Stirling-PDF :8080\nNet-Toolbox :3000 · Code-Server (Tailscale)"]:::group
     TRAEFIK --> DESKTOP["🖥️ Remote Desktop\nWebtop :3000 🎮 · Kasm :KASM_PORT 🎮"]:::gpu
-    TRAEFIK --> INFRA["⚙️ Infrastructure & Monitoring\nHome-Assistant :8123 · Beszel Hub :8090\nZerobyte :4096 · Watchtower"]:::group
+    TRAEFIK --> INFRA["⚙️ Infrastructure & Monitoring\nHome-Assistant :8123 · Beszel Hub :8090\nZerobyte :4096 · Watchtower · Storj-Node :14002"]:::group
     TRAEFIK --> BOOT["🔧 Network Boot / PXE\nNetbootXYZ UDP:69 + :3000 web\niVentoy UDP:69 + :26000"]:::group
     TRAEFIK -->|"dynamic config"| NAS
 
@@ -216,6 +216,7 @@ Most services use these common environment variables:
 | **Netdata** | `NETDATA_CLAIM_TOKEN`, `NETDATA_CLAIM_ROOMS` | System monitoring and cloud integration |
 | **HandBrake** | `MEDIA_PATH`, `BACKUP_PATH` | Video transcoding storage |
 | **Code-Server** | `PASSWORD`, `TS_AUTHKEY` | IDE access and Tailscale |
+| **Storj Node** | `WALLET`, `EMAIL`, `ADDRESS`, `STORAGE`, `STORAGE_PATH` | Decentralized storage node operator settings |
 
 Refer to each service's `.env.example` file for complete variable documentation.
 
@@ -233,6 +234,7 @@ homelab-gitops/
 │   ├── beszel/             # System monitoring
 │   ├── netdata/            # Real-time system monitoring
 │   ├── zerobyte/           # Backup automation with Restic
+│   ├── storj-node/         # Decentralized storage node
 │   ├── code-server/        # Browser-based IDE
 │   ├── webtop/             # Linux desktop environment in browser
 │   ├── networking-toolbox/ # Network diagnostics and utilities
