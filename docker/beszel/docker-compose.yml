@@ -1,6 +1,6 @@
 services:
   beszel:
-    image: ghcr.io/henrygd/beszel/beszel:0.18.6
+    image: ghcr.io/henrygd/beszel/beszel:0.18.7
     container_name: beszel
     restart: unless-stopped
     networks:
@@ -20,7 +20,7 @@ services:
       - traefik.http.routers.beszel.tls.certresolver=cloudns
 
   beszel-agent:
-    image: ghcr.io/henrygd/beszel/beszel-agent-intel:0.18.6
+    image: ghcr.io/henrygd/beszel/beszel-agent-intel:0.18.7
     container_name: beszel-agent
     restart: unless-stopped
     # Uses host network for comprehensive system monitoring
