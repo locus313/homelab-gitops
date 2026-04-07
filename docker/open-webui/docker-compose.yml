@@ -31,7 +31,7 @@ services:
       - traefik.http.routers.open-webui.tls.certresolver=cloudns
 
   ollama:
-    image: ollama/ollama:0.20.2
+    image: ollama/ollama:0.20.3
     container_name: ollama
     restart: unless-stopped
     networks:
