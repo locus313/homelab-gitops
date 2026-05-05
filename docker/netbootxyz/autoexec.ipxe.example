@@ -1,0 +1,23 @@
+#!ipxe
+# Place this file at: ${DOCKER_BASE_PATH}/netbootxyz/config/menus/autoexec.ipxe
+#
+# After netboot.xyz.efi loads, iPXE looks for autoexec.ipxe over TFTP.
+# Without this override, it chainloads https://boot.netboot.xyz/menu.ipxe
+# from the internet, which requires working DNS + outbound HTTPS on the
+# PXE client's network.
+#
+# This override chainloads the menu.ipxe bundled inside the netbootxyz
+# container over TFTP from the same host (${next-server} is set by DHCP
+# / the previous TFTP transfer), so PXE works fully offline.
+
+dhcp || goto dhcp_failed
+echo Chainloading local menu.ipxe over TFTP from ${next-server}
+chain --autofree tftp://${next-server}/menu.ipxe || goto failed
+
+:dhcp_failed
+echo DHCP failed
+shell
+
+:failed
+echo Failed to chainload tftp://${next-server}/menu.ipxe
+shell
