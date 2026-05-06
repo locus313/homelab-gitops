@@ -18,6 +18,17 @@ services:
     volumes:
       - ${DOCKER_BASE_PATH}/netbootxyz/config:/config
       - ${DOCKER_BASE_PATH}/netbootxyz/assets:/assets
+      # Custom menu hookup — pure bind mounts of files NOT shipped by
+      # upstream, so menu/image upgrades cannot clobber them.
+      # autoexec.ipxe forces netboot.xyz.efi to chainload the local
+      # menu.ipxe over TFTP instead of fetching from boot.netboot.xyz
+      # over HTTPS (PXE works fully offline).
+      # local-vars.ipxe sets ${custom_url}, which makes the upstream
+      # menu surface a "Custom URL Menu" entry that chains
+      # ${custom_url}/custom.ipxe (served by nginx from /assets/).
+      - ./autoexec.ipxe:/config/menus/autoexec.ipxe:ro
+      - ./custom-menu/local-vars.ipxe:/config/menus/local-vars.ipxe:ro
+      - ./custom-menu/custom.ipxe:/assets/custom-menu/custom.ipxe:ro
     labels:
       - traefik.enable=true
       - traefik.http.services.netbootxyz.loadbalancer.server.port=3000

@@ -70,6 +70,70 @@ You can add custom ISOs and tools:
 
 Place your custom ISOs and files here to make them available via the boot menu.
 
+### Local Fedora Live Boot
+
+The upstream `Live > Fedora` menu is broken for releases ≥ 41 (see
+[netboot.xyz issue #1758](https://github.com/netbootxyz/netboot.xyz/issues/1758)).
+A working local alternative is bundled here:
+
+1. Stage Fedora Live kernel/initrd/squashfs into the assets directory:
+
+   ```bash
+   sudo ./scripts/setup-fedora-live.sh 44
+   ```
+
+   This downloads the latest Fedora 44 Workstation Live ISO, extracts
+   `vmlinuz`, `initrd.img`, and `squashfs.img` to
+   `${DOCKER_BASE_PATH}/netbootxyz/assets/fedora-44-live/`, and chowns
+   them to the in-container `nbxyz` user so nginx can serve them.
+
+2. The custom menu wires itself in automatically — no install step.
+   When the container starts, `docker-compose.yml` bind-mounts:
+
+   - [`autoexec.ipxe`](autoexec.ipxe) at
+     `/config/menus/autoexec.ipxe` — forces `netboot.xyz.efi` to chain
+     the bundled `menu.ipxe` over TFTP instead of fetching
+     `https://boot.netboot.xyz/menu.ipxe`, so PXE works without
+     outbound HTTPS / public DNS on the client network.
+   - [`custom-menu/local-vars.ipxe`](custom-menu/local-vars.ipxe) at
+     `/config/menus/local-vars.ipxe` — sets `${custom_url}`, which the
+     upstream `menu.ipxe` reads and uses to surface a **"Custom URL Menu"**
+     entry on the main menu.
+   - [`custom-menu/custom.ipxe`](custom-menu/custom.ipxe) at
+     `/assets/custom-menu/custom.ipxe` — the menu itself, served over
+     HTTP by the netbootxyz nginx and chained when the user selects
+     "Custom URL Menu".
+
+   PXE boot a client and pick **Custom URL Menu** from the main netboot.xyz
+   menu — Fedora 44 Workstation Live is the default selection.
+
+To edit the menu, modify `custom-menu/custom.ipxe` and either restart the
+container (Portainer redeploys on git push) or just re-PXE-boot the
+client (the file is read fresh over HTTP every boot).
+
+> **Why this design?** Both files are bind-mounted from the repo and live
+> at paths that **upstream never ships** (`local-vars.ipxe` and
+> `/assets/custom-menu/`). `MENU_VERSION` upgrades and image refreshes
+> can never clobber them, and no upstream-shipped file is modified.
+
+> **TFTP permissions:** dnsmasq inside the container runs with
+> `--tftp-secure --user=nbxyz`, so files served via TFTP must be owned
+> by the `nbxyz` user (uid **1000** in this image — NOT 911). The bind-
+> mounted `local-vars.ipxe` inherits its host UID; with `PUID=1000` in
+> `.env` this lines up automatically. The `setup-fedora-live.sh` script
+> handles ownership for assets it stages.
+
+> **Why replace `menu.ipxe`?** The `netboot.xyz.efi` binary embeds its
+> own boot script that ignores `chain` directives in `autoexec.ipxe` and
+> never surfaces the upstream `:custom-user` label as a menu item.
+> Hijacking `menu.ipxe` is the only reliable entry point.
+
+> **TFTP permissions:** dnsmasq inside the container runs with
+> `--tftp-secure --user=nbxyz`, so any file deployed under
+> `${DOCKER_BASE_PATH}/netbootxyz/config/menus/` must be owned by the
+> `nbxyz` user (uid **1000** in this image — NOT 911). Both helper
+> scripts handle this automatically.
+
 ## Available Boot Options
 
 NetbootXYZ provides access to:
@@ -89,7 +153,7 @@ This service is configured to use the `proxynet` external network for Traefik in
 
 ## NetbootXYZ Image
 
-This deployment uses the official NetbootXYZ image (`ghcr.io/netbootxyz/netbootxyz:0.7.6-nbxyz4`) which provides:
+This deployment uses the official NetbootXYZ image (`ghcr.io/netbootxyz/netbootxyz:0.7.6-nbxyz18`) which provides:
 
 - Comprehensive boot menu options
 - Regular updates with new distributions

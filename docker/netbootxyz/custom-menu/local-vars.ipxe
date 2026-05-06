@@ -1,0 +1,14 @@
+#!ipxe
+# local-vars.ipxe — netboot.xyz user override file.
+#
+# This file is NOT shipped by upstream and is loaded by netboot.xyz.efi
+# before menu.ipxe, so any variables set here are visible to the menu.
+# Setting ${custom_url} causes the upstream menu to surface a
+# "Custom URL Menu" entry that chains ${custom_url}/custom.ipxe.
+#
+# We point custom_url at the netbootxyz nginx (/assets/ is served on
+# port 80 -> host 8080) so we never touch any upstream-shipped file.
+#
+# Bind-mounted via docker-compose.yml at /config/menus/local-vars.ipxe.
+
+set custom_url http://${next-server}:8080/custom-menu

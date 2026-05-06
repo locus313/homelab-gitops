@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-05-06]
+
+### Added
+- `docker/netbootxyz/autoexec.ipxe.example` — forces `netboot.xyz.efi` to chainload the bundled `menu.ipxe` over TFTP instead of fetching `https://boot.netboot.xyz/menu.ipxe`, so PXE works on networks without outbound HTTPS / public DNS.
+- `docker/netbootxyz/custom-menu/local-vars.ipxe` — sets `${custom_url}` so the upstream netboot.xyz menu auto-surfaces a "Custom URL Menu" entry pointing at the local nginx. No upstream-shipped file is modified.
+- `docker/netbootxyz/custom-menu/custom.ipxe` — custom iPXE menu with a working Fedora 44 Workstation Live entry (boots over HTTP from `/assets/fedora-44-live/`). Works around upstream netboot.xyz [issue #1758](https://github.com/netbootxyz/netboot.xyz/issues/1758).
+- `docker/netbootxyz/scripts/setup-fedora-live.sh` — downloads a Fedora Workstation Live ISO and extracts kernel/initrd/squashfs into the assets directory. Supports both old (`/images/pxeboot/`) and new (`/boot/x86_64/loader/`) ISO layouts.
+
+### Changed
+- Bumped `ghcr.io/netbootxyz/netbootxyz` from `0.7.6-nbxyz4` to `0.7.6-nbxyz18`.
+- Wired the custom menu and autoexec into `docker/netbootxyz/docker-compose.yml` as three read-only file bind mounts (`autoexec.ipxe`, `local-vars.ipxe` → `/config/menus/`; `custom.ipxe` → `/assets/custom-menu/`). All target paths are user-defined files that upstream never ships, so `MENU_VERSION` upgrades and image refreshes cannot clobber them — no init hook or post-deploy script required.
+- Updated `docker/netbootxyz/README.md` with the new design.
+
 ## [2026-03-18]
 
 ### Added

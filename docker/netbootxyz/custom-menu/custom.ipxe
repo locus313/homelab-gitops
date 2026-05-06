@@ -1,0 +1,45 @@
+#!ipxe
+# Custom netboot.xyz menu.
+#
+# Reached from the upstream main menu via the "Custom URL Menu" item,
+# which is auto-surfaced when ${custom_url} is set (see local-vars.ipxe).
+# The upstream menu chains ${custom_url}/custom.ipxe, so this file MUST
+# be named custom.ipxe and served at ${custom_url}/custom.ipxe.
+#
+# Served by the netbootxyz nginx from /assets/custom-menu/custom.ipxe
+# (bind-mounted via docker-compose.yml). No upstream-shipped file is
+# ever modified — menu/image upgrades cannot clobber this menu.
+
+:custom_menu
+menu Custom Menu
+item --gap                    -- ----- Local Live Images -----
+item fedora-44-live           Fedora 44 Workstation Live
+item --gap                    -- ----- Other -----
+item main                     Back to netboot.xyz main menu
+item shell                    iPXE shell
+item reboot                   Reboot
+choose --default fedora-44-live target && goto ${target} || goto custom_menu
+
+:fedora-44-live
+# Files served by the netbootxyz nginx from /assets/fedora-44-live/
+# (i.e. ${DOCKER_BASE_PATH}/netbootxyz/assets/fedora-44-live/ on the host).
+# ${next-server} is the netbootxyz/TFTP host (set by DHCP option 66).
+set base http://${next-server}:8080/fedora-44-live
+echo Booting Fedora 44 Live from ${base}
+imgfree
+kernel ${base}/vmlinuz initrd=initrd.img root=live:${base}/squashfs.img ro rd.live.image rd.live.overlay.overlayfs=1 rd.lvm=0 rd.luks=0 rd.md=0 rd.dm=0 ip=dhcp
+initrd ${base}/initrd.img
+boot || goto custom_menu
+
+:main
+# Returning from the chain hands control back to the upstream menu's
+# `:custom-url` label, which does `goto main_menu`.
+exit
+
+:shell
+echo Type 'exit' to return to the menu
+shell
+goto custom_menu
+
+:reboot
+reboot

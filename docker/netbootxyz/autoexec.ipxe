@@ -1,5 +1,6 @@
 #!ipxe
-# Place this file at: ${DOCKER_BASE_PATH}/netbootxyz/config/menus/autoexec.ipxe
+# Bind-mounted into the netbootxyz container at /config/menus/autoexec.ipxe
+# (see docker-compose.yml).
 #
 # After netboot.xyz.efi loads, iPXE looks for autoexec.ipxe over TFTP.
 # Without this override, it chainloads https://boot.netboot.xyz/menu.ipxe
