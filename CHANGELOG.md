@@ -5,9 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [2026-05-06]
 
 ### Added
-- `docker/netbootxyz/autoexec.ipxe.example` — forces `netboot.xyz.efi` to chainload the bundled `menu.ipxe` over TFTP instead of fetching `https://boot.netboot.xyz/menu.ipxe`, so PXE works on networks without outbound HTTPS / public DNS.
+- `docker/netbootxyz/autoexec.ipxe` — forces `netboot.xyz.efi` to chainload the bundled `menu.ipxe` over TFTP instead of fetching `https://boot.netboot.xyz/menu.ipxe`, so PXE works on networks without outbound HTTPS / public DNS.
 - `docker/netbootxyz/custom-menu/local-vars.ipxe` — sets `${custom_url}` so the upstream netboot.xyz menu auto-surfaces a "Custom URL Menu" entry pointing at the local nginx. No upstream-shipped file is modified.
 - `docker/netbootxyz/custom-menu/custom.ipxe` — custom iPXE menu with a working Fedora 44 Workstation Live entry (boots over HTTP from `/assets/fedora-44-live/`). Works around upstream netboot.xyz [issue #1758](https://github.com/netbootxyz/netboot.xyz/issues/1758).
+- `docker/netbootxyz/custom-cont-init.d/99-chown-custom-menu` — linuxserver init hook that chowns the bind-mounted custom menu files to the in-container `nbxyz` user (uid 1000) on start, satisfying `dnsmasq --tftp-secure`. Required because Portainer's git checkout creates files as root. Only chowns files this stack owns — never modifies upstream-managed files.
 - `docker/netbootxyz/scripts/setup-fedora-live.sh` — downloads a Fedora Workstation Live ISO and extracts kernel/initrd/squashfs into the assets directory. Supports both old (`/images/pxeboot/`) and new (`/boot/x86_64/loader/`) ISO layouts.
 
 ### Changed

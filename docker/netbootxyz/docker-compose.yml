@@ -26,9 +26,13 @@ services:
       # local-vars.ipxe sets ${custom_url}, which makes the upstream
       # menu surface a "Custom URL Menu" entry that chains
       # ${custom_url}/custom.ipxe (served by nginx from /assets/).
-      - ./autoexec.ipxe:/config/menus/autoexec.ipxe:ro
-      - ./custom-menu/local-vars.ipxe:/config/menus/local-vars.ipxe:ro
-      - ./custom-menu/custom.ipxe:/assets/custom-menu/custom.ipxe:ro
+      # The init hook in custom-cont-init.d/ chowns these to nbxyz on
+      # start (required by `dnsmasq --tftp-secure`); they cannot be
+      # mounted :ro because that would block the chown.
+      - ./autoexec.ipxe:/config/menus/autoexec.ipxe
+      - ./custom-menu/local-vars.ipxe:/config/menus/local-vars.ipxe
+      - ./custom-menu/custom.ipxe:/assets/custom-menu/custom.ipxe
+      - ./custom-cont-init.d:/custom-cont-init.d:ro
     labels:
       - traefik.enable=true
       - traefik.http.services.netbootxyz.loadbalancer.server.port=3000

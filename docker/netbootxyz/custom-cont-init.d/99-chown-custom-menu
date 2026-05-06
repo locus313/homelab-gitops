@@ -1,0 +1,28 @@
+#!/usr/bin/with-contenv bash
+#
+# 99-chown-custom-menu — fixes ownership of bind-mounted custom menu
+# files at container start (linuxserver custom-cont-init.d hook).
+#
+# Why: docker-compose.yml bind-mounts files from the Portainer git
+# checkout, which Portainer creates as root. dnsmasq runs the TFTP
+# server with --tftp-secure --user=nbxyz and refuses to serve files
+# not owned by nbxyz (uid 1000), so PXE clients see "permission
+# denied" on autoexec.ipxe / local-vars.ipxe.
+#
+# This script ONLY chowns our own bind-mounted files — it never
+# touches anything managed by the upstream menu sync, so menu/image
+# upgrades cannot break it. Idempotent (chown is a no-op if already
+# correct).
+#
+set -eu
+
+for f in \
+    /config/menus/autoexec.ipxe \
+    /config/menus/local-vars.ipxe \
+    /assets/custom-menu/custom.ipxe; do
+    if [[ -f "${f}" ]]; then
+        chown nbxyz:nbxyz "${f}" 2>/dev/null \
+            && echo "[chown-custom-menu] ${f} -> nbxyz:nbxyz" \
+            || echo "[chown-custom-menu] WARN: chown failed for ${f} (read-only mount?)"
+    fi
+done

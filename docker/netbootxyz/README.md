@@ -118,10 +118,12 @@ client (the file is read fresh over HTTP every boot).
 
 > **TFTP permissions:** dnsmasq inside the container runs with
 > `--tftp-secure --user=nbxyz`, so files served via TFTP must be owned
-> by the `nbxyz` user (uid **1000** in this image — NOT 911). The bind-
-> mounted `local-vars.ipxe` inherits its host UID; with `PUID=1000` in
-> `.env` this lines up automatically. The `setup-fedora-live.sh` script
-> handles ownership for assets it stages.
+> by the `nbxyz` user (uid **1000** in this image — NOT 911). Because
+> Portainer's git checkout creates files as root, the
+> [`custom-cont-init.d/99-chown-custom-menu`](custom-cont-init.d/99-chown-custom-menu)
+> hook chowns the bind-mounted files to `nbxyz` on every container
+> start. The script only touches files this stack owns and is safe
+> across image / `MENU_VERSION` upgrades.
 
 > **Why replace `menu.ipxe`?** The `netboot.xyz.efi` binary embeds its
 > own boot script that ignores `chain` directives in `autoexec.ipxe` and
