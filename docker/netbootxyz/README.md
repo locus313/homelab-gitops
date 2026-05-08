@@ -116,25 +116,16 @@ client (the file is read fresh over HTTP every boot).
 > `/assets/custom-menu/`). `MENU_VERSION` upgrades and image refreshes
 > can never clobber them, and no upstream-shipped file is modified.
 
-> **TFTP permissions:** dnsmasq inside the container runs with
-> `--tftp-secure --user=nbxyz`, so files served via TFTP must be owned
-> by the `nbxyz` user (uid **1000** in this image — NOT 911). Because
-> Portainer's git checkout creates files as root, the
-> [`custom-cont-init.d/99-chown-custom-menu`](custom-cont-init.d/99-chown-custom-menu)
-> hook chowns the bind-mounted files to `nbxyz` on every container
-> start. The script only touches files this stack owns and is safe
-> across image / `MENU_VERSION` upgrades.
-
 > **Why replace `menu.ipxe`?** The `netboot.xyz.efi` binary embeds its
 > own boot script that ignores `chain` directives in `autoexec.ipxe` and
 > never surfaces the upstream `:custom-user` label as a menu item.
 > Hijacking `menu.ipxe` is the only reliable entry point.
 
 > **TFTP permissions:** dnsmasq inside the container runs with
-> `--tftp-secure --user=nbxyz`, so any file deployed under
-> `${DOCKER_BASE_PATH}/netbootxyz/config/menus/` must be owned by the
-> `nbxyz` user (uid **1000** in this image — NOT 911). Both helper
-> scripts handle this automatically.
+> `--tftp-secure --user=nbxyz`, so files served via TFTP must be owned
+> by the `nbxyz` user (uid **1000** in this image — NOT 911). The
+> official image's `init.sh` already runs `chown -R nbxyz:nbxyz /config`
+> and `/assets` at startup, covering all bind-mounted files automatically.
 
 ## Available Boot Options
 
