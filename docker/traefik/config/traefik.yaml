@@ -45,6 +45,7 @@ certificatesResolvers:
       caServer: "https://acme-v02.api.letsencrypt.org/directory"
       dnsChallenge:
         provider: cloudns
+        delayBeforeCheck: 60
         resolvers:
           - "8.8.8.8:53"
           - "8.8.4.4:53"
