@@ -22,7 +22,7 @@ services:
       TRAEFIK_BASE_DOMAIN: ${TRAEFIK_BASE_DOMAIN}
       TZ: ${TZ}
       # Allow extra time for DNS TXT records to propagate across CloudNS nameservers
-      LEGO_PROPAGATION_TIMEOUT: ${LEGO_PROPAGATION_TIMEOUT}
+      LEGO_PROPAGATION_TIMEOUT: ${LEGO_PROPAGATION_TIMEOUT:-600}
     labels:
       - traefik.enable=true
       - traefik.http.routers.traefik-rtr.entrypoints=websecure
