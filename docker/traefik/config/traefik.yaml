@@ -7,7 +7,7 @@ global:
 # Use INFO for production, DEBUG for troubleshooting
 log:
   filePath: "/logs/traefik.log"
-  level: INFO
+  level: DEBUG
 
 accessLog:
   filePath: "/logs/access.log"
