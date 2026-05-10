@@ -1,0 +1,41 @@
+services:
+  gitea-mirror:
+    image: ghcr.io/raylabshq/gitea-mirror:v3.15.10
+    container_name: gitea-mirror
+    restart: unless-stopped
+    user: ${PUID}:${PGID}
+    networks:
+      - proxynet
+    volumes:
+      - ${DOCKER_BASE_PATH}/gitea-mirror:/app/data
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 4321
+      BASE_URL: /
+      DATABASE_URL: file:data/gitea-mirror.db
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: https://gitea-mirror.${TRAEFIK_BASE_DOMAIN}
+      PUBLIC_BETTER_AUTH_URL: https://gitea-mirror.${TRAEFIK_BASE_DOMAIN}
+      BETTER_AUTH_TRUSTED_ORIGINS: https://gitea-mirror.${TRAEFIK_BASE_DOMAIN}
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.gitea-mirror.loadbalancer.server.port=4321
+      - traefik.http.routers.gitea-mirror.rule=Host(`gitea-mirror.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.gitea-mirror.entrypoints=websecure
+      - traefik.http.routers.gitea-mirror.tls=true
+      - traefik.http.routers.gitea-mirror.tls.certresolver=cloudns
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=3 --spider http://localhost:4321/api/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 15s
+
+networks:
+  proxynet:
+    external: true
