@@ -35,7 +35,7 @@ services:
       - traefik.http.routers.gitea.tls.certresolver=cloudns
 
   gitea-db:
-    image: postgres:17.5
+    image: postgres:18.3
     container_name: gitea-db
     restart: unless-stopped
     networks:
