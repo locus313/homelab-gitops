@@ -1,0 +1,162 @@
+Content-Type: multipart/mixed; boundary="//"
+MIME-Version: 1.0
+
+--//
+Content-Type: text/cloud-config; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="cloud-config.txt"
+
+#cloud-config
+
+hostname: ${name}
+manage_etc_hosts: localhost
+timezone: ${timezone}
+ssh_pwauth: true
+disable_root: true
+
+# Pre-create the docker group so it exists when the user is created below;
+# the Docker Engine installer will reuse it.
+groups:
+  - docker
+
+users:
+  - name: ${admin_user}
+    gecos: Homelab admin
+    groups: [sudo, docker]
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    shell: /bin/bash
+    lock_passwd: false
+    passwd: "${password}"
+    ssh_authorized_keys: ${ssh_authorized_keys}
+    ssh_import_id:
+      - ${ssh_import_id}
+
+package_update: true
+package_upgrade: true
+packages:
+  - ca-certificates
+  - curl
+  - git
+  - nfs-common
+  - qemu-guest-agent
+  - unattended-upgrades
+package_reboot_if_required: true
+
+write_files:
+  # Disable root SSH login and enforce key-only authentication
+  - path: /etc/ssh/sshd_config.d/99-homelab.conf
+    permissions: "0600"
+    content: |
+      PermitRootLogin no
+      PasswordAuthentication no
+
+  # Enable automatic security updates via unattended-upgrades
+  - path: /etc/apt/apt.conf.d/20auto-upgrades
+    permissions: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+      APT::Periodic::AutocleanInterval "7";
+
+  # Unattended-upgrades: all updates, auto-reboot at 03:00 if required
+  - path: /etc/apt/apt.conf.d/51homelab-unattended-upgrades
+    permissions: "0644"
+    content: |
+      Unattended-Upgrade::Allowed-Origins {
+          "$${distro_id}:$${distro_codename}";
+          "$${distro_id}:$${distro_codename}-updates";
+          "$${distro_id}:$${distro_codename}-security";
+          "$${distro_id}ESMApps:$${distro_codename}-apps-security";
+          "$${distro_id}ESM:$${distro_codename}-infra-security";
+      };
+      Unattended-Upgrade::Remove-Unused-Dependencies "true";
+      Unattended-Upgrade::Automatic-Reboot "true";
+      Unattended-Upgrade::Automatic-Reboot-Time "03:00";
+
+  # NFS fstab entries — appended to /etc/fstab by runcmd
+  # Uses NFSv4, hard mount with _netdev to defer until network is up
+  - path: /etc/fstab.d/nfs-homelab.conf
+    permissions: "0644"
+    content: |
+      ${nas_ip}:${nas_media_export}  ${media_mount_path}  nfs  defaults,nfsvers=4,hard,intr,_netdev  0  0
+      ${nas_ip}:${nas_shared_export}  /mnt/docker  nfs  defaults,nfsvers=4,hard,intr,_netdev  0  0
+
+  # Docker daemon: cap container log size to prevent disk fill-up
+  - path: /etc/docker/daemon.json
+    permissions: "0644"
+    content: |
+      {
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
+      }
+
+  # sysctl tuning for Docker workloads
+  - path: /etc/sysctl.d/99-homelab.conf
+    permissions: "0644"
+    content: |
+      # Required by Elasticsearch-family services (Gitea search, etc.)
+      vm.max_map_count=262144
+      # Prefer RAM; only use swap under real memory pressure
+      vm.swappiness=10
+
+# runcmd runs once on first boot after packages are installed
+runcmd:
+  # Apply PermitRootLogin no + PasswordAuthentication no immediately
+  - systemctl restart ssh
+
+  # Apply sysctl tuning immediately (also persists across reboots via /etc/sysctl.d/)
+  - sysctl -p /etc/sysctl.d/99-homelab.conf
+
+  # Create and enable a 4 GB swapfile (cloud images have no swap by default)
+  - fallocate -l 4G /swapfile
+  - chmod 600 /swapfile
+  - mkswap /swapfile
+  - swapon /swapfile
+  - sh -c 'echo "/swapfile none swap sw 0 0" >> /etc/fstab'
+
+  # GRUB settings (consistent with other VMs in this cluster)
+  - sh -c 'echo GRUB_CMDLINE_LINUX="nomodeset" >> /etc/default/grub'
+  - sh -c 'echo GRUB_GFXPAYLOAD_LINUX="1024x768" >> /etc/default/grub'
+  - sh -c 'echo GRUB_DISABLE_LINUX_UUID=true >> /etc/default/grub'
+  - update-grub
+
+  # Install Docker Engine from Docker's official apt repository
+  - install -m 0755 -d /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  - chmod a+r /etc/apt/keyrings/docker.asc
+  - sh -c 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" > /etc/apt/sources.list.d/docker.list'
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  - systemctl enable docker
+  - systemctl start docker
+
+  # Create mount point directories
+  - mkdir -p ${media_mount_path}
+  - mkdir -p /mnt/docker
+  - mkdir -p /docker
+
+  # Append NFS entries to /etc/fstab and mount
+  - cat /etc/fstab.d/nfs-homelab.conf >> /etc/fstab
+  - mount -a
+
+  # Create the shared Docker network used by all homelab services
+  - docker network create proxynet
+
+  # Clone the homelab-gitops repo so Portainer can be bootstrapped
+  - git clone ${repo_url} /opt/homelab-gitops
+
+  # Start qemu-guest-agent for ScaleComputing VM visibility
+  - systemctl start qemu-guest-agent
+
+final_message: |
+  cloud-init has finished bootstrapping ${name}
+  version: $version
+  timestamp: $timestamp
+  datasource: $datasource
+  uptime: $uptime
+
+--//--

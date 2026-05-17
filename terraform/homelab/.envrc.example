@@ -1,0 +1,66 @@
+# Copy this file to .envrc and fill in your values.
+# direnv will automatically export these when you cd into this directory.
+#   cp .envrc.example .envrc
+#   direnv allow
+
+# ---------------------------------------------------------------------------
+# ScaleComputing HyperCore provider credentials
+# ---------------------------------------------------------------------------
+export HC_HOST="https://your-scalecomputing-cluster.example.com"
+export HC_USERNAME="your-username"
+export HC_PASSWORD="your-password"
+export HC_AUTH_METHOD="local"
+export HC_TIMEOUT="60.0"
+
+# ---------------------------------------------------------------------------
+# Vultr Object Storage — Terraform S3 backend credentials
+# ---------------------------------------------------------------------------
+export AWS_ACCESS_KEY_ID="your-vultr-object-storage-access-key"
+export AWS_SECRET_ACCESS_KEY="your-vultr-object-storage-secret-key"
+
+# ---------------------------------------------------------------------------
+# Required Terraform variables (no defaults)
+# ---------------------------------------------------------------------------
+
+# IP address of the NAS providing NFS exports
+export TF_VAR_nas_ip="192.168.1.x"
+
+# NFS export path on the NAS for the media library
+export TF_VAR_nas_media_export="/volume1/media"
+
+# NFS export path on the NAS for shared homelab files (acme.json etc.)
+export TF_VAR_nas_shared_export="/volume1/docker"
+
+# ---------------------------------------------------------------------------
+# Optional Terraform variables (uncomment to override defaults)
+# ---------------------------------------------------------------------------
+
+# VM hostname and ScaleComputing display name (default: sc-docker-01)
+# export TF_VAR_vm_name="sc-docker-01"
+
+# vCPU count (default: 6)
+# export TF_VAR_vcpu="6"
+
+# RAM in MiB (default: 16384 = 16 GB)
+# export TF_VAR_memory_mib="16384"
+
+# OS disk size in GB (default: 100)
+# export TF_VAR_disk_size_gb="100"
+
+# VLAN ID (default: 0 = untagged)
+# export TF_VAR_vlan="0"
+
+# Local mount point for media on the VM (default: /media)
+# export TF_VAR_media_mount_path="/mnt/media"
+
+# Git URL of the homelab-gitops repo (default: https://github.com/locus313/homelab-gitops.git)
+# export TF_VAR_repo_url="https://github.com/locus313/homelab-gitops.git"
+
+# SSH import ID to pull keys from GitHub (default: gh:locus313)
+# export TF_VAR_ssh_import_id="gh:locus313"
+
+# Admin username created on the VM with sudo NOPASSWD and docker group (default: ubuntu)
+# export TF_VAR_admin_user="ubuntu"
+
+# System timezone (default: America/Los_Angeles)
+# export TF_VAR_timezone="America/Los_Angeles"

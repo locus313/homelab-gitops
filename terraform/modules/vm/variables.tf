@@ -98,6 +98,12 @@ variable "affinity_strategy" {
   default     = {}
 }
 
+variable "extra_template_vars" {
+  description = "Additional variables merged into the cloud-init template rendering context. Base variables (name, password, ssh keys) always take precedence."
+  type        = map(string)
+  default     = {}
+}
+
 variable "power_state" {
   description = "Power state of the VM (SHUTOFF, RUNNING, PAUSED)"
   type        = string

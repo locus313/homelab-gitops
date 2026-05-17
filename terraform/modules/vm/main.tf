@@ -20,15 +20,23 @@ resource "hypercore_vm" "vm" {
   
   clone = {
     source_vm_uuid = var.template_vm_uuid
-    meta_data = templatefile(var.meta_data_template_path, {
-      name = var.name,
-    })
-    user_data = templatefile(var.user_data_template_path, {
-      name                = var.name,
-      ssh_authorized_keys = var.ssh_authorized_keys,
-      ssh_import_id       = var.ssh_import_id,
-      password            = var.user_password != null ? var.user_password : random_password.user_password[0].result,
-    })
+    meta_data = templatefile(var.meta_data_template_path, merge(
+      var.extra_template_vars,
+      {
+        # Base variables always override extra_template_vars
+        name = var.name
+      }
+    ))
+    user_data = templatefile(var.user_data_template_path, merge(
+      var.extra_template_vars,
+      {
+        # Base variables always override extra_template_vars
+        name                = var.name
+        ssh_authorized_keys = var.ssh_authorized_keys
+        ssh_import_id       = var.ssh_import_id
+        password            = var.user_password != null ? var.user_password : random_password.user_password[0].result
+      }
+    ))
   }
   affinity_strategy = var.affinity_strategy
 }
