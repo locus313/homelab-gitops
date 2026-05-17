@@ -41,7 +41,7 @@ services:
     networks:
       - proxynet
     volumes:
-      - ${DOCKER_BASE_PATH}/gitea/db:/var/lib/postgresql/data
+      - ${DOCKER_BASE_PATH}/gitea/db:/var/lib/postgresql
     environment:
       POSTGRES_DB: ${GITEA_DB_NAME}
       POSTGRES_USER: ${GITEA_DB_USER}
