@@ -9,3 +9,7 @@ output "ubuntu-server-22-04-jammy" {
 output "ubuntu-server-24-04-noble" {
   value = module.cloud-images.ubuntu-server-24-04-noble
 }
+
+output "ubuntu-server-26-04-resolute" {
+  value = module.cloud-images.ubuntu-server-26-04-resolute
+}

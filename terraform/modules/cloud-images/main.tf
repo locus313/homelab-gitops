@@ -15,3 +15,9 @@ resource "hypercore_virtual_disk" "ubuntu-server-24-04-noble" {
   name       = "ubuntu-server-24.04-noble.img"
   source_url = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
 }
+
+# Ubuntu 26.04 LTS (Resolute Raccoon) cloud image
+resource "hypercore_virtual_disk" "ubuntu-server-26-04-resolute" {
+  name       = "ubuntu-server-26.04-resolute.img"
+  source_url = "https://cloud-images.ubuntu.com/resolute/current/resolute-server-cloudimg-amd64.img"
+}
