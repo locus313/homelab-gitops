@@ -31,6 +31,9 @@ export TF_VAR_nas_media_export="/volume1/media"
 # NFS export path on the NAS for shared homelab files (acme.json etc.)
 export TF_VAR_nas_shared_export="/volume1/docker"
 
+# NFS export path on the NAS for backups
+# export TF_VAR_nas_backups_export="/volume1/Backups"
+
 # ---------------------------------------------------------------------------
 # Optional Terraform variables (uncomment to override defaults)
 # ---------------------------------------------------------------------------

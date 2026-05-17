@@ -32,12 +32,13 @@ module "sc_docker_vm" {
 
   # Extra vars passed through to the cloud-init user-data template
   extra_template_vars = {
-    nas_ip            = var.nas_ip
-    nas_media_export  = var.nas_media_export
-    nas_shared_export = var.nas_shared_export
-    media_mount_path  = var.media_mount_path
-    repo_url          = var.repo_url
-    admin_user        = var.admin_user
-    timezone          = var.timezone
+    nas_ip             = var.nas_ip
+    nas_media_export   = var.nas_media_export
+    nas_shared_export  = var.nas_shared_export
+    nas_backups_export = var.nas_backups_export
+    media_mount_path   = var.media_mount_path
+    repo_url           = var.repo_url
+    admin_user         = var.admin_user
+    timezone           = var.timezone
   }
 }

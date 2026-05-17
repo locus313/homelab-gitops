@@ -81,6 +81,7 @@ write_files:
     content: |
       ${nas_ip}:${nas_media_export}  ${media_mount_path}  nfs  defaults,nfsvers=4,hard,intr,_netdev  0  0
       ${nas_ip}:${nas_shared_export}  /mnt/docker  nfs  defaults,nfsvers=4,hard,intr,_netdev  0  0
+      ${nas_ip}:${nas_backups_export}  /mnt/backups  nfs  defaults,nfsvers=4,hard,intr,_netdev  0  0
 
   # Docker daemon: cap container log size to prevent disk fill-up
   - path: /etc/docker/daemon.json
@@ -137,6 +138,7 @@ runcmd:
   # Create mount point directories
   - mkdir -p ${media_mount_path}
   - mkdir -p /mnt/docker
+  - mkdir -p /mnt/backups
   - mkdir -p /docker
 
   # Append NFS entries to /etc/fstab and mount

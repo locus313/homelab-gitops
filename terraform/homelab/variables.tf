@@ -83,6 +83,12 @@ variable "nas_shared_export" {
   type        = string
 }
 
+variable "nas_backups_export" {
+  description = "NFS export path on the NAS for backups (e.g., /volume1/Backups)"
+  type        = string
+  default     = "/volume1/Backups"
+}
+
 variable "media_mount_path" {
   description = "Local mount point for the NFS media export on the VM (should match MEDIA_PATH in service .env files)"
   type        = string
