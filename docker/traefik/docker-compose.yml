@@ -11,18 +11,17 @@ services:
       - 8181:8080  # Traefik dashboard
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      # Note: Portainer "Enable relative path volumes" requires Business Edition
       - ./config:/etc/traefik:ro
       - /mnt/docker/traefik/cloudns-acme.json:/var/traefik/certs/cloudns-acme.json:rw
       - ${DOCKER_BASE_PATH}/traefik/logs:/logs
     environment:
       CLOUDNS_SUB_AUTH_ID: ${CLOUDNS_SUB_AUTH_ID}
       CLOUDNS_AUTH_PASSWORD: ${CLOUDNS_AUTH_PASSWORD}
+      # Provider-specific propagation timeout (default is only 120s — not enough for CloudNS)
+      CLOUDNS_PROPAGATION_TIMEOUT: ${CLOUDNS_PROPAGATION_TIMEOUT:-600}
       NAS_IP: ${NAS_IP}
       TRAEFIK_BASE_DOMAIN: ${TRAEFIK_BASE_DOMAIN}
       TZ: ${TZ}
-      # Allow extra time for DNS TXT records to propagate across CloudNS nameservers
-      LEGO_PROPAGATION_TIMEOUT: ${LEGO_PROPAGATION_TIMEOUT:-600}
     labels:
       - traefik.enable=true
       - traefik.http.routers.traefik-rtr.entrypoints=websecure
