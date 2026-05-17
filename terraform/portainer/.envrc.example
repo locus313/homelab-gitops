@@ -1,0 +1,156 @@
+# Environment variables for the terraform/portainer workspace.
+#
+# USAGE — choose one:
+#
+#   direnv (recommended):
+#     cp .envrc.example .envrc
+#     # fill in values, then:
+#     direnv allow
+#
+#   Manual (no direnv):
+#     cp .envrc.example .envrc
+#     # fill in values, then source before every terraform command:
+#     source .envrc
+#
+#   Inline (one-off):
+#     env TF_VAR_portainer_api_key="ptr_..." terraform apply
+#
+# WORKFLOW:
+#   1. Apply terraform/homelab/ to provision the VM
+#   2. Wait for cloud-init to complete and Portainer to start
+#   3. Log in to Portainer UI → Account (top-right) → Access tokens → Add token
+#   4. Set TF_VAR_portainer_api_key below and run: terraform init && terraform apply
+#
+# NOTE: Portainer itself is bootstrapped manually and not managed here.
+# This workspace requires Portainer to be running before `terraform apply`.
+
+# ---------------------------------------------------------------------------
+# Vultr Object Storage — Terraform S3 backend credentials
+# (same bucket as terraform/homelab — different state key)
+# ---------------------------------------------------------------------------
+export AWS_ACCESS_KEY_ID="your-vultr-object-storage-access-key"
+export AWS_SECRET_ACCESS_KEY="your-vultr-object-storage-secret-key"
+
+# ---------------------------------------------------------------------------
+# Portainer connection
+# ---------------------------------------------------------------------------
+
+# Portainer API URL — use the Traefik-routed domain once Traefik is deployed,
+# or fall back to direct HTTPS: https://x.x.x.x:9443
+export TF_VAR_portainer_endpoint="https://portainer.your-domain.com"
+
+# API key from Portainer UI: Account → Access tokens → Add token
+export TF_VAR_portainer_api_key="ptr_your-api-key-here"
+
+# Environment/endpoint ID in Portainer (local Docker = 1)
+# export TF_VAR_portainer_endpoint_id="1"
+
+# Set to true only when using a self-signed cert (direct :9443 access)
+# export TF_VAR_skip_ssl_verify="false"
+
+# ---------------------------------------------------------------------------
+# Git repository
+# ---------------------------------------------------------------------------
+# export TF_VAR_repo_url="https://github.com/locus313/homelab-gitops.git"
+# export TF_VAR_repo_base_path="/opt/homelab-gitops"
+
+# ---------------------------------------------------------------------------
+# Common stack variables
+# ---------------------------------------------------------------------------
+
+# Base domain for all Traefik-routed services
+export TF_VAR_traefik_base_domain="your-domain.com"
+
+# Base path for persistent Docker service data (NFS-mounted)
+# export TF_VAR_docker_base_path="/mnt/docker"
+
+# Timezone (default: America/Los_Angeles)
+# export TF_VAR_tz="America/Los_Angeles"
+
+# User/group IDs for container file ownership
+# export TF_VAR_puid="1000"
+# export TF_VAR_pgid="1000"
+
+# NFS media library mount point
+# export TF_VAR_media_path="/mnt/media"
+
+# NAS IP address (used in Traefik dynamic config for NAS-hosted services)
+export TF_VAR_nas_ip="x.x.x.x"
+
+# ---------------------------------------------------------------------------
+# Traefik / CloudNS DNS-01 challenge
+# ---------------------------------------------------------------------------
+export TF_VAR_cloudns_sub_auth_id="your-cloudns-sub-auth-id"
+export TF_VAR_cloudns_auth_password="your-cloudns-auth-password"
+# export TF_VAR_lego_propagation_timeout="600"
+
+# ---------------------------------------------------------------------------
+# Portainer EE license
+# ---------------------------------------------------------------------------
+export TF_VAR_portainer_license_key="your-portainer-ee-license-key"
+
+# ---------------------------------------------------------------------------
+# Gitea
+# ---------------------------------------------------------------------------
+export TF_VAR_gitea_db_password="your-secure-gitea-db-password"
+# export TF_VAR_gitea_db_name="gitea"
+# export TF_VAR_gitea_db_user="gitea"
+
+# ---------------------------------------------------------------------------
+# Gitea Mirror
+# ---------------------------------------------------------------------------
+export TF_VAR_better_auth_secret="your-32-plus-char-random-secret-here"
+
+# ---------------------------------------------------------------------------
+# Homarr
+# ---------------------------------------------------------------------------
+export TF_VAR_homarr_secret_encryption_key="your-32-char-hex-encryption-key-here"
+
+# ---------------------------------------------------------------------------
+# Beszel
+# ---------------------------------------------------------------------------
+# Retrieve from Beszel hub UI after first launch: Settings → Agent → Public key
+export TF_VAR_beszel_public_key="your-beszel-ed25519-public-key"
+
+# ---------------------------------------------------------------------------
+# Zerobyte
+# ---------------------------------------------------------------------------
+export TF_VAR_zerobyte_app_secret="your-secure-zerobyte-app-secret"
+
+# ---------------------------------------------------------------------------
+# Plex (optional — only needed for initial server claim)
+# ---------------------------------------------------------------------------
+# Claim token from https://www.plex.tv/claim — expires in 4 minutes
+# Clear this after initial Plex setup to avoid errors on re-deploy
+# export TF_VAR_plex_claim="claim-xxxxxxxxxxxxxxxxxxxx"
+
+# ---------------------------------------------------------------------------
+# Stirling-PDF
+# ---------------------------------------------------------------------------
+export TF_VAR_stirling_security_initiallogin_password="your-stirling-admin-password"
+# export TF_VAR_stirling_security_initiallogin_username="admin"
+
+# ---------------------------------------------------------------------------
+# Rackula
+# ---------------------------------------------------------------------------
+export TF_VAR_rackula_api_write_token="your-secure-rackula-api-write-token"
+export TF_VAR_rackula_local_password="your-secure-rackula-password"
+# export TF_VAR_rackula_local_username="admin"
+# export TF_VAR_rackula_auth_mode="none"
+# export TF_VAR_rackula_auth_session_secret=""
+
+# ---------------------------------------------------------------------------
+# MeTube (optional — override defaults if needed)
+# ---------------------------------------------------------------------------
+# export TF_VAR_metube_output_template="%(title)s.%(ext)s"
+# export TF_VAR_metube_ytdl_options="{}"
+
+# ---------------------------------------------------------------------------
+# HandBrake (optional)
+# ---------------------------------------------------------------------------
+# export TF_VAR_backup_path="/mnt/backups"
+
+# ---------------------------------------------------------------------------
+# Watchtower (optional)
+# ---------------------------------------------------------------------------
+# export TF_VAR_watchtower_cleanup="true"
