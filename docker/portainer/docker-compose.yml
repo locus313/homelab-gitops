@@ -1,0 +1,29 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:2.39.2
+    container_name: portainer
+    restart: unless-stopped
+    # Traefik routing is handled via dynamic config (traefik/config/dynamic/)
+    # because the Portainer backend uses HTTPS (self-signed) on port 9443.
+    # Port 9443 is also exposed directly as a fallback for initial setup.
+    networks:
+      - proxynet
+    ports:
+      - 9443:9443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Bind mount (not named volume) so Syncthing syncs Portainer state
+      # across hosts as part of the resilience strategy.
+      - ${DOCKER_BASE_PATH}/portainer:/data
+    environment:
+      TZ: ${TZ}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/api/status"]
+      interval: 30s
+      retries: 3
+      start_period: 40s
+      timeout: 10s
+
+networks:
+  proxynet:
+    external: true

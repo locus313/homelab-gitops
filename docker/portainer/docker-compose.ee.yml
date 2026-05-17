@@ -1,0 +1,12 @@
+# Portainer Business Edition override
+# Extends docker-compose.yml to use the EE image and activate the license key.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.ee.yml up -d
+#
+# In Portainer GitOps: add docker-compose.ee.yml as an additional compose file in the stack config.
+
+services:
+  portainer:
+    image: portainer/portainer-ee:2.39.2
+    command: --license-key ${PORTAINER_LICENSE_KEY}
