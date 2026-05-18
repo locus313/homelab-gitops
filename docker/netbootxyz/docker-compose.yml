@@ -18,20 +18,14 @@ services:
     volumes:
       - ${DOCKER_BASE_PATH}/netbootxyz/config:/config
       - ${DOCKER_BASE_PATH}/netbootxyz/assets:/assets
-      # Custom menu hookup — pure bind mounts of files NOT shipped by
-      # upstream, so menu/image upgrades cannot clobber them.
-      # autoexec.ipxe forces netboot.xyz.efi to chainload the local
-      # menu.ipxe over TFTP instead of fetching from boot.netboot.xyz
-      # over HTTPS (PXE works fully offline).
-      # local-vars.ipxe sets ${custom_url}, which makes the upstream
-      # menu surface a "Custom URL Menu" entry that chains
-      # ${custom_url}/custom.ipxe (served by nginx from /assets/).
-      # Note: the official image's init.sh already runs
-      # `chown -R nbxyz:nbxyz /config` and `/assets`, so no custom
-      # init hook is needed to satisfy dnsmasq --tftp-secure.
-      - ./autoexec.ipxe:/config/menus/autoexec.ipxe
-      - ./custom-menu/local-vars.ipxe:/config/menus/local-vars.ipxe
-      - ./custom-menu/custom.ipxe:/assets/custom-menu/custom.ipxe
+      # Custom menu files (autoexec.ipxe, local-vars.ipxe, custom.ipxe) are
+      # managed directly in the persistent config/assets volumes on the host.
+      # File bind mounts from the git repo are not used here due to a runc
+      # incompatibility (MS_BIND|MS_REC on files inside mounted volumes).
+      # To update custom files, copy them manually to:
+      #   /docker/netbootxyz/config/menus/autoexec.ipxe
+      #   /docker/netbootxyz/config/menus/local-vars.ipxe
+      #   /docker/netbootxyz/assets/custom-menu/custom.ipxe
     labels:
       - traefik.enable=true
       - traefik.http.services.netbootxyz.loadbalancer.server.port=3000

@@ -623,6 +623,7 @@ resource "portainer_stack" "netbootxyz" {
   repository_url            = var.repo_url
   repository_reference_name = "refs/heads/main"
   file_path_in_repository   = "docker/netbootxyz/docker-compose.yml"
+  support_relative_path     = true
 
   update_interval = "1h"
   pull_image      = true
