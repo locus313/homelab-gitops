@@ -5,8 +5,6 @@ services:
     restart: unless-stopped
     networks:
       - proxynet
-    devices:
-      - /dev/dri:/dev/dri
     volumes:
       - ${DOCKER_BASE_PATH}/handbrake:/config
       - ${BACKUP_PATH}:/storage/Backups
