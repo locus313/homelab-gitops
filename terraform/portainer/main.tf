@@ -552,6 +552,10 @@ resource "portainer_stack" "metube" {
     name  = "MEDIA_PATH"
     value = var.media_path
   }
+  env {
+    name  = "DOCKER_BASE_PATH"
+    value = var.docker_base_path
+  }
 }
 
 # ---------------------------------------------------------------------------

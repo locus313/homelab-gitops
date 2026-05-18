@@ -142,7 +142,7 @@ export TF_VAR_rackula_local_password="your-secure-rackula-password"
 # ---------------------------------------------------------------------------
 # MeTube (optional — override defaults if needed)
 # ---------------------------------------------------------------------------
-# export TF_VAR_metube_output_template="%(title)s.%(ext)s"
+# export TF_VAR_metube_output_template="YouTube.com - %(title)s.%(ext)s"
 # export TF_VAR_metube_ytdl_options="{}"
 
 # ---------------------------------------------------------------------------

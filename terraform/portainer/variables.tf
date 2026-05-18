@@ -219,7 +219,7 @@ variable "stirling_security_initiallogin_password" {
 variable "metube_output_template" {
   description = "yt-dlp output filename template for MeTube downloads"
   type        = string
-  default     = "%(title)s.%(ext)s"
+  default     = "YouTube.com - %(title)s.%(ext)s"
 }
 
 variable "metube_ytdl_options" {
