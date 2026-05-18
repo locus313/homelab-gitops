@@ -5,8 +5,6 @@ services:
     restart: unless-stopped
     # Uses host network for Plex server discovery and DLNA
     network_mode: host
-    devices:
-      - /dev/dri:/dev/dri
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
