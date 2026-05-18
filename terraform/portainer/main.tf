@@ -781,6 +781,79 @@ resource "portainer_stack" "rackula" {
 }
 
 # ---------------------------------------------------------------------------
+# Code-Server — browser-based VS Code with Tailscale integration
+# ---------------------------------------------------------------------------
+
+resource "portainer_stack" "code_server" {
+  name            = "code-server"
+  deployment_type = "standalone"
+  method          = "repository"
+  endpoint_id     = var.portainer_endpoint_id
+
+  repository_url            = var.repo_url
+  repository_reference_name = "refs/heads/main"
+  file_path_in_repository   = "docker/code-server/docker-compose.yml"
+  support_relative_path     = true
+
+  update_interval = "1h"
+  pull_image      = true
+  prune           = true
+
+  env {
+    name  = "DOCKER_BASE_PATH"
+    value = var.docker_base_path
+  }
+  env {
+    name  = "PUID"
+    value = local.puid_str
+  }
+  env {
+    name  = "PGID"
+    value = local.pgid_str
+  }
+  env {
+    name  = "TZ"
+    value = var.tz
+  }
+  env {
+    name  = "PASSWORD"
+    value = var.code_server_password
+  }
+  env {
+    name  = "SUDO_PASSWORD"
+    value = var.code_server_sudo_password
+  }
+  env {
+    name  = "DEFAULT_WORKSPACE"
+    value = var.code_server_default_workspace
+  }
+  env {
+    name  = "TS_AUTHKEY"
+    value = var.code_server_ts_authkey
+  }
+  env {
+    name  = "TS_EXTRA_ARGS"
+    value = var.code_server_ts_extra_args
+  }
+  env {
+    name  = "TS_SERVE_CONFIG"
+    value = "/config/code-server.json"
+  }
+  env {
+    name  = "TS_SOCKET"
+    value = "/var/run/tailscale/tailscaled.sock"
+  }
+  env {
+    name  = "TS_STATE_DIR"
+    value = "/var/lib/tailscale"
+  }
+  env {
+    name  = "TS_USERSPACE"
+    value = "false"
+  }
+}
+
+# ---------------------------------------------------------------------------
 # Watchtower — automated container image updates
 # ---------------------------------------------------------------------------
 

@@ -288,3 +288,37 @@ variable "watchtower_cleanup" {
   type        = string
   default     = "true"
 }
+
+# ---------------------------------------------------------------------------
+# Code-Server
+# ---------------------------------------------------------------------------
+
+variable "code_server_password" {
+  description = "Password for the code-server web interface"
+  type        = string
+  sensitive   = true
+}
+
+variable "code_server_sudo_password" {
+  description = "Sudo password for terminal access within code-server"
+  type        = string
+  sensitive   = true
+}
+
+variable "code_server_default_workspace" {
+  description = "Default workspace directory inside code-server"
+  type        = string
+  default     = "/config/workspace"
+}
+
+variable "code_server_ts_authkey" {
+  description = "Tailscale auth key for the code-server Tailscale sidecar"
+  type        = string
+  sensitive   = true
+}
+
+variable "code_server_ts_extra_args" {
+  description = "Extra arguments for the Tailscale sidecar (e.g. --advertise-tags)"
+  type        = string
+  default     = "--advertise-tags=tag:container --reset"
+}

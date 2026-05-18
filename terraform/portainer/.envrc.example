@@ -154,3 +154,13 @@ export TF_VAR_rackula_local_password="your-secure-rackula-password"
 # Watchtower (optional)
 # ---------------------------------------------------------------------------
 # export TF_VAR_watchtower_cleanup="true"
+
+# ---------------------------------------------------------------------------
+# Code-Server
+# ---------------------------------------------------------------------------
+export TF_VAR_code_server_password="your-secure-code-server-password"
+export TF_VAR_code_server_sudo_password="your-secure-sudo-password"
+# Tailscale auth key from https://login.tailscale.com/admin/settings/keys
+export TF_VAR_code_server_ts_authkey="tskey-auth-your-tailscale-auth-key"
+# export TF_VAR_code_server_default_workspace="/config/workspace"
+# export TF_VAR_code_server_ts_extra_args="--advertise-tags=tag:container --reset"
