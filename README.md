@@ -5,7 +5,7 @@ A comprehensive repository for managing self-hosted services using Docker Compos
 ## Technology Stack
 
 - **Containerization**: Docker, Docker Compose
-- **Reverse Proxy**: Traefik v3.6.7
+- **Reverse Proxy**: Traefik v3.7.1
 - **Orchestration**: Portainer (optional)
 - **Infrastructure as Code**: Terraform with HyperCore provider
 - **CI/CD**: GitHub Actions
@@ -19,6 +19,9 @@ A comprehensive repository for managing self-hosted services using Docker Compos
 - **Network Boot**: iVentoy, NetbootXYZ
 - **AI Services**: Open-WebUI (local LLM interface with Ollama backend)
 - **Container Management**: Watchtower (automated container updates)
+- **Version Control**: Gitea (self-hosted Git service with PostgreSQL backend), Gitea Mirror (automated repository mirroring)
+- **Remote Desktop**: Kasm Workspaces (browser-based Linux desktop with GPU acceleration)
+- **Infrastructure Visualization**: Rackula (drag-and-drop rack layout designer with persistent API sidecar)
 
 ## Project Architecture
 
@@ -48,7 +51,7 @@ graph LR
     NAS(["💾 NAS · Storj Node\n:14002"]):::external
     DOCKER[("🐳 /var/run/docker.sock")]:::dock
 
-    TRAEFIK["🔀 Traefik v3.6.11\n:80 HTTP→redirect\n:443 HTTPS+HTTP/3\n:8181 Dashboard"]:::traefik
+    TRAEFIK["🔀 Traefik v3.7.1\n:80 HTTP→redirect\n:443 HTTPS+HTTP/3\n:8181 Dashboard"]:::traefik
 
     INTERNET -->|":80 / :443"| TRAEFIK
     CLOUDNS -.->|"cert challenge"| TRAEFIK
@@ -60,6 +63,7 @@ graph LR
     TRAEFIK --> DESKTOP["🖥️ Remote Desktop\nWebtop :3000 🎮 · Kasm :KASM_PORT 🎮"]:::gpu
     TRAEFIK --> INFRA["⚙️ Infrastructure & Monitoring\nHome-Assistant :8123 · Beszel Hub :8090\nZerobyte :4096 · Watchtower · Storj-Node :14002"]:::group
     TRAEFIK --> BOOT["🔧 Network Boot / PXE\nNetbootXYZ UDP:69 + :3000 web\niVentoy UDP:69 + :26000"]:::group
+    TRAEFIK --> VCS["🐙 Version Control\nGitea :3000 · Gitea Mirror :4321"]:::group
     TRAEFIK -->|"dynamic config"| NAS
 
     HOSTNET["🔌 Host Network\nPlex :32400 🎮\nNetdata :19999\nBeszel Agent 🎮"]:::hostnet
@@ -217,6 +221,10 @@ Most services use these common environment variables:
 | **HandBrake** | `MEDIA_PATH`, `BACKUP_PATH` | Video transcoding storage |
 | **Code-Server** | `PASSWORD`, `TS_AUTHKEY` | IDE access and Tailscale |
 | **Storj Node** | `WALLET`, `EMAIL`, `ADDRESS`, `STORAGE`, `STORAGE_PATH` | Decentralized storage node operator settings |
+| **Gitea** | `GITEA_DB_NAME`, `GITEA_DB_USER`, `GITEA_DB_PASSWORD` | Git service PostgreSQL database credentials |
+| **Gitea Mirror** | `BETTER_AUTH_SECRET` | Auth secret for repository mirroring UI |
+| **Kasm** | `KASM_PORT`, `DOCKER_HUB_USERNAME`, `DOCKER_HUB_PASSWORD` | Kasm listen port and Docker Hub credentials |
+| **Rackula** | `RACKULA_API_WRITE_TOKEN`, `RACKULA_AUTH_MODE`, `RACKULA_AUTH_SESSION_SECRET` | Rack layout persistence API auth settings |
 
 Refer to each service's `.env.example` file for complete variable documentation.
 
@@ -235,6 +243,10 @@ homelab-gitops/
 │   ├── netdata/            # Real-time system monitoring
 │   ├── zerobyte/           # Backup automation with Restic
 │   ├── storj-node/         # Decentralized storage node
+│   ├── gitea/              # Self-hosted Git service (with PostgreSQL)
+│   ├── gitea-mirror/       # Automated repository mirroring
+│   ├── kasm/               # Browser-based Linux desktop (GPU)
+│   ├── rackula/            # Drag-and-drop rack layout designer
 │   ├── code-server/        # Browser-based IDE
 │   ├── webtop/             # Linux desktop environment in browser
 │   ├── networking-toolbox/ # Network diagnostics and utilities

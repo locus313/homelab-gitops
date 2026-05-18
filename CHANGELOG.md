@@ -2,6 +2,92 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-05-17]
+
+### Added
+- `terraform/portainer/` — initial Terraform configuration for managing a Portainer instance via the Portainer provider.
+- `docker/portainer/` — initial Docker Compose stack and Traefik dynamic configuration for Portainer CE.
+- `docker/portainer/config/dynamic/portainer.yaml` — Traefik dynamic router for the Portainer service.
+- `docker/code-server/` — added `.env.example` with all required environment variables for the Code-Server stack.
+- Terraform `homelab` module: added `nfs_backup_export` variable and updated cloud-init user-data template.
+- Terraform `homelab` module: added initial ScaleComputing / HyperCore VM provisioning configurations and templates.
+
+### Changed
+- Updated `README.md` to reflect current repository state: corrected Traefik version to `v3.7.1`, added Gitea, Gitea Mirror, Kasm, and Rackula to the Technology Stack, architecture diagram, env vars table, and project structure.
+
+### Fixed
+- `docker/gitea/docker-compose.yml` — corrected PostgreSQL data volume path, simplified healthcheck command, and added missing `start_period` to healthcheck configuration.
+- `docker/traefik/` — removed deprecated `LEGO_CA_SERVER` variable and updated DNS propagation timeout env var name.
+- `docker/plex/docker-compose.yml` — removed unnecessary `/dev/dri` device mapping; bumped image to `1.43.1.10611-1e34174b1` (manual update, Dependabot cannot handle Plex's non-standard versioning).
+- `docker/handbrake/docker-compose.yml` — removed unnecessary `/dev/dri` device mapping (GPU passthrough already handled by image).
+- `docker/metube/docker-compose.yml` — standardized `PUID`/`PGID` environment variable names and added missing state volume and env vars.
+- `docker/ombi/docker-compose.yml` — added missing resource limits configuration.
+- `docker/netbootxyz/docker-compose.yml` — clarified comments around custom menu file bind-mount management.
+- `docker/portainer/docker-compose.yml` — updated MeTube output template reference and added `DOCKER_BASE_PATH` environment variable.
+
+### Dependencies
+- Bumped `postgres` from 18.3 to 18.4 in `/docker/gitea`.
+- Bumped `ollama/ollama` from 0.23.4 to 0.24.0.
+- Bumped `rackulalives/rackula` from v0.9.4-persist to v0.9.5-persist.
+- Bumped `rackulalives/rackula-api` from 0.9.4 to 0.9.5.
+
+## [2026-05-16]
+
+### Added
+- Terraform `modules/cloud-images/`: added Ubuntu 26.04 LTS (Resolute Raccoon) cloud image support.
+
+## [2026-05-14]
+
+### Dependencies
+- Bumped `traefik` from v3.7.0 to v3.7.1.
+- Bumped `ollama/ollama` from 0.23.3 to 0.23.4.
+
+## [2026-05-13]
+
+### Dependencies
+- Bumped `ollama/ollama` from 0.23.2 to 0.23.3.
+- Bumped `nickfedor/watchtower` from 1.16.1 to 1.17.0.
+
+## [2026-05-11]
+
+### Dependencies
+- Bumped `homarr-labs/homarr` from v1.60.0 to v1.61.0.
+- Bumped `linuxserver/homeassistant` from 2026.5.0 to 2026.5.1.
+- Bumped `open-webui/open-webui` from v0.9.2 to v0.9.5.
+- Bumped `postgres` from 17.5 to 18.3 in `/docker/gitea` (major version upgrade).
+- Bumped Terraform `vultr/vultr` provider from 2.31.0 to 2.31.1.
+
+## [2026-05-10]
+
+### Fixed
+- `docker/traefik/config/traefik.yaml` — reverted log level from `DEBUG` back to `INFO` for production stability (temporary debug session on this date).
+
+## [2026-05-09]
+
+### Added
+- `docker/gitea/` — initial Docker Compose stack for self-hosted Gitea with a PostgreSQL sidecar, Traefik routing, and SSH passthrough on port 222.
+- `docker/gitea-mirror/` — initial Docker Compose stack for Gitea Mirror (automated repository mirroring UI using better-auth).
+- `docker/traefik/.env.example` — added `LEGO_PROPAGATION_TIMEOUT` variable for configuring DNS-01 challenge record propagation wait time.
+
+### Fixed
+- `docker/traefik/config/traefik.yaml` — added `delayBeforeCheck` (90 s) to `dnsChallenge` to improve reliability of DNS-01 certificate issuance on slow resolvers.
+- `docker/traefik/` — defaulted `LEGO_PROPAGATION_TIMEOUT` to 600 seconds in `.env.example`.
+
+## [2026-05-08]
+
+### Changed
+- `docker/netbootxyz/` — removed the `99-chown-custom-menu` ownership-fix init script; updated README to explain the revised TFTP permissions approach (files are now created with correct ownership rather than fixed at startup).
+
+### Dependencies
+- Bumped `stirling-tools/stirling-pdf` from 2.10.0 to 2.10.1.
+- Bumped `ollama/ollama` from 0.23.1 to 0.23.2.
+
+## [2026-05-07]
+
+### Dependencies
+- Bumped `lscr.io/linuxserver/code-server` from 4.117.0 to 4.118.0.
+- Bumped `lscr.io/linuxserver/homeassistant` from 2026.4.4 to 2026.5.0.
+
 ## [2026-05-06]
 
 ### Added
@@ -15,6 +101,233 @@ All notable changes to this project will be documented in this file.
 - Bumped `ghcr.io/netbootxyz/netbootxyz` from `0.7.6-nbxyz4` to `0.7.6-nbxyz18`.
 - Wired the custom menu and autoexec into `docker/netbootxyz/docker-compose.yml` as three read-only file bind mounts (`autoexec.ipxe`, `local-vars.ipxe` → `/config/menus/`; `custom.ipxe` → `/assets/custom-menu/`). All target paths are user-defined files that upstream never ships, so `MENU_VERSION` upgrades and image refreshes cannot clobber them — no init hook or post-deploy script required.
 - Updated `docker/netbootxyz/README.md` with the new design.
+
+### Dependencies
+- Bumped `traefik` from v3.6.15 to v3.7.0.
+- Bumped `ollama/ollama` from 0.23.0 to 0.23.1.
+
+## [2026-05-05]
+
+### Dependencies
+- Bumped `nicotsx/zerobyte` from v0.35.0 to v0.36.0.
+
+## [2026-05-04]
+
+### Dependencies
+- Bumped `homarr-labs/homarr` from v1.59.3 to v1.60.0.
+- Bumped `ollama/ollama` from 0.22.1 to 0.23.0.
+- Bumped `rackulalives/rackula` from v0.9.3-persist to v0.9.4-persist.
+- Bumped `rackulalives/rackula-api` from 0.9.3 to 0.9.4.
+
+## [2026-05-01]
+
+### Dependencies
+- Bumped `ollama/ollama` from 0.22.0 to 0.22.1.
+
+## [2026-04-30]
+
+### Dependencies
+- Bumped `traefik` from v3.6.14 to v3.6.15.
+
+## [2026-04-29]
+
+### Dependencies
+- Bumped `alexta69/metube` from 2026.04.26 to 2026.04.28.
+- Bumped `ollama/ollama` from 0.21.2 to 0.22.0.
+
+## [2026-04-28]
+
+### Dependencies
+- Bumped `netdata/netdata` from v2.10.2 to v2.10.3.
+
+## [2026-04-27]
+
+### Dependencies
+- Bumped `homarr-labs/homarr` from v1.59.2 to v1.59.3.
+- Bumped `linuxserver/homeassistant` from 2026.4.3 to 2026.4.4.
+- Bumped `alexta69/metube` from 2026.04.21 to 2026.04.26.
+- Bumped `open-webui/open-webui` from v0.9.1 to v0.9.2.
+- Bumped `stirling-tools/stirling-pdf` from 2.9.2 to 2.10.0.
+
+## [2026-04-24]
+
+### Dependencies
+- Bumped `linuxserver/code-server` from 4.116.0 to 4.117.0.
+- Bumped `ollama/ollama` from 0.21.1 to 0.21.2.
+
+## [2026-04-23]
+
+### Dependencies
+- Bumped `ollama/ollama` from 0.21.0 to 0.21.1.
+- Bumped `traefik` from v3.6.13 to v3.6.14.
+
+## [2026-04-22]
+
+### Dependencies
+- Bumped `alexta69/metube` from 2026.04.18 to 2026.04.21.
+- Bumped `open-webui/open-webui` from v0.9.0 to v0.9.1.
+
+## [2026-04-21]
+
+### Dependencies
+- Bumped `linuxserver/ombi` from 4.53.4 to 4.53.5.
+- Bumped `open-webui/open-webui` from v0.8.12 to v0.9.0.
+- Bumped `nicotsx/zerobyte` from v0.34.0 to v0.35.0.
+
+## [2026-04-20]
+
+### Dependencies
+- Bumped `homarr-labs/homarr` from v1.59.1 to v1.59.2.
+- Bumped `linuxserver/homeassistant` from 2026.4.2 to 2026.4.3.
+- Bumped `alexta69/metube` from 2026.04.16 to 2026.04.18.
+
+## [2026-04-19]
+
+### Dependencies
+- Bumped `linuxserver/code-server` from 4.115.0 to 4.116.0.
+- Bumped `linuxserver/kasm` from 1.18.0 to 1.18.1.
+- Bumped `alexta69/metube` from 2026.04.13 to 2026.04.16.
+- Bumped `ollama/ollama` from 0.20.7 to 0.21.0.
+
+## [2026-04-15]
+
+### Dependencies
+- Bumped `netdata/netdata` from v2.10.1 to v2.10.2.
+
+## [2026-04-14]
+
+### Dependencies
+- Bumped `homarr-labs/homarr` from v1.58.1 to v1.59.1.
+- Bumped `linuxserver/homeassistant` from 2026.4.1 to 2026.4.2.
+- Bumped `alexta69/metube` from 2026.04.10 to 2026.04.13.
+- Bumped `netdata/netdata` from v2.10.0 to v2.10.1.
+- Bumped `ollama/ollama` from 0.20.5 to 0.20.7.
+- Bumped `nicotsx/zerobyte` from v0.33.1 to v0.34.0.
+
+## [2026-04-10]
+
+### Dependencies
+- Bumped `linuxserver/code-server` from 4.114.1 to 4.115.0.
+- Bumped `alexta69/metube` from 2026.04.05 to 2026.04.10.
+- Bumped `netdata/netdata` from v2.9.0 to v2.10.0.
+- Bumped `ollama/ollama` from 0.20.3 to 0.20.5.
+
+## [2026-04-08]
+
+### Dependencies
+- Bumped `tailscale/tailscale` from v1.94.2 to v1.96.5.
+- Bumped `traefik` from v3.6.12 to v3.6.13.
+
+## [2026-04-07]
+
+### Dependencies
+- Bumped `linuxserver/code-server` from 4.114.0 to 4.114.1.
+- Bumped `ollama/ollama` from 0.20.2 to 0.20.3.
+
+## [2026-04-06]
+
+### Dependencies
+- Bumped `henrygd/beszel` and `henrygd/beszel-agent-intel` from 0.18.6 to 0.18.7.
+- Bumped `linuxserver/code-server` from 4.113.0 to 4.114.0.
+- Bumped `homarr-labs/homarr` from v1.57.1 to v1.58.1.
+- Bumped `linuxserver/homeassistant` from 2026.4.0 to 2026.4.1.
+- Bumped `alexta69/metube` from 2026.04.02 to 2026.04.05.
+- Bumped `ollama/ollama` from 0.20.0 to 0.20.2.
+- Bumped `stirling-tools/stirling-pdf` from 2.9.0 to 2.9.2.
+- Bumped `nicotsx/zerobyte` from v0.33.0 to v0.33.1.
+
+## [2026-04-04]
+
+### Added
+- Added Storj Node service (`docker/storj-node/`) — decentralized cloud storage node operator with environment-based configuration for wallet, address, bandwidth, and storage allocation.
+
+## [2026-04-03]
+
+### Dependencies
+- Bumped `linuxserver/code-server` from 4.112.0 to 4.113.0.
+- Bumped `ollama/ollama` from 0.19.0 to 0.20.0.
+- Bumped `stirling-tools/stirling-pdf` from 2.8.0 to 2.9.0.
+
+## [2026-04-02]
+
+### Dependencies
+- Bumped Terraform `scalecomputing/hypercore` provider from 1.2.0 to 1.4.0 across all modules.
+- Bumped `linuxserver/homeassistant` from 2026.3.4 to 2026.4.0.
+- Bumped `alexta69/metube` from 2026.03.21 to 2026.04.02.
+- Bumped `nicotsx/zerobyte` from v0.32.4 to v0.33.0.
+
+## [2026-04-01]
+
+### Dependencies
+- Bumped `nickfedor/watchtower` from 1.15.0 to 1.16.1.
+
+## [2026-03-30]
+
+### Dependencies
+- Bumped `henrygd/beszel` and `henrygd/beszel-agent-intel` from 0.18.4 to 0.18.6.
+- Bumped `homarr-labs/homarr` from v1.56.1 to v1.57.1.
+- Bumped `ollama/ollama` from 0.18.3 to 0.19.0.
+
+## [2026-03-27]
+
+### Dependencies
+- Bumped `open-webui/open-webui` from v0.8.11 to v0.8.12.
+- Bumped `traefik` from v3.6.11 to v3.6.12.
+
+## [2026-03-26]
+
+### Dependencies
+- Bumped `open-webui/open-webui` from v0.8.10 to v0.8.11.
+- Bumped `ollama/ollama` from 0.18.2 to 0.18.3.
+- Bumped `rackulalives/rackula` from v0.9.2-persist to v0.9.3-persist.
+- Bumped `rackulalives/rackula-api` from 0.9.2 to 0.9.3.
+
+## [2026-03-25]
+
+### Dependencies
+- Bumped `stirling-tools/stirling-pdf` from 2.7.3 to 2.8.0.
+- Bumped `nickfedor/watchtower` from 1.14.4 to 1.15.0.
+
+## [2026-03-24]
+
+### Dependencies
+- Bumped `linuxserver/homeassistant` from 2026.3.3 to 2026.3.4.
+- Bumped `nicotsx/zerobyte` from v0.32.3 to v0.32.4.
+
+## [2026-03-23]
+
+### Dependencies
+- Bumped `jlesage/handbrake` from v26.03.2 to v26.03.3.
+- Bumped `homarr-labs/homarr` from v1.56.0 to v1.56.1.
+- Bumped `linuxserver/homeassistant` from 2026.3.2 to 2026.3.3.
+- Bumped `alexta69/metube` from 2026.03.18 to 2026.03.21.
+- Bumped `nicotsx/zerobyte` from v0.32.1 to v0.32.3.
+
+## [2026-03-20]
+
+### Added
+- Added `homelab-architecture.excalidraw` — visual homelab architecture diagram.
+- Added Mermaid architecture diagram to `README.md` showing service topology, network groups, GPU services, and external dependencies.
+- Added `LICENSE` (MIT).
+
+## [2026-03-19]
+
+### Changed
+- Simplified Dependabot configuration for docker-compose, Terraform, and GitHub Actions ecosystems.
+- Added `line-length` rule to `.github/.yamllint` configuration.
+- Updated environment variable syntax in docker-compose files for consistency across services.
+- Added shell scripting best practices, Terraform conventions, and heredoc-prevention instruction files to `.github/instructions/`.
+- Added new Copilot skills and prompts (model recommendation, refactor planning, secret scanning, GitHub Copilot agent suggestions).
+- Added sub-issue, issue template, and secret scanning feature documentation.
+- Updated scripts and workflows for improved functionality and consistency.
+
+### Dependencies
+- Bumped `linuxserver/code-server` from 4.111.0 to 4.112.0.
+- Bumped `stirling-tools/stirling-pdf` from 2.7.2 to 2.7.3.
+- Bumped `traefik` from v3.6.10 to v3.6.11.
+- Bumped Terraform `scalecomputing/hypercore` from 1.2.0 to 1.4.0.
+- Bumped Terraform `hashicorp/random` from 3.7.2 to 3.8.1.
+- Bumped Terraform `vultr/vultr` from 2.27.1 to 2.30.1.
 
 ## [2026-03-18]
 
