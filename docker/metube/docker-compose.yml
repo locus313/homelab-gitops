@@ -8,8 +8,8 @@ services:
     volumes:
       - ${MEDIA_PATH}/Videos/converted:/downloads
     environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
+      UID: ${PUID}
+      GID: ${PGID}
       TZ: ${TZ}
       UMASK: ${UMASK}
       OUTPUT_TEMPLATE: ${OUTPUT_TEMPLATE}
