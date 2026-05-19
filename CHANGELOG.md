@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-05-19]
+
+### Added
+- `changelog` — Add workflow to automatically update CHANGELOG.md on push.
+
 ## [2026-05-18]
 
 ### Dependencies
