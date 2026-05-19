@@ -75,23 +75,34 @@ if [ -S /var/run/docker.sock ]; then
     setfacl --modify user:abc:rw /var/run/docker.sock 2>/dev/null || true
 fi
 
-# Install Homebrew packages if brew is available
+# Install Homebrew if not present
+if ! command -v brew &> /dev/null; then
+    echo "**** Installing Homebrew ****"
+    CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+# Ensure brew is on PATH (linuxbrew default location)
+if [ -x "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# Install Homebrew packages
 if command -v brew &> /dev/null; then
     echo "**** Installing Homebrew packages ****"
-    
+
     # Install lacework-cli
     if ! command -v lacework &> /dev/null; then
         echo "**** Installing lacework-cli ****"
         brew install lacework/tap/lacework-cli
     fi
-    
+
     # Install k9s
     if ! command -v k9s &> /dev/null; then
         echo "**** Installing k9s ****"
         brew install derailed/k9s/k9s
     fi
 else
-    echo "**** Homebrew not available, skipping brew-based packages ****"
+    echo "**** WARNING: Homebrew installation failed, skipping brew-based packages ****"
 fi
 
 echo "**** Additional tools installation complete ****"
