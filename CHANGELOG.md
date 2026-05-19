@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - `changelog` — Add workflow to automatically update CHANGELOG.md on push.
 
+### Dependencies
+- Bump the docker-images group across 3 directories with 3 updates (#338).
+
 ## [2026-05-18]
 
 ### Dependencies
