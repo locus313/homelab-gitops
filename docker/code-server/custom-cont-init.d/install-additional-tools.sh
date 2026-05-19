@@ -19,11 +19,15 @@ if ! command -v op &> /dev/null; then
 fi
 
 # Install Packer
+# The HashiCorp repo may already be configured by the code-server-terraform mod;
+# skip adding it again to avoid conflicting Signed-By values.
 if ! command -v packer &> /dev/null; then
     echo "**** Installing Packer ****"
-    curl -sS https://apt.releases.hashicorp.com/gpg | gpg --dearmor --output /etc/apt/keyrings/packer-keyring.gpg
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/packer-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/packer.list
-    apt-get update
+    if ! grep -r "apt.releases.hashicorp.com" /etc/apt/sources.list.d/ &> /dev/null; then
+        curl -sS https://apt.releases.hashicorp.com/gpg | gpg --dearmor --output /usr/share/keyrings/hashicorp.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+        apt-get update
+    fi
     apt-get -y install packer
 fi
 
