@@ -1,0 +1,55 @@
+---
+name: Update Changelog
+
+"on":
+  push:
+    branches:
+      - main
+    paths-ignore:
+      # Prevent an infinite loop: the auto-commit that only touches CHANGELOG.md
+      # will never satisfy a path outside this list, so the workflow won't re-fire.
+      - CHANGELOG.md
+      - .github/dependabot.yml
+
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Do NOT cancel in-progress runs — two rapid pushes should both record their
+  # entries; let the second run queue and execute after the first finishes.
+  cancel-in-progress: false
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Full history ensures git log can read commit bodies for Dependabot
+          # grouped-PR tables.
+          fetch-depth: 0
+
+      - name: Generate changelog entries
+        env:
+          # Passes the array of pushed commit SHAs to the Python script.
+          COMMIT_SHAS: ${{ toJson(github.event.commits.*.id) }}
+        run: python3 .github/scripts/update-changelog.py
+
+      - name: Commit updated CHANGELOG.md
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet CHANGELOG.md; then
+            echo "No changes to CHANGELOG.md — skipping commit."
+            exit 0
+          fi
+
+          git add CHANGELOG.md
+          git commit -m "docs: update CHANGELOG.md [skip ci]"
+          git push
