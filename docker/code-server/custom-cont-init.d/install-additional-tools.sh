@@ -78,7 +78,12 @@ fi
 # Install Homebrew as abc user (brew refuses to install as root)
 if [ ! -x "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
     echo "**** Installing Homebrew ****"
-    su - abc -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+    BREW_INSTALL_SCRIPT=$(mktemp /tmp/brew-install.XXXXXX.sh)
+    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh -o "${BREW_INSTALL_SCRIPT}"
+    chmod +x "${BREW_INSTALL_SCRIPT}"
+    # runuser avoids PAM authentication requirements during container init
+    NONINTERACTIVE=1 runuser -u abc -- bash "${BREW_INSTALL_SCRIPT}" || true
+    rm -f "${BREW_INSTALL_SCRIPT}"
 fi
 
 # Install Homebrew packages as abc user
@@ -88,13 +93,13 @@ if [ -x "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
     # Install lacework-cli
     if [ ! -x "/home/linuxbrew/.linuxbrew/bin/lacework" ]; then
         echo "**** Installing lacework-cli ****"
-        su - abc -c '/home/linuxbrew/.linuxbrew/bin/brew install lacework/tap/lacework-cli'
+        runuser -u abc -- /home/linuxbrew/.linuxbrew/bin/brew install lacework/tap/lacework-cli
     fi
 
     # Install k9s
     if [ ! -x "/home/linuxbrew/.linuxbrew/bin/k9s" ]; then
         echo "**** Installing k9s ****"
-        su - abc -c '/home/linuxbrew/.linuxbrew/bin/brew install derailed/k9s/k9s'
+        runuser -u abc -- /home/linuxbrew/.linuxbrew/bin/brew install derailed/k9s/k9s
     fi
 else
     echo "**** WARNING: Homebrew installation failed, skipping brew-based packages ****"
