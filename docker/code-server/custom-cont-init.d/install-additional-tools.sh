@@ -60,30 +60,30 @@ fi
 # Configure Docker group for abc user
 if [ -S /var/run/docker.sock ]; then
     echo "**** Configuring Docker access ****"
-    # Get the GID of docker socket
     DOCKER_SOCK_GID=$(stat -c '%g' /var/run/docker.sock)
-    
-    # Create docker group with matching GID if it doesn't exist
-    if ! getent group docker > /dev/null; then
-        groupadd -g ${DOCKER_SOCK_GID} docker
+
+    # Look up existing group by GID, or create docker group if none exists
+    DOCKER_GROUP=$(getent group "${DOCKER_SOCK_GID}" | cut -d: -f1)
+    if [ -z "${DOCKER_GROUP}" ]; then
+        groupadd -g "${DOCKER_SOCK_GID}" docker
+        DOCKER_GROUP=docker
     fi
-    
-    # Add abc user to docker group
-    usermod -aG docker abc
-    
+
+    usermod -aG "${DOCKER_GROUP}" abc
+
     # Set ACL for docker socket
     setfacl --modify user:abc:rw /var/run/docker.sock 2>/dev/null || true
 fi
 
 # Install Homebrew as abc user (brew refuses to install as root)
+# Pre-create the prefix and cache directories as root then hand ownership to abc
 if [ ! -x "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
     echo "**** Installing Homebrew ****"
-    BREW_INSTALL_SCRIPT=$(mktemp /tmp/brew-install.XXXXXX.sh)
-    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh -o "${BREW_INSTALL_SCRIPT}"
-    chmod +x "${BREW_INSTALL_SCRIPT}"
-    # runuser avoids PAM authentication requirements during container init
-    NONINTERACTIVE=1 runuser -u abc -- bash "${BREW_INSTALL_SCRIPT}" || true
-    rm -f "${BREW_INSTALL_SCRIPT}"
+    mkdir -p /home/linuxbrew/.linuxbrew
+    chown -R abc:abc /home/linuxbrew
+    mkdir -p /config/.cache/Homebrew
+    chown -R abc:abc /config/.cache/Homebrew
+    runuser -u abc -- bash -c 'NONINTERACTIVE=1 curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash' || true
 fi
 
 # Install Homebrew packages as abc user
