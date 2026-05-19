@@ -75,31 +75,26 @@ if [ -S /var/run/docker.sock ]; then
     setfacl --modify user:abc:rw /var/run/docker.sock 2>/dev/null || true
 fi
 
-# Install Homebrew if not present
-if ! command -v brew &> /dev/null; then
+# Install Homebrew as abc user (brew refuses to install as root)
+if [ ! -x "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
     echo "**** Installing Homebrew ****"
-    CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    su - abc -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
 fi
 
-# Ensure brew is on PATH (linuxbrew default location)
+# Install Homebrew packages as abc user
 if [ -x "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
-
-# Install Homebrew packages
-if command -v brew &> /dev/null; then
     echo "**** Installing Homebrew packages ****"
 
     # Install lacework-cli
-    if ! command -v lacework &> /dev/null; then
+    if [ ! -x "/home/linuxbrew/.linuxbrew/bin/lacework" ]; then
         echo "**** Installing lacework-cli ****"
-        brew install lacework/tap/lacework-cli
+        su - abc -c '/home/linuxbrew/.linuxbrew/bin/brew install lacework/tap/lacework-cli'
     fi
 
     # Install k9s
-    if ! command -v k9s &> /dev/null; then
+    if [ ! -x "/home/linuxbrew/.linuxbrew/bin/k9s" ]; then
         echo "**** Installing k9s ****"
-        brew install derailed/k9s/k9s
+        su - abc -c '/home/linuxbrew/.linuxbrew/bin/brew install derailed/k9s/k9s'
     fi
 else
     echo "**** WARNING: Homebrew installation failed, skipping brew-based packages ****"
