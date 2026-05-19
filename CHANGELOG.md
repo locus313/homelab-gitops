@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-05-18]
+
+### Dependencies
+- Bumped `gitea/gitea` to 1.26.1 in `/docker/gitea`.
+- Bumped `linuxserver/homeassistant` from 2026.5.1 to 2026.5.2.
+- Bumped Terraform `hashicorp/random` from 3.8.1 to 3.9.0 in `terraform/test`.
+- Bumped Terraform `vultr/vultr` from 2.31.1 to 2.31.2 in `terraform/test`.
+
 ## [2026-05-17]
 
 ### Added
@@ -338,6 +346,9 @@ All notable changes to this project will be documented in this file.
   - Supports optional local and OIDC authentication modes
   - Data persisted to `${DOCKER_BASE_PATH}/rackula/data`
 
+### Fixed
+- `docker/rackula/docker-compose.yml` — changed `RACKULA_LISTEN_PORT` and Traefik load balancer port from non-standard to `80` for correct HTTP routing.
+
 ### Dependencies
 - Bumped `stirling-tools/stirling-pdf` from 2.7.1 to 2.7.2.
 - Bumped `nicotsx/zerobyte` from v0.32.0 to v0.32.1.
@@ -387,6 +398,17 @@ All notable changes to this project will be documented in this file.
 - Bumped `homarr-labs/homarr` from v1.53.1 to v1.53.2.
 - Bumped `linuxserver/homeassistant` from 2026.2.2 to 2026.2.3.
 - Bumped `traefik` from 3.6.8 to 3.6.9.
+
+## [2026-02-11]
+
+### Fixed
+- `docker/kasm/docker-compose.yml` — added `/dev/dri` device mapping for Intel GPU hardware acceleration in Kasm.
+
+## [2026-02-07]
+
+### Fixed
+- `docker/kasm/docker-compose.yml` — added default `proxynet` network, setup wizard router with correct scheme, missing service label for Kasm router, and missing scheme configuration for setup service.
+- `docker/kasm/README.md` — updated reverse proxy configuration instructions and post-setup wizard steps.
 
 ## [2026-02-14]
 
