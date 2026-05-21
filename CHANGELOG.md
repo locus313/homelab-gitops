@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Add dh01 autoinstall assets and scripts for Ubuntu 26.04.
 - Enhance ISO discovery logic to support optional point releases.
 - Add per-host iPXE script for Ubuntu 26.04 autoinstall on dh01.
+- Add Proxmox VE unattended installation support with answer file and scripts.
 
 ### Fixed
 - Correct PASSWORD_HASH default value in .envrc.example.
