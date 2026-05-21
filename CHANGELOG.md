@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-05-21]
+
+### Added
+- Add dh01 autoinstall assets and scripts for Ubuntu 26.04.
+
 ## [2026-05-20]
 
 ### Dependencies
