@@ -1,0 +1,22 @@
+#!ipxe
+# Per-host override for the dh01 machine (DHCP hostname: pve01).
+# netbootxyz loads this file automatically — bypassing the interactive main
+# menu — when it sees a client whose DHCP hostname matches "pve01".
+#
+# Boots the Proxmox VE installer unattended; installs with hostname pve01.
+# Remove or rename this file after installation to restore normal menu boot.
+#
+# Prerequisites (run on the Docker host):
+#   sudo docker/netbootxyz/scripts/setup-proxmox.sh
+#   sudo docker/netbootxyz/scripts/generate-proxmox-answer.sh
+#
+# Deployed to: /docker/netbootxyz/config/menus/HOSTNAME-pve01.ipxe
+
+set base http://${next-server}:8080/proxmox-8
+set answerfile http://${next-server}:8080/pve01-proxmox/answer.toml
+
+echo Booting Proxmox VE installer for pve01 (unattended)...
+imgfree
+kernel ${base}/linux26 vga=791 video=vesafb:ywrap,mtrr initrd=initrd.magic ramdisk_size=16777216 rw quiet splash=silent proxmox-answer-file=${answerfile}
+initrd ${base}/initrd.magic
+boot

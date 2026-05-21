@@ -1,0 +1,25 @@
+# Copy this file to .envrc and fill in your values.
+# direnv will automatically export these when you cd into this directory.
+#   cp .envrc.example .envrc
+#   direnv allow
+
+# ---------------------------------------------------------------------------
+# Proxmox answer file variables
+# ---------------------------------------------------------------------------
+
+# Fully-qualified domain name for the Proxmox host.
+# Used as the hostname in the Proxmox installer (hostname.domain format).
+export PVE01_FQDN="pve01.home.lan"
+
+# Timezone — always America/Los_Angeles for homelab consistency.
+export TZ="America/Los_Angeles"
+
+# SHA-512 hash of the desired Proxmox root password.
+# Generate with: openssl passwd -6 'your_password'
+# Use single quotes here to prevent shell interpretation of $6$ prefix.
+export PROXMOX_ROOT_PASSWORD_HASH='$6$rounds=5000$yoursalthere$hashgoeshere'
+
+# Disk device to install Proxmox onto (use the full device name, no /dev/ prefix).
+# Check with: lsblk -d -o NAME,SIZE,MODEL  (run from a live environment)
+# Common values: sda, nvme0n1
+export PROXMOX_DISK="sda"
