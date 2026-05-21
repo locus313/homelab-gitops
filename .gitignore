@@ -45,3 +45,7 @@ terraform.rc
 
 # Ignore direnv environment configuration files
 .envrc
+
+# dh01 autoinstall — generated user-data contains sensitive values (NAS IP, password hash).
+# Generate with: docker/netbootxyz/scripts/generate-autoinstall-userdata.sh
+docker/netbootxyz/assets/dh01-autoinstall/user-data
