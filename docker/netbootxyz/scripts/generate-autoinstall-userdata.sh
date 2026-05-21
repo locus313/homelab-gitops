@@ -4,21 +4,29 @@
 # Usage:
 #   ./generate-autoinstall-userdata.sh [path/to/.envrc]
 #
-# If no argument is given, looks for .envrc in the dh01-autoinstall assets dir.
+# If no argument is given, looks for .envrc in the repo seed dir.
 # Copy .envrc.example → .envrc and fill in your values before running.
+#
+# The rendered user-data is written to ASSETS_DIR (default: /docker/netbootxyz/assets).
+# Override: ASSETS_DIR=/custom/path ./generate-autoinstall-userdata.sh
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SEED_DIR="${SCRIPT_DIR}/../assets/dh01-autoinstall"
-ENVRC="${1:-${SEED_DIR}/.envrc}"
-TEMPLATE="${SEED_DIR}/user-data.tpl"
-OUTPUT="${SEED_DIR}/user-data"
+# Repo dir: where the template and .envrc live
+REPO_SEED_DIR="${SCRIPT_DIR}/../assets/dh01-autoinstall"
+# Assets dir: where netbootxyz nginx serves files from
+ASSETS_DIR="${ASSETS_DIR:-/docker/netbootxyz/assets}"
+OUT_SEED_DIR="${ASSETS_DIR}/dh01-autoinstall"
+
+ENVRC="${1:-${REPO_SEED_DIR}/.envrc}"
+TEMPLATE="${REPO_SEED_DIR}/user-data.tpl"
+OUTPUT="${OUT_SEED_DIR}/user-data"
 
 # ---- load .envrc ----
 if [[ ! -f "${ENVRC}" ]]; then
   echo "ERROR: .envrc not found at ${ENVRC}" >&2
-  echo "  Copy ${SEED_DIR}/.envrc.example to .envrc and fill in the values." >&2
+  echo "  Copy ${REPO_SEED_DIR}/.envrc.example to .envrc and fill in the values." >&2
   exit 1
 fi
 
@@ -53,6 +61,7 @@ export PASSWORD_HASH DH01_HOSTNAME ADMIN_USER GITHUB_USER REPO_URL
 # Only substitute our specific variables — leave ${distro_id}, ${distro_codename}, etc. untouched.
 VARS='${NAS_IP}${NAS_MEDIA_EXPORT}${NAS_SHARED_EXPORT}${NAS_BACKUPS_EXPORT}${PASSWORD_HASH}${DH01_HOSTNAME}${ADMIN_USER}${GITHUB_USER}${REPO_URL}'
 
+mkdir -p "${OUT_SEED_DIR}"
 envsubst "${VARS}" < "${TEMPLATE}" > "${OUTPUT}"
 
 echo "Generated: ${OUTPUT}"
