@@ -42,10 +42,11 @@ boot || goto custom_menu
 #   ${DOCKER_BASE_PATH}/netbootxyz/assets/dh01-autoinstall/meta-data
 set base http://${next-server}:8080/ubuntu-26.04-server
 set seedurl http://${next-server}:8080/dh01-autoinstall
+set ds ds=nocloud-net\;seedfrom=${seedurl}/
 echo Booting Ubuntu 26.04 autoinstall for dh01
 echo Seed URL: ${seedurl}/
 imgfree
-kernel ${base}/vmlinuz autoinstall ip=dhcp quiet fsck.mode=skip url=${base}/ubuntu-26.04-live-server-amd64.iso ds=nocloud-net\;seedfrom=${seedurl}/
+kernel ${base}/vmlinuz autoinstall ip=dhcp quiet fsck.mode=skip url=${base}/ubuntu-26.04-live-server-amd64.iso ${ds}
 initrd ${base}/initrd
 boot || goto custom_menu
 
