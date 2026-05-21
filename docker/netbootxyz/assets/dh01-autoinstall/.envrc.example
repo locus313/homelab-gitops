@@ -22,7 +22,9 @@ export NAS_SHARED_EXPORT="/volume1/docker"
 export NAS_BACKUPS_EXPORT="/volume1/Backups"
 
 # Admin user password hash — generate with: openssl passwd -6 'yourpassword'
-export PASSWORD_HASH=""
+# IMPORTANT: use single quotes — the hash starts with $6$ which bash would
+# otherwise interpret as positional parameter 6 (unbound variable error).
+export PASSWORD_HASH=''
 
 # ---------------------------------------------------------------------------
 # Optional — sensible defaults are used if not set
