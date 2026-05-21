@@ -59,9 +59,10 @@ readonly BASE_URL="https://releases.ubuntu.com/${UBUNTU_MAJOR}"
 if [[ -z "${POINT}" ]]; then
     echo "==> Discovering latest Ubuntu ${UBUNTU_MAJOR} Live Server ISO..."
     LISTING="$(curl -fsSL "${BASE_URL}/")"
+    # Point release is optional: matches 26.04-live-server and 26.04.2-live-server
     ISO_NAME="$(echo "${LISTING}" \
-        | grep -oE "ubuntu-${UBUNTU_MAJOR//./\\.}\.[0-9]+-live-server-${ARCH}\.iso" \
-        | sort -V | tail -1)"
+        | grep -oE "ubuntu-${UBUNTU_MAJOR//./\\.}(\.[0-9]+)?-live-server-${ARCH}\.iso" \
+        | sort -V | tail -1 || true)"
     if [[ -z "${ISO_NAME}" ]]; then
         echo "ERROR: could not find a Ubuntu ${UBUNTU_MAJOR} Live Server ISO at ${BASE_URL}" >&2
         exit 1
