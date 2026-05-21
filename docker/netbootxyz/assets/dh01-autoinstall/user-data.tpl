@@ -18,9 +18,28 @@
 
 autoinstall:
   version: 1
-  # Empty list = no interactive sections; skips the language confirmation
-  # screen introduced in Ubuntu 24.04+ for unattended PXE installs.
   interactive-sections: []
+
+  # Ubuntu 24.04+ pauses in WAITING state before destructive installs.
+  # Background process to auto-confirm via the subiquity API.
+  # Tries both known path variants; the (yes|no) TTY prompt requires "yes\n".
+  early-commands:
+    - |
+      (
+        until grep -q WAITING /run/subiquity/server-state 2>/dev/null; do
+          sleep 1
+        done
+        # Try API (path varies by subiquity version)
+        for path in /meta/confirm /v2/meta/confirm; do
+          curl -sf -X POST --unix-socket /run/subiquity/socket \
+            "http://localhost${path}?tty=tty1" && break
+        done
+        # Fallback: answer the (yes|no) TTY prompt
+        for tty in /dev/tty1 /dev/tty2 /dev/console; do
+          printf 'yes\n' > "$tty" 2>/dev/null || true
+        done
+      ) &
+
   locale: en_US.UTF-8
   keyboard:
     layout: us
