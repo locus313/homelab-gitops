@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Correct PASSWORD_HASH default value in .envrc.example.
+- Update user-data script to clarify .envrc location and improve error messages.
 
 ## [2026-05-20]
 
