@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Correct PASSWORD_HASH default value in .envrc.example.
 - Update user-data script to clarify .envrc location and improve error messages.
 - Update iPXE kernel parameters to use fixed ISO name for Ubuntu 26.04 autoinstall.
+- Refactor iPXE kernel parameters to use variable for seed URL.
 
 ## [2026-05-20]
 
