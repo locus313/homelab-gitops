@@ -84,6 +84,10 @@ mkdir -p "${DEST}"
 MNT="${WORK}/mnt"
 mkdir -p "${MNT}"
 
+# Fixed ISO name served over HTTP (no point-release suffix so the iPXE url=
+# parameter never needs updating between point releases).
+readonly ISO_DEST="${DEST}/ubuntu-${UBUNTU_MAJOR}-live-server-${ARCH}.iso"
+
 extract() {
     local src="$1"
     if [[ -f "${src}/casper/vmlinuz" && -f "${src}/casper/initrd" ]]; then
@@ -110,6 +114,11 @@ else
     echo "  Install 7zip with: apt-get install -y 7zip" >&2
     exit 1
 fi
+
+# Copy ISO to assets dir so casper can fetch it via the url= kernel parameter.
+# The installer downloads it from the LAN nginx rather than looking for a CD-ROM.
+echo "==> Copying ISO to ${ISO_DEST}"
+cp -v "${ISO_PATH}" "${ISO_DEST}"
 
 # ---------------------------------------------------------------------------
 # Copy meta-data seed file from the repo (safe to commit; no secrets)

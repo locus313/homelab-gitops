@@ -13,6 +13,6 @@ set seedurl http://${next-server}:8080/dh01-autoinstall
 
 echo Booting Ubuntu 26.04 autoinstall for dh01 (per-host override)...
 imgfree
-kernel ${base}/vmlinuz autoinstall ip=dhcp quiet fsck.mode=skip ds=nocloud-net\;seedfrom=${seedurl}/
+kernel ${base}/vmlinuz autoinstall ip=dhcp quiet fsck.mode=skip url=${base}/ubuntu-26.04-live-server-amd64.iso ds=nocloud-net\;seedfrom=${seedurl}/
 initrd ${base}/initrd
 boot
