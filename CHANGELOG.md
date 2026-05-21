@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - Update iPXE kernel parameters to use fixed ISO name for Ubuntu 26.04 autoinstall.
 - Refactor iPXE kernel parameters to use variable for seed URL.
 - Add interactive-sections to Ubuntu autoinstall template.
+- Add early-commands to handle WAITING state in Ubuntu autoinstall.
 
 ## [2026-05-20]
 
