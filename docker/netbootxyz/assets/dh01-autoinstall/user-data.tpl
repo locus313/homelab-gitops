@@ -18,6 +18,9 @@
 
 autoinstall:
   version: 1
+  # Empty list = no interactive sections; skips the language confirmation
+  # screen introduced in Ubuntu 24.04+ for unattended PXE installs.
+  interactive-sections: []
   locale: en_US.UTF-8
   keyboard:
     layout: us
