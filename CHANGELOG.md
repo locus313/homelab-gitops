@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add dh01 autoinstall assets and scripts for Ubuntu 26.04.
 - Enhance ISO discovery logic to support optional point releases.
+- Add per-host iPXE script for Ubuntu 26.04 autoinstall on dh01.
 
 ### Fixed
 - Correct PASSWORD_HASH default value in .envrc.example.
