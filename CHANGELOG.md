@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 - Add dh01 autoinstall assets and scripts for Ubuntu 26.04.
 - Enhance ISO discovery logic to support optional point releases.
 
+### Fixed
+- Correct PASSWORD_HASH default value in .envrc.example.
+
 ## [2026-05-20]
 
 ### Dependencies
