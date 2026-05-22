@@ -127,6 +127,14 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# Copy the full ISO — the installer searches for /proxmox.iso in the
+# initramfs (loaded as a second initrd by iPXE) to find its package data.
+# Without this, the installer fails with "no device with valid ISO found".
+# ---------------------------------------------------------------------------
+echo "==> Copying full ISO to ${DEST}/proxmox.iso"
+cp -v "${ISO_PATH}" "${DEST}/proxmox.iso"
+
+# ---------------------------------------------------------------------------
 # Fix ownership so the netbootxyz nginx user can serve the files
 # ---------------------------------------------------------------------------
 NBXYZ_UID="$(docker exec netbootxyz id -u nbxyz 2>/dev/null || echo 1000)"
@@ -147,3 +155,4 @@ echo
 echo "Verify HTTP serving (from any host on the LAN):"
 echo "  curl -I http://<NETBOOTXYZ_HOST>:8080/proxmox-${MAJOR_SHORT}/linux26"
 echo "  curl -I http://<NETBOOTXYZ_HOST>:8080/proxmox-${MAJOR_SHORT}/initrd.magic"
+echo "  curl -I http://<NETBOOTXYZ_HOST>:8080/proxmox-${MAJOR_SHORT}/proxmox.iso"
