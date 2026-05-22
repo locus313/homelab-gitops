@@ -17,7 +17,7 @@ set answerfile http://${next-server}:8080/pve01-proxmox/answer.toml
 
 echo Booting Proxmox VE installer for pve01 (unattended)...
 imgfree
-kernel ${base}/linux26 ramdisk_size=16777216 rw quiet splash=silent proxmox-answer-file=${answerfile}
+kernel ${base}/linux26 vga=794 video=vesafb:ywrap,mtrr ramdisk_size=16777216 rw quiet splash=silent proxmox-answer-file=${answerfile}
 initrd ${base}/initrd.magic
 initrd ${base}/proxmox.iso /proxmox.iso
 boot
