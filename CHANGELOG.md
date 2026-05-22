@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Remove dh01 autoinstall configuration files and scripts.
 
+### Fixed
+- Update Proxmox answer file template and setup script for kebab-case consistency.
+
 ## [2026-05-21]
 
 ### Added
