@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-05-22]
+
+### Changed
+- Remove dh01 autoinstall configuration files and scripts.
+
 ## [2026-05-21]
 
 ### Added
