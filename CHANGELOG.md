@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Update Proxmox answer file template and setup script for kebab-case consistency.
 
+### Added
+- Add Proxmox ISO copying to setup script and update boot configuration.
+
 ## [2026-05-21]
 
 ### Added
