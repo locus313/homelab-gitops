@@ -44,11 +44,19 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - `changelog` — Add workflow to automatically update CHANGELOG.md on push.
+- `code-server` — Added `bootstrap.sh` to `custom-cont-init.d/`; on container start it fetches and executes `install-additional-tools.sh` directly from GitHub, so only the bootstrap file needs to be present on the host.
+
+### Fixed
+- `docker/code-server/docker-compose.yml` — updated `custom-cont-init.d` volume bind-mount path to use `${DOCKER_BASE_PATH}/code-server/custom-cont-init.d`.
+- `docker/code-server/custom-cont-init.d/install-additional-tools.sh` — improved Docker group configuration to look up GID from the socket at runtime and only create the group if one does not already exist; hardened Packer installation to skip adding the HashiCorp apt repo when it is already present (avoids conflicting `Signed-By` values from the `code-server-terraform` mod).
 
 ### Dependencies
 - Bump the docker-images group across 3 directories with 3 updates (#338).
 
 ## [2026-05-18]
+
+### Fixed
+- `docker/code-server/custom-cont-init.d/install-additional-tools.sh` — multiple improvements to Homebrew installation: script now runs `brew` as the `abc` user (via `su -c`), correctly handles package installation, and streamlines the overall install flow.
 
 ### Dependencies
 - Bumped `gitea/gitea` to 1.26.1 in `/docker/gitea`.
