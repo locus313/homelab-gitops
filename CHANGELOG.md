@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Update Proxmox answer file template and setup script for kebab-case consistency.
 - Remove unnecessary video parameters from Proxmox kernel boot command.
+- Add missing video parameters to Proxmox kernel boot command.
 
 ### Added
 - Add Proxmox ISO copying to setup script and update boot configuration.
