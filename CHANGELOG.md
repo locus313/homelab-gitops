@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Add Proxmox ISO copying to setup script and update boot configuration.
+- Add Proxmox VM module for dh01 Docker host setup with cloud-init support.
 
 ## [2026-05-21]
 
