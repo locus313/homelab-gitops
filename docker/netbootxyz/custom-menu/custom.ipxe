@@ -14,8 +14,6 @@
 menu Custom Menu
 item --gap                    -- ----- Local Live Images -----
 item fedora-44-live           Fedora 44 Workstation Live
-item --gap                    -- ----- dh01 Bare Metal Install -----
-item dh01-autoinstall         dh01 — Ubuntu 26.04 Autoinstall
 item --gap                    -- ----- Other -----
 item main                     Back to netboot.xyz main menu
 item shell                    iPXE shell
@@ -31,23 +29,6 @@ echo Booting Fedora 44 Live from ${base}
 imgfree
 kernel ${base}/vmlinuz initrd=initrd.img root=live:${base}/squashfs.img ro rd.live.image rd.live.overlay.overlayfs=1 rd.lvm=0 rd.luks=0 rd.md=0 rd.dm=0 ip=dhcp
 initrd ${base}/initrd.img
-boot || goto custom_menu
-
-:dh01-autoinstall
-# Boots the Ubuntu 26.04 live server installer with unattended autoinstall.
-# Prerequisites (run setup-ubuntu-autoinstall.sh on the host first):
-#   ${DOCKER_BASE_PATH}/netbootxyz/assets/ubuntu-26.04-server/vmlinuz
-#   ${DOCKER_BASE_PATH}/netbootxyz/assets/ubuntu-26.04-server/initrd
-#   ${DOCKER_BASE_PATH}/netbootxyz/assets/dh01-autoinstall/user-data  (edit NAS values first!)
-#   ${DOCKER_BASE_PATH}/netbootxyz/assets/dh01-autoinstall/meta-data
-set base http://${next-server}:8080/ubuntu-26.04-server
-set seedurl http://${next-server}:8080/dh01-autoinstall
-set ds ds=nocloud-net\;seedfrom=${seedurl}/
-echo Booting Ubuntu 26.04 autoinstall for dh01
-echo Seed URL: ${seedurl}/
-imgfree
-kernel ${base}/vmlinuz autoinstall ip=dhcp quiet fsck.mode=skip url=${base}/ubuntu-26.04-live-server-amd64.iso ${ds}
-initrd ${base}/initrd
 boot || goto custom_menu
 
 :main
