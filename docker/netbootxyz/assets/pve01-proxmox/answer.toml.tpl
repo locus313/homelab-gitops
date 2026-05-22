@@ -3,8 +3,8 @@
 # Variables are substituted by generate-proxmox-answer.sh using envsubst.
 # DO NOT commit .envrc — it contains the root password hash.
 #
-# Proxmox VE 8.1+ answer file reference:
-#   https://pve.proxmox.com/wiki/Automated_Installation
+# Uses kebab-case keys (PVE 8.4+ canonical format; snake_case deprecated in 9.0).
+# Reference: https://pve.proxmox.com/wiki/Automated_Installation
 
 [global]
 keyboard = "en-us"
@@ -12,7 +12,7 @@ country = "us"
 fqdn = "${PVE01_FQDN}"
 mailto = ""
 timezone = "${TZ}"
-root_password_hashed = "${PROXMOX_ROOT_PASSWORD_HASH}"
+root-password-hashed = "${PROXMOX_ROOT_PASSWORD_HASH}"
 
 [network]
 # DHCP — Proxmox will use whatever IP the DHCP server assigns.
@@ -28,7 +28,7 @@ source = "from-dhcp"
 
 [disk-setup]
 filesystem = "ext4"
-disk_list = ["${PROXMOX_DISK}"]
+disk-list = ["${PROXMOX_DISK}"]
 # ZFS alternative:
 #   filesystem = "zfs"
 #   zfs.raid = "raid0"

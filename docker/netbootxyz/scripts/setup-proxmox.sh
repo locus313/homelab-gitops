@@ -3,15 +3,16 @@
 # setup-proxmox.sh
 #
 # Downloads a Proxmox VE ISO and extracts the PXE boot files (kernel +
-# initrd.magic) into the netbootxyz assets directory so dh01 can be
-# installed over the network.
+# initrd) into the netbootxyz assets directory so dh01 can be installed
+# over the network.
 #
-# Proxmox VE 8.1+ supports fully unattended installation via an answer file
-# passed as a kernel parameter.  Run generate-proxmox-answer.sh after this
-# script to produce the answer file.
+# For PXE boot, the automated installation is triggered by the kernel cmdline
+# parameter proxmox-answer-file=URL (see HOSTNAME-pve01.ipxe).  The ISO does
+# not need to be "prepared" first — that step is only required when burning a
+# USB/CD where you cannot control kernel parameters.
 #
-# Run on the Docker host as root (or with sudo). Requires: curl, sudo,
-# mount or 7z.
+# Run on the Docker host as root (or with sudo).
+# Requires: curl, mount or 7z.
 #
 # Usage:
 #   sudo ./setup-proxmox.sh [VERSION]
@@ -27,7 +28,7 @@
 # Then generate the answer file before booting:
 #   1. cp docker/netbootxyz/assets/pve01-proxmox/.envrc.example \
 #         docker/netbootxyz/assets/pve01-proxmox/.envrc
-#   2. Edit .envrc — fill in DH01_FQDN, PROXMOX_ROOT_PASSWORD_HASH, PROXMOX_DISK
+#   2. Edit .envrc — fill in PVE01_FQDN, PROXMOX_ROOT_PASSWORD_HASH, PROXMOX_DISK
 #   3. sudo ./generate-proxmox-answer.sh
 #
 # Find available ISOs at: http://download.proxmox.com/iso/
@@ -69,33 +70,41 @@ mkdir -p "${DEST}"
 MNT="${WORK}/mnt"
 mkdir -p "${MNT}"
 
-# Proxmox VE ISOs place the PXE files in boot/ as linux26 + initrd.magic.
-# Newer releases may use different names — we detect them automatically.
+# Try multiple kernel/initrd names — the exact names vary across PVE versions.
+# Whatever we find, save with canonical names (linux26 / initrd.magic) so the
+# iPXE menu file never needs updating between PVE releases.
 extract() {
     local src="$1"
     local kernel="" initrd=""
 
-    # Kernel: prefer linux26, fall back to vmlinuz
-    if [[ -f "${src}/boot/linux26" ]]; then
-        kernel="${src}/boot/linux26"
-    elif [[ -f "${src}/boot/vmlinuz" ]]; then
-        kernel="${src}/boot/vmlinuz"
-    else
-        echo "ERROR: could not find boot/linux26 or boot/vmlinuz in ISO" >&2
+    for kname in linux26 vmlinuz linux; do
+        if [[ -f "${src}/boot/${kname}" ]]; then
+            kernel="${src}/boot/${kname}"
+            break
+        fi
+    done
+
+    for iname in initrd.magic initrd.img initrd; do
+        if [[ -f "${src}/boot/${iname}" ]]; then
+            initrd="${src}/boot/${iname}"
+            break
+        fi
+    done
+
+    if [[ -z "${kernel}" || -z "${initrd}" ]]; then
+        echo "ERROR: Could not identify kernel/initrd in ISO boot directory." >&2
+        echo "       Files found in boot/:" >&2
+        ls -lh "${src}/boot/" 2>/dev/null >&2 || true
+        echo "" >&2
+        echo "       All boot-related files (max depth 3):" >&2
+        find "${src}" -maxdepth 3 \( -name 'linux*' -o -name 'vmlinuz*' \
+            -o -name 'initrd*' -o -name '*.magic' \) 2>/dev/null | head -20 >&2
         return 1
     fi
 
-    # Initrd: always initrd.magic in Proxmox VE
-    if [[ -f "${src}/boot/initrd.magic" ]]; then
-        initrd="${src}/boot/initrd.magic"
-    else
-        echo "ERROR: could not find boot/initrd.magic in ISO" >&2
-        return 1
-    fi
-
-    echo "==> Copying kernel from ${kernel}"
+    echo "==> Copying kernel : $(basename "${kernel}") → ${DEST}/linux26"
     cp -v "${kernel}" "${DEST}/linux26"
-    echo "==> Copying initrd from ${initrd}"
+    echo "==> Copying initrd : $(basename "${initrd}") → ${DEST}/initrd.magic"
     cp -v "${initrd}" "${DEST}/initrd.magic"
 }
 
@@ -106,8 +115,10 @@ if mount -o loop,ro "${ISO_PATH}" "${MNT}" 2>/dev/null; then
     MNT=""
 elif command -v 7z >/dev/null 2>&1; then
     mkdir -p "${WORK}/iso/boot"
-    7z x -o"${WORK}/iso" "${ISO_PATH}" 'boot/linux26' 'boot/vmlinuz' \
-        'boot/initrd.magic' 2>/dev/null || true
+    7z x -o"${WORK}/iso" "${ISO_PATH}" \
+        'boot/linux26' 'boot/vmlinuz' 'boot/linux' \
+        'boot/initrd.magic' 'boot/initrd.img' 'boot/initrd' \
+        2>/dev/null || true
     extract "${WORK}/iso"
 else
     echo "ERROR: could not mount ISO (not root?) and 7z is not installed" >&2
@@ -130,7 +141,7 @@ echo
 echo "Next step — generate the answer file before booting:"
 echo "  1. cp ${REPO_DIR}/docker/netbootxyz/assets/pve01-proxmox/.envrc.example \\"
 echo "        ${REPO_DIR}/docker/netbootxyz/assets/pve01-proxmox/.envrc"
-echo "  2. Edit .envrc  (DH01_FQDN, PROXMOX_ROOT_PASSWORD_HASH, PROXMOX_DISK)"
+echo "  2. Edit .envrc  (PVE01_FQDN, PROXMOX_ROOT_PASSWORD_HASH, PROXMOX_DISK)"
 echo "  3. sudo ${REPO_DIR}/docker/netbootxyz/scripts/generate-proxmox-answer.sh"
 echo
 echo "Verify HTTP serving (from any host on the LAN):"
