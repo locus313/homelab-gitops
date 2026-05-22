@@ -13,6 +13,19 @@ export HC_AUTH_METHOD="local"
 export HC_TIMEOUT="60.0"
 
 # ---------------------------------------------------------------------------
+# Proxmox VE provider credentials (dh01 / pve01)
+# ---------------------------------------------------------------------------
+export PROXMOX_VE_ENDPOINT="https://pve01.home.lan:8006"
+# API token: create via Datacenter → Permissions → API Tokens → Add
+# Format: <user>@<realm>!<tokenname>=<secret>
+export PROXMOX_VE_API_TOKEN="root@pam!terraform=your-token-secret-here"
+# Skip TLS verification (Proxmox ships with a self-signed cert)
+export PROXMOX_VE_INSECURE="true"
+# SSH credentials — required for the provider to perform disk operations on the node
+export PROXMOX_VE_SSH_USERNAME="root"
+export PROXMOX_VE_SSH_PASSWORD="your-proxmox-root-password"
+
+# ---------------------------------------------------------------------------
 # Vultr Object Storage — Terraform S3 backend credentials
 # ---------------------------------------------------------------------------
 export AWS_ACCESS_KEY_ID="your-vultr-object-storage-access-key"
@@ -24,6 +37,9 @@ export AWS_SECRET_ACCESS_KEY="your-vultr-object-storage-secret-key"
 
 # IP address of the NAS providing NFS exports
 export TF_VAR_nas_ip="192.168.1.x"
+
+# IP or FQDN of the Proxmox node (pve01) — used by scp for cloud-init snippet uploads
+export TF_VAR_dh01_node_ip="192.168.1.x"
 
 # NFS export path on the NAS for the media library
 export TF_VAR_nas_media_export="/volume1/media"

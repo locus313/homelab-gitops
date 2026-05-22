@@ -1,5 +1,4 @@
 # ScaleComputing VM — Input Variables
-
 variable "vm_name" {
   description = "Name of the VM in ScaleComputing and as the system hostname"
   type        = string
@@ -99,4 +98,55 @@ variable "repo_url" {
   description = "Git URL of the homelab-gitops repository to clone onto the VM"
   type        = string
   default     = "https://github.com/locus313/homelab-gitops.git"
+}
+
+# ---------------------------------------------------------------------------
+# dh01 Proxmox VM variables
+# ---------------------------------------------------------------------------
+
+variable "dh01_vm_name" {
+  description = "Hostname of the Docker VM on pve01 (dh01 Proxmox node)"
+  type        = string
+  default     = "dh01"
+}
+
+variable "dh01_node_name" {
+  description = "Proxmox node name (set during Proxmox install via answer file DH01_FQDN short part)"
+  type        = string
+  default     = "pve01"
+}
+
+variable "dh01_vcpu" {
+  description = "vCPU cores for the dh01 VM"
+  type        = number
+  default     = 2
+}
+
+variable "dh01_memory_mib" {
+  description = "Memory allocation in MiB for the dh01 VM"
+  type        = number
+  default     = 6144 # 6 GB
+}
+
+variable "dh01_disk_size_gb" {
+  description = "OS disk size in GB for the dh01 VM"
+  type        = number
+  default     = 80
+}
+
+variable "dh01_datastore_id" {
+  description = "Proxmox storage ID for the dh01 VM disk (must support disk images)"
+  type        = string
+  default     = "local-lvm"
+}
+
+variable "dh01_snippets_datastore_id" {
+  description = "Proxmox storage ID with snippets + iso enabled (for cloud-init user-data)"
+  type        = string
+  default     = "local"
+}
+
+variable "dh01_node_ip" {
+  description = "IP or FQDN of pve01 — used by scp to upload cloud-init snippets"
+  type        = string
 }

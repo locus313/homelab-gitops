@@ -1,0 +1,105 @@
+Content-Type: multipart/mixed; boundary="//"
+MIME-Version: 1.0
+
+--//
+Content-Type: text/cloud-config; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="cloud-config.txt"
+
+#cloud-config
+
+hostname: ${name}
+manage_etc_hosts: localhost
+timezone: ${timezone}
+ssh_pwauth: true
+disable_root: true
+
+# Pre-create the docker group so it exists when the user is created below.
+groups:
+  - docker
+
+users:
+  - name: ${admin_user}
+    gecos: Homelab admin
+    groups: [sudo, docker]
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    shell: /bin/bash
+    lock_passwd: false
+    passwd: "${password}"
+    ssh_authorized_keys: ${ssh_authorized_keys}
+    ssh_import_id:
+      - ${ssh_import_id}
+
+package_update: true
+package_upgrade: true
+packages:
+  - ca-certificates
+  - curl
+  - git
+  - qemu-guest-agent
+  - unattended-upgrades
+package_reboot_if_required: true
+
+write_files:
+  # Disable root SSH login and enforce key-only authentication
+  - path: /etc/ssh/sshd_config.d/99-homelab.conf
+    permissions: "0600"
+    content: |
+      PermitRootLogin no
+      PasswordAuthentication no
+
+  # Enable automatic security updates
+  - path: /etc/apt/apt.conf.d/20auto-upgrades
+    permissions: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+      APT::Periodic::AutocleanInterval "7";
+
+  # Cap container log sizes to prevent disk fill
+  - path: /etc/docker/daemon.json
+    permissions: "0644"
+    content: |
+      {
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
+      }
+
+  # sysctl tuning for Docker workloads
+  - path: /etc/sysctl.d/99-homelab.conf
+    permissions: "0644"
+    content: |
+      net.ipv4.ip_forward = 1
+      vm.overcommit_memory = 1
+      fs.inotify.max_user_watches = 524288
+
+runcmd:
+  # Enable and start qemu-guest-agent (Proxmox integration)
+  - systemctl enable --now qemu-guest-agent
+
+  # Apply sysctl settings
+  - sysctl -p /etc/sysctl.d/99-homelab.conf
+
+  # Install Docker Engine
+  - install -m 0755 -d /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  - chmod a+r /etc/apt/keyrings/docker.asc
+  - |
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" \
+      > /etc/apt/sources.list.d/docker.list
+  - apt-get update -y
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  - systemctl enable --now docker
+
+  # Create the proxynet Docker network used by all homelab services
+  - docker network create proxynet || true
+
+  # Clone the homelab-gitops repo
+  - git clone ${repo_url} /opt/homelab-gitops || true
+  - chown -R ${admin_user}:${admin_user} /opt/homelab-gitops
+
+--//
