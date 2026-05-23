@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # Full history ensures git log can read commit bodies for Dependabot
           # grouped-PR tables.
