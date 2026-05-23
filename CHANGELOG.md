@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-05-23]
+
+### Dependencies
+- Bumped `actions/checkout` from 4 to 6.
+
 ## [2026-05-22]
 
 ### Changed
