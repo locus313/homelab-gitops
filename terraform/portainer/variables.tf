@@ -14,9 +14,14 @@ variable "portainer_api_key" {
 }
 
 variable "portainer_endpoint_id" {
-  description = "Portainer environment/endpoint ID to deploy stacks to (local = 1)"
+  description = "Portainer environment/endpoint ID to deploy stacks to (local = 1, i.e. dh02)"
   type        = number
   default     = 1
+}
+
+variable "dh01_endpoint_id" {
+  description = "Portainer environment/endpoint ID for dh01 (registered Portainer agent)"
+  type        = number
 }
 
 variable "skip_ssl_verify" {
@@ -321,4 +326,26 @@ variable "code_server_ts_extra_args" {
   description = "Extra arguments for the Tailscale sidecar (e.g. --advertise-tags)"
   type        = string
   default     = "--advertise-tags=tag:container --reset"
+}
+
+# ---------------------------------------------------------------------------
+# Netdata
+# ---------------------------------------------------------------------------
+
+variable "netdata_claim_token" {
+  description = "Netdata Cloud claim token for node registration (from app.netdata.cloud)"
+  type        = string
+  sensitive   = true
+}
+
+variable "netdata_claim_url" {
+  description = "Netdata Cloud claim URL"
+  type        = string
+  default     = "https://app.netdata.cloud"
+}
+
+variable "netdata_claim_rooms" {
+  description = "Netdata Cloud room ID(s) to add nodes to"
+  type        = string
+  default     = ""
 }

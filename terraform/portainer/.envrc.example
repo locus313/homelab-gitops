@@ -42,8 +42,11 @@ export TF_VAR_portainer_endpoint="https://portainer.your-domain.com"
 # API key from Portainer UI: Account → Access tokens → Add token
 export TF_VAR_portainer_api_key="ptr_your-api-key-here"
 
-# Environment/endpoint ID in Portainer (local Docker = 1)
+# Environment/endpoint ID in Portainer (local Docker = 1, i.e. dh02)
 # export TF_VAR_portainer_endpoint_id="1"
+
+# Endpoint ID for dh01 (registered Portainer agent — check Portainer UI → Environments)
+export TF_VAR_dh01_endpoint_id="your-dh01-endpoint-id"
 
 # Set to true only when using a self-signed cert (direct :9443 access)
 # export TF_VAR_skip_ssl_verify="false"
@@ -164,3 +167,11 @@ export TF_VAR_code_server_sudo_password="your-secure-sudo-password"
 export TF_VAR_code_server_ts_authkey="tskey-auth-your-tailscale-auth-key"
 # export TF_VAR_code_server_default_workspace="/config/workspace"
 # export TF_VAR_code_server_ts_extra_args="--advertise-tags=tag:container --reset"
+
+# ---------------------------------------------------------------------------
+# Netdata (deployed to both dh01 and dh02)
+# Get credentials from: https://app.netdata.cloud → Space → Connect Nodes
+# ---------------------------------------------------------------------------
+export TF_VAR_netdata_claim_token="your-netdata-cloud-claim-token"
+# export TF_VAR_netdata_claim_url="https://app.netdata.cloud"
+export TF_VAR_netdata_claim_rooms="your-netdata-room-id"

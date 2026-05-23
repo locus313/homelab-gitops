@@ -880,3 +880,81 @@ resource "portainer_stack" "watchtower" {
     value = var.watchtower_cleanup
   }
 }
+
+# ---------------------------------------------------------------------------
+# Netdata — real-time system monitoring (deployed to dh01 and dh02)
+# Uses host networking for deep system and Docker monitoring.
+# Both nodes auto-register to Netdata Cloud using their system hostname.
+# ---------------------------------------------------------------------------
+
+resource "portainer_stack" "netdata_dh01" {
+  name            = "netdata"
+  deployment_type = "standalone"
+  method          = "repository"
+  endpoint_id     = var.dh01_endpoint_id
+
+  repository_url            = var.repo_url
+  repository_reference_name = "refs/heads/main"
+  file_path_in_repository   = "docker/netdata/docker-compose.yml"
+
+  update_interval = "1h"
+  pull_image      = true
+  prune           = true
+
+  env {
+    name  = "DOCKER_BASE_PATH"
+    value = var.docker_base_path
+  }
+  env {
+    name  = "TZ"
+    value = var.tz
+  }
+  env {
+    name  = "NETDATA_CLAIM_TOKEN"
+    value = var.netdata_claim_token
+  }
+  env {
+    name  = "NETDATA_CLAIM_URL"
+    value = var.netdata_claim_url
+  }
+  env {
+    name  = "NETDATA_CLAIM_ROOMS"
+    value = var.netdata_claim_rooms
+  }
+}
+
+resource "portainer_stack" "netdata_dh02" {
+  name            = "netdata"
+  deployment_type = "standalone"
+  method          = "repository"
+  endpoint_id     = var.portainer_endpoint_id
+
+  repository_url            = var.repo_url
+  repository_reference_name = "refs/heads/main"
+  file_path_in_repository   = "docker/netdata/docker-compose.yml"
+
+  update_interval = "1h"
+  pull_image      = true
+  prune           = true
+
+  env {
+    name  = "DOCKER_BASE_PATH"
+    value = var.docker_base_path
+  }
+  env {
+    name  = "TZ"
+    value = var.tz
+  }
+  env {
+    name  = "NETDATA_CLAIM_TOKEN"
+    value = var.netdata_claim_token
+  }
+  env {
+    name  = "NETDATA_CLAIM_URL"
+    value = var.netdata_claim_url
+  }
+  env {
+    name  = "NETDATA_CLAIM_ROOMS"
+    value = var.netdata_claim_rooms
+  }
+}
