@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Dependencies
 - Bumped `actions/checkout` from 4 to 6.
 
+### Added
+- Add Netdata monitoring stack for dh01 and dh02 with configuration variables.
+
 ## [2026-05-22]
 
 ### Changed
