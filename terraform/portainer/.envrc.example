@@ -38,9 +38,12 @@ if ! bw status 2>/dev/null | grep -q '"status":"unlocked"'; then
   return 1
 fi
 
-_bw_password() { bw get password "$1" 2>/dev/null; }
-_bw_username() { bw get username "$1" 2>/dev/null; }
-_bw_field()    { bw get item "$1" 2>/dev/null | jq -r ".fields[] | select(.name==\"$2\") | .value"; }
+_bw_password() { printf '%s' "$_BW_ITEMS" | jq -r "[.[] | select(.name==\"$1\") | .login.password] | map(select(. != null)) | first // empty"; }
+_bw_username() { printf '%s' "$_BW_ITEMS" | jq -r "[.[] | select(.name==\"$1\") | .login.username] | map(select(. != null)) | first // empty"; }
+_bw_field()    { printf '%s' "$_BW_ITEMS" | jq -r "[.[] | select(.name==\"$1\") | .fields[]? | select(.name==\"$2\") | .value] | first // empty"; }
+
+# Fetch all items from the local vault cache in one call, then parse locally
+_BW_ITEMS=$(bw list items 2>/dev/null)
 
 # ---------------------------------------------------------------------------
 # Vultr Object Storage — Terraform S3 backend credentials
@@ -215,5 +218,6 @@ export TF_VAR_netdata_claim_token=$(_bw_password "Homelab - Netdata")
 # export TF_VAR_netdata_claim_url="https://app.netdata.cloud"
 export TF_VAR_netdata_claim_rooms=$(_bw_field "Homelab - Netdata" "rooms")
 
-# Clean up helpers
+# Clean up helpers and cached vault data
 unset -f _bw_password _bw_username _bw_field
+unset _BW_ITEMS
