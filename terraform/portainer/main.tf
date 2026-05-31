@@ -887,6 +887,62 @@ resource "portainer_stack" "watchtower" {
 # Both nodes auto-register to Netdata Cloud using their system hostname.
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Eonvelope — self-hostable email archive
+# ---------------------------------------------------------------------------
+
+resource "portainer_stack" "eonvelope" {
+  name            = "eonvelope"
+  deployment_type = "standalone"
+  method          = "repository"
+  endpoint_id     = var.portainer_endpoint_id
+
+  repository_url            = var.repo_url
+  repository_reference_name = "refs/heads/main"
+  file_path_in_repository   = "docker/eonvelope/docker-compose.yml"
+
+  update_interval = "1h"
+  pull_image      = true
+  prune           = true
+
+  env {
+    name  = "DOCKER_BASE_PATH"
+    value = var.docker_base_path
+  }
+  env {
+    name  = "TZ"
+    value = var.tz
+  }
+  env {
+    name  = "TRAEFIK_BASE_DOMAIN"
+    value = var.traefik_base_domain
+  }
+  env {
+    name  = "EONVELOPE_DB_NAME"
+    value = var.eonvelope_db_name
+  }
+  env {
+    name  = "EONVELOPE_DB_USER"
+    value = var.eonvelope_db_user
+  }
+  env {
+    name  = "EONVELOPE_DB_PASSWORD"
+    value = var.eonvelope_db_password
+  }
+  env {
+    name  = "EONVELOPE_DB_ROOT_PASSWORD"
+    value = var.eonvelope_db_root_password
+  }
+  env {
+    name  = "EONVELOPE_SECRET_KEY"
+    value = var.eonvelope_secret_key
+  }
+  env {
+    name  = "EONVELOPE_ADMIN_PASSWORD"
+    value = var.eonvelope_admin_password
+  }
+}
+
 resource "portainer_stack" "netdata_dh01" {
   name            = "netdata"
   deployment_type = "standalone"

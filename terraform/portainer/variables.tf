@@ -349,3 +349,43 @@ variable "netdata_claim_rooms" {
   type        = string
   default     = ""
 }
+
+# ---------------------------------------------------------------------------
+# Eonvelope
+# ---------------------------------------------------------------------------
+
+variable "eonvelope_db_name" {
+  description = "Eonvelope MariaDB database name"
+  type        = string
+  default     = "eonvelope"
+}
+
+variable "eonvelope_db_user" {
+  description = "Eonvelope MariaDB database user"
+  type        = string
+  default     = "eonvelope"
+}
+
+variable "eonvelope_db_password" {
+  description = "Eonvelope MariaDB database password"
+  type        = string
+  sensitive   = true
+}
+
+variable "eonvelope_db_root_password" {
+  description = "Eonvelope MariaDB root password"
+  type        = string
+  sensitive   = true
+}
+
+variable "eonvelope_secret_key" {
+  description = "Django secret key for Eonvelope (generate with: openssl rand -base64 50)"
+  type        = string
+  sensitive   = true
+}
+
+variable "eonvelope_admin_password" {
+  description = "Password for the default Eonvelope admin account"
+  type        = string
+  sensitive   = true
+}
