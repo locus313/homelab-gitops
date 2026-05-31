@@ -23,13 +23,34 @@
 #
 # NOTE: Portainer itself is bootstrapped manually and not managed here.
 # This workspace requires Portainer to be running before `terraform apply`.
+#
+# Secrets are pulled from Bitwarden. Unlock the vault before entering this directory:
+#   export BW_SESSION=$(bw unlock --raw)
+#
+# Requires: bw (Bitwarden CLI) and jq
+
+# ---------------------------------------------------------------------------
+# Bitwarden vault helpers
+# ---------------------------------------------------------------------------
+if ! bw status 2>/dev/null | grep -q '"status":"unlocked"'; then
+  log_error "Bitwarden vault is locked."
+  log_error "Run: export BW_SESSION=\$(bw unlock --raw)"
+  return 1
+fi
+
+_BW_ITEMS=$(bw list items 2>/dev/null)
+
+_bw_password() { printf '%s' "$_BW_ITEMS" | jq -r ".[] | select(.name==\"$1\") | .login.password"; }
+_bw_username() { printf '%s' "$_BW_ITEMS" | jq -r ".[] | select(.name==\"$1\") | .login.username"; }
+_bw_field()    { printf '%s' "$_BW_ITEMS" | jq -r ".[] | select(.name==\"$1\") | .fields[] | select(.name==\"$2\") | .value"; }
 
 # ---------------------------------------------------------------------------
 # Vultr Object Storage — Terraform S3 backend credentials
 # (same bucket as terraform/homelab — different state key)
+# Bitwarden item: "Homelab - Vultr S3"  (username: <access_key>, password: <secret_key>)
 # ---------------------------------------------------------------------------
-export AWS_ACCESS_KEY_ID="your-vultr-object-storage-access-key"
-export AWS_SECRET_ACCESS_KEY="your-vultr-object-storage-secret-key"
+export AWS_ACCESS_KEY_ID=$(_bw_username "Homelab - Vultr S3")
+export AWS_SECRET_ACCESS_KEY=$(_bw_password "Homelab - Vultr S3")
 
 # ---------------------------------------------------------------------------
 # Portainer connection
@@ -39,8 +60,10 @@ export AWS_SECRET_ACCESS_KEY="your-vultr-object-storage-secret-key"
 # or fall back to direct HTTPS: https://x.x.x.x:9443
 export TF_VAR_portainer_endpoint="https://portainer.your-domain.com"
 
+# Bitwarden item: "Homelab - Portainer"
+#   password: <api_key>  |  custom hidden field "license_key": <ee_license>
 # API key from Portainer UI: Account → Access tokens → Add token
-export TF_VAR_portainer_api_key="ptr_your-api-key-here"
+export TF_VAR_portainer_api_key=$(_bw_password "Homelab - Portainer")
 
 # Environment/endpoint ID in Portainer (local Docker = 1, i.e. dh02)
 # export TF_VAR_portainer_endpoint_id="1"
@@ -82,65 +105,78 @@ export TF_VAR_nas_ip="x.x.x.x"
 
 # ---------------------------------------------------------------------------
 # Traefik / CloudNS DNS-01 challenge
+# Bitwarden item: "Homelab - CloudNS"  (username: <sub_auth_id>, password: <auth_password>)
 # ---------------------------------------------------------------------------
-export TF_VAR_cloudns_sub_auth_id="your-cloudns-sub-auth-id"
-export TF_VAR_cloudns_auth_password="your-cloudns-auth-password"
+export TF_VAR_cloudns_sub_auth_id=$(_bw_username "Homelab - CloudNS")
+export TF_VAR_cloudns_auth_password=$(_bw_password "Homelab - CloudNS")
 # export TF_VAR_lego_propagation_timeout="600"
 
 # ---------------------------------------------------------------------------
 # Portainer EE license
+# Bitwarden item: "Homelab - Portainer"  (custom hidden field "license_key": <ee_license>)
 # ---------------------------------------------------------------------------
-export TF_VAR_portainer_license_key="your-portainer-ee-license-key"
+export TF_VAR_portainer_license_key=$(_bw_field "Homelab - Portainer" "license_key")
 
 # ---------------------------------------------------------------------------
 # Gitea
+# Bitwarden item: "Homelab - Gitea DB"  (password: <db_password>)
 # ---------------------------------------------------------------------------
-export TF_VAR_gitea_db_password="your-secure-gitea-db-password"
+export TF_VAR_gitea_db_password=$(_bw_password "Homelab - Gitea DB")
 # export TF_VAR_gitea_db_name="gitea"
 # export TF_VAR_gitea_db_user="gitea"
 
 # ---------------------------------------------------------------------------
 # Gitea Mirror
+# Bitwarden item: "Homelab - Gitea Mirror"  (password: <better_auth_secret>)
 # ---------------------------------------------------------------------------
-export TF_VAR_better_auth_secret="your-32-plus-char-random-secret-here"
+export TF_VAR_better_auth_secret=$(_bw_password "Homelab - Gitea Mirror")
 
 # ---------------------------------------------------------------------------
 # Homarr
+# Bitwarden item: "Homelab - Homarr"  (password: <32-char hex encryption key>)
 # ---------------------------------------------------------------------------
-export TF_VAR_homarr_secret_encryption_key="your-32-char-hex-encryption-key-here"
+export TF_VAR_homarr_secret_encryption_key=$(_bw_password "Homelab - Homarr")
 
 # ---------------------------------------------------------------------------
 # Beszel
-# ---------------------------------------------------------------------------
+# Bitwarden item: "Homelab - Beszel"  (password: <ed25519 public key>)
 # Retrieve from Beszel hub UI after first launch: Settings → Agent → Public key
-export TF_VAR_beszel_public_key="your-beszel-ed25519-public-key"
+# ---------------------------------------------------------------------------
+export TF_VAR_beszel_public_key=$(_bw_password "Homelab - Beszel")
 
 # ---------------------------------------------------------------------------
 # Zerobyte
+# Bitwarden item: "Homelab - Zerobyte"  (password: <app_secret>)
 # ---------------------------------------------------------------------------
-export TF_VAR_zerobyte_app_secret="your-secure-zerobyte-app-secret"
+export TF_VAR_zerobyte_app_secret=$(_bw_password "Homelab - Zerobyte")
 
 # ---------------------------------------------------------------------------
 # Plex (optional — only needed for initial server claim)
+# Bitwarden item: "Homelab - Plex"  (password: <claim_token>)
+# Claim token from https://www.plex.tv/claim — expires in 4 minutes.
+# Retrieve a fresh token, store it in Bitwarden, then uncomment before apply.
+# Clear/re-comment after initial Plex setup to avoid errors on re-deploy.
 # ---------------------------------------------------------------------------
-# Claim token from https://www.plex.tv/claim — expires in 4 minutes
-# Clear this after initial Plex setup to avoid errors on re-deploy
-# export TF_VAR_plex_claim="claim-xxxxxxxxxxxxxxxxxxxx"
+# export TF_VAR_plex_claim=$(_bw_password "Homelab - Plex")
 
 # ---------------------------------------------------------------------------
 # Stirling-PDF
+# Bitwarden item: "Homelab - Stirling PDF"  (password: <admin_password>)
 # ---------------------------------------------------------------------------
-export TF_VAR_stirling_security_initiallogin_password="your-stirling-admin-password"
+export TF_VAR_stirling_security_initiallogin_password=$(_bw_password "Homelab - Stirling PDF")
 # export TF_VAR_stirling_security_initiallogin_username="admin"
 
 # ---------------------------------------------------------------------------
 # Rackula
+# Bitwarden item: "Homelab - Rackula"
+#   password: <local_password>  |  custom hidden field "api_write_token": <token>
 # ---------------------------------------------------------------------------
-export TF_VAR_rackula_api_write_token="your-secure-rackula-api-write-token"
-export TF_VAR_rackula_local_password="your-secure-rackula-password"
+export TF_VAR_rackula_api_write_token=$(_bw_field "Homelab - Rackula" "api_write_token")
+export TF_VAR_rackula_local_password=$(_bw_password "Homelab - Rackula")
 # export TF_VAR_rackula_local_username="admin"
 # export TF_VAR_rackula_auth_mode="none"
-# export TF_VAR_rackula_auth_session_secret=""
+# Bitwarden item: "Homelab - Rackula"  (custom hidden field "auth_session_secret": <secret>)
+# export TF_VAR_rackula_auth_session_secret=$(_bw_field "Homelab - Rackula" "auth_session_secret")
 
 # ---------------------------------------------------------------------------
 # MeTube (optional — override defaults if needed)
@@ -160,18 +196,27 @@ export TF_VAR_rackula_local_password="your-secure-rackula-password"
 
 # ---------------------------------------------------------------------------
 # Code-Server
+# Bitwarden item: "Homelab - Code-Server"
+#   password: <code_server_password>  |  custom hidden fields:
+#   "sudo_password": <sudo_password>  |  "ts_authkey": tskey-auth-...
 # ---------------------------------------------------------------------------
-export TF_VAR_code_server_password="your-secure-code-server-password"
-export TF_VAR_code_server_sudo_password="your-secure-sudo-password"
+export TF_VAR_code_server_password=$(_bw_password "Homelab - Code-Server")
+export TF_VAR_code_server_sudo_password=$(_bw_field "Homelab - Code-Server" "sudo_password")
 # Tailscale auth key from https://login.tailscale.com/admin/settings/keys
-export TF_VAR_code_server_ts_authkey="tskey-auth-your-tailscale-auth-key"
+export TF_VAR_code_server_ts_authkey=$(_bw_field "Homelab - Code-Server" "ts_authkey")
 # export TF_VAR_code_server_default_workspace="/config/workspace"
 # export TF_VAR_code_server_ts_extra_args="--advertise-tags=tag:container --reset"
 
 # ---------------------------------------------------------------------------
 # Netdata (deployed to both dh01 and dh02)
+# Bitwarden item: "Homelab - Netdata"
+#   password: <claim_token>  |  custom hidden field "rooms": <room_id>
 # Get credentials from: https://app.netdata.cloud → Space → Connect Nodes
 # ---------------------------------------------------------------------------
-export TF_VAR_netdata_claim_token="your-netdata-cloud-claim-token"
+export TF_VAR_netdata_claim_token=$(_bw_password "Homelab - Netdata")
 # export TF_VAR_netdata_claim_url="https://app.netdata.cloud"
-export TF_VAR_netdata_claim_rooms="your-netdata-room-id"
+export TF_VAR_netdata_claim_rooms=$(_bw_field "Homelab - Netdata" "rooms")
+
+# Clean up helpers and cached vault data
+unset -f _bw_password _bw_username _bw_field
+unset _BW_ITEMS

@@ -2,34 +2,58 @@
 # direnv will automatically export these when you cd into this directory.
 #   cp .envrc.example .envrc
 #   direnv allow
+#
+# Secrets are pulled from Bitwarden. Unlock the vault before entering this directory:
+#   export BW_SESSION=$(bw unlock --raw)
+#
+# Requires: bw (Bitwarden CLI) and jq
+
+# ---------------------------------------------------------------------------
+# Bitwarden vault helpers
+# ---------------------------------------------------------------------------
+if ! bw status 2>/dev/null | grep -q '"status":"unlocked"'; then
+  log_error "Bitwarden vault is locked."
+  log_error "Run: export BW_SESSION=\$(bw unlock --raw)"
+  return 1
+fi
+
+_BW_ITEMS=$(bw list items 2>/dev/null)
+
+_bw_password() { printf '%s' "$_BW_ITEMS" | jq -r ".[] | select(.name==\"$1\") | .login.password"; }
+_bw_username() { printf '%s' "$_BW_ITEMS" | jq -r ".[] | select(.name==\"$1\") | .login.username"; }
+_bw_field()    { printf '%s' "$_BW_ITEMS" | jq -r ".[] | select(.name==\"$1\") | .fields[] | select(.name==\"$2\") | .value"; }
 
 # ---------------------------------------------------------------------------
 # ScaleComputing HyperCore provider credentials
+# Bitwarden item: "Homelab - HyperCore"  (username: terraform, password: <hc_password>)
 # ---------------------------------------------------------------------------
 export HC_HOST="https://your-scalecomputing-cluster.example.com"
 export HC_USERNAME="your-username"
-export HC_PASSWORD="your-password"
+export HC_PASSWORD=$(_bw_password "Homelab - HyperCore")
 export HC_AUTH_METHOD="local"
 export HC_TIMEOUT="60.0"
 
 # ---------------------------------------------------------------------------
 # Proxmox VE provider credentials (dh01 / pve01)
+# Bitwarden item: "Homelab - Proxmox VE"
+#   username: root  |  password: <ssh_password>
+#   custom hidden field "api_token": root@pam!terraform=<uuid>
+# Create token via: Datacenter → Permissions → API Tokens → Add
 # ---------------------------------------------------------------------------
 export PROXMOX_VE_ENDPOINT="https://pve01.home.lan:8006"
-# API token: create via Datacenter → Permissions → API Tokens → Add
-# Format: <user>@<realm>!<tokenname>=<secret>
-export PROXMOX_VE_API_TOKEN="root@pam!terraform=your-token-secret-here"
+export PROXMOX_VE_API_TOKEN=$(_bw_field "Homelab - Proxmox VE" "api_token")
 # Skip TLS verification (Proxmox ships with a self-signed cert)
 export PROXMOX_VE_INSECURE="true"
 # SSH credentials — required for the provider to perform disk operations on the node
-export PROXMOX_VE_SSH_USERNAME="root"
-export PROXMOX_VE_SSH_PASSWORD="your-proxmox-root-password"
+export PROXMOX_VE_SSH_USERNAME=$(_bw_username "Homelab - Proxmox VE")
+export PROXMOX_VE_SSH_PASSWORD=$(_bw_password "Homelab - Proxmox VE")
 
 # ---------------------------------------------------------------------------
 # Vultr Object Storage — Terraform S3 backend credentials
+# Bitwarden item: "Homelab - Vultr S3"  (username: <access_key>, password: <secret_key>)
 # ---------------------------------------------------------------------------
-export AWS_ACCESS_KEY_ID="your-vultr-object-storage-access-key"
-export AWS_SECRET_ACCESS_KEY="your-vultr-object-storage-secret-key"
+export AWS_ACCESS_KEY_ID=$(_bw_username "Homelab - Vultr S3")
+export AWS_SECRET_ACCESS_KEY=$(_bw_password "Homelab - Vultr S3")
 
 # ---------------------------------------------------------------------------
 # Required Terraform variables (no defaults)
@@ -83,3 +107,7 @@ export TF_VAR_nas_shared_export="/volume1/docker"
 
 # System timezone (default: America/Los_Angeles)
 # export TF_VAR_timezone="America/Los_Angeles"
+
+# Clean up helpers and cached vault data
+unset -f _bw_password _bw_username _bw_field
+unset _BW_ITEMS
