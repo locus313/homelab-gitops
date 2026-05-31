@@ -104,6 +104,13 @@ write_files:
       # Prefer RAM; only use swap under real memory pressure
       vm.swappiness=10
 
+  # Weekly cron job to remove unused Docker images (dangling + unreferenced)
+  - path: /etc/cron.d/docker-prune
+    permissions: "0644"
+    content: |
+      # Remove unused Docker images every Sunday at 03:30
+      30 3 * * 0 root docker image prune -af --force >> /var/log/docker-prune.log 2>&1
+
 # runcmd runs once on first boot after packages are installed
 runcmd:
   # Apply PermitRootLogin no + PasswordAuthentication no immediately

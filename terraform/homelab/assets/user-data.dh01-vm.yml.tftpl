@@ -77,6 +77,13 @@ write_files:
       vm.overcommit_memory = 1
       fs.inotify.max_user_watches = 524288
 
+  # Weekly cron job to remove unused Docker images (dangling + unreferenced)
+  - path: /etc/cron.d/docker-prune
+    permissions: "0644"
+    content: |
+      # Remove unused Docker images every Sunday at 03:30
+      30 3 * * 0 root docker image prune -af --force >> /var/log/docker-prune.log 2>&1
+
 runcmd:
   # Enable and start qemu-guest-agent (Proxmox integration)
   - systemctl enable --now qemu-guest-agent
