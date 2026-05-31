@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Add Eonvelope stack configuration and related variables.
 - Add weekly cron job to prune unused Docker images.
 - Enhance .envrc.example files with Bitwarden integration for secrets management.
+- Refactor Bitwarden helper functions in .envrc.example files for improved clarity.
 
 ## [2026-05-29]
 
