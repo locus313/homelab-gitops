@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-05-31]
+
+### Added
+- Add initial Eonvelope configuration files including .env.example, README.md, and docker-compose.yml.
+
 ## [2026-05-29]
 
 ### Dependencies
