@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Add weekly cron job to prune unused Docker images.
 - Enhance .envrc.example files with Bitwarden integration for secrets management.
 - Refactor Bitwarden helper functions in .envrc.example files for improved clarity.
+- Refactor Bitwarden helper functions in .envrc.example files for improved performance and clarity.
 
 ## [2026-05-29]
 
