@@ -1,6 +1,6 @@
 services:
   eonvelope:
-    image: dacid99/eonvelope:0.7.0
+    image: dacid99/eonvelope:0.7.1
     container_name: eonvelope
     restart: unless-stopped
     depends_on:
