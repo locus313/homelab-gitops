@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Bump rackulalives/rackula in /docker/rackula (#352).
 - Bump rackulalives/rackula-api in /docker/rackula (#351).
 - Bumped `mariadb` from 11.4 to 12.3 in `/docker/eonvelope`.
+- Bump the docker-images group across 6 directories with 7 updates (#349).
 
 ## [2026-05-31]
 
