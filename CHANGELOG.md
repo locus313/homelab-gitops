@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bump the terraform-providers group across 2 directories with 2 updates (#353).
+- Bump rackulalives/rackula in /docker/rackula (#352).
 
 ## [2026-05-31]
 
