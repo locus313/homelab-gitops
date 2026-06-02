@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-06-02]
+
+### Dependencies
+- Bump the terraform-providers group across 2 directories with 2 updates (#353).
+
 ## [2026-05-31]
 
 ### Added
