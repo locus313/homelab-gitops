@@ -31,7 +31,7 @@ services:
       - traefik.http.routers.eonvelope.tls.certresolver=cloudns
 
   eonvelope-db:
-    image: mariadb:11.4
+    image: mariadb:12.3
     container_name: eonvelope-db
     restart: unless-stopped
     networks:
