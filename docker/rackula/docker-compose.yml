@@ -1,6 +1,6 @@
 services:
   rackula:
-    image: ghcr.io/rackulalives/rackula:v0.10.1-persist
+    image: ghcr.io/rackulalives/rackula:v26.6.0-persist
     container_name: rackula
     restart: unless-stopped
     networks:
