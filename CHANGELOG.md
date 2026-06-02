@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Bump the terraform-providers group across 2 directories with 2 updates (#353).
 - Bump rackulalives/rackula in /docker/rackula (#352).
 - Bump rackulalives/rackula-api in /docker/rackula (#351).
+- Bumped `mariadb` from 11.4 to 12.3 in `/docker/eonvelope`.
 
 ## [2026-05-31]
 
