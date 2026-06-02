@@ -23,7 +23,7 @@ services:
       - traefik.http.routers.rackula.tls.certresolver=cloudns
 
   rackula-api:
-    image: ghcr.io/rackulalives/rackula-api:0.10.1
+    image: ghcr.io/rackulalives/rackula-api:26.6.0
     container_name: rackula-api
     restart: unless-stopped
     networks:
