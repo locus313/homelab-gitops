@@ -1,6 +1,6 @@
 services:
   portainer:
-    image: portainer/portainer-ce:2.39.2
+    image: portainer/portainer-ce:2.39.3
     container_name: portainer
     restart: unless-stopped
     # Traefik routing is handled via dynamic config (traefik/config/dynamic/)
