@@ -13,6 +13,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-open_archive}
       POSTGRES_USER: ${POSTGRES_USER:-admin}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_URL: ${DATABASE_URL}
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
       MEILI_HOST: http://meilisearch:7700
       REDIS_HOST: valkey

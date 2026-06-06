@@ -10,6 +10,7 @@ locals {
   # Fully-qualified URLs derived from base domain
   zerobyte_base_url        = "https://zerobyte.${var.traefik_base_domain}"
   open_archiver_app_url    = "https://open-archiver.${var.traefik_base_domain}"
+  open_archiver_db_url     = "postgresql://${var.open_archiver_postgres_user}:${urlencode(var.open_archiver_postgres_password)}@postgres:5432/${var.open_archiver_postgres_db}"
 
   # Portainer-managed filesystem paths for stacks that use relative bind mounts.
   # Portainer clones/syncs the stack directory here on each GitOps update so
@@ -977,6 +978,10 @@ resource "portainer_stack" "open_archiver" {
   env {
     name  = "POSTGRES_PASSWORD"
     value = var.open_archiver_postgres_password
+  }
+  env {
+    name  = "DATABASE_URL"
+    value = local.open_archiver_db_url
   }
   env {
     name  = "MEILI_MASTER_KEY"
