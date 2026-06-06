@@ -6,8 +6,30 @@ services:
     networks:
       - proxynet
       - open-archiver-net
-    env_file:
-      - .env
+    environment:
+      NODE_ENV: production
+      APP_URL: ${APP_URL}
+      ORIGIN: ${ORIGIN}
+      DATABASE_URL: ${DATABASE_URL}
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_HOST: http://meilisearch:7700
+      REDIS_HOST: valkey
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_TLS_ENABLED: "false"
+      STORAGE_TYPE: ${STORAGE_TYPE:-local}
+      STORAGE_LOCAL_ROOT_PATH: ${STORAGE_LOCAL_ROOT_PATH}
+      BODY_SIZE_LIMIT: ${BODY_SIZE_LIMIT:-100M}
+      STORAGE_ENCRYPTION_KEY: ${STORAGE_ENCRYPTION_KEY:-}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: "7d"
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      TIKA_URL: http://tika:9998
+      ENABLE_DELETION: ${ENABLE_DELETION:-false}
+      SYNC_FREQUENCY: ${SYNC_FREQUENCY:-'* * * * *'}
+      ALL_INCLUSIVE_ARCHIVE: ${ALL_INCLUSIVE_ARCHIVE:-false}
+      INGESTION_WORKER_CONCURRENCY: ${INGESTION_WORKER_CONCURRENCY:-5}
+      TZ: ${TZ}
     volumes:
       - ${DOCKER_BASE_PATH}/open-archiver/data:${STORAGE_LOCAL_ROOT_PATH}
     depends_on:
