@@ -802,10 +802,6 @@ resource "portainer_stack" "code_server" {
   prune           = true
 
   env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
     name  = "PUID"
     value = local.puid_str
   }

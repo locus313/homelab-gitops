@@ -12,8 +12,8 @@ services:
       TS_STATE_DIR: ${TS_STATE_DIR}
       TS_USERSPACE: ${TS_USERSPACE}
     volumes:
-      - ${DOCKER_BASE_PATH}/code-server/tailscale/config:/config
-      - ${DOCKER_BASE_PATH}/code-server/tailscale/var/lib/tailscale:/var/lib/tailscale
+      - /mnt/docker/code-server/tailscale/config:/config
+      - /mnt/docker/code-server/tailscale/var/lib/tailscale:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
     cap_add:
       - net_admin
@@ -44,6 +44,6 @@ services:
         acl|apt-transport-https|direnv|gpg|make|
         software-properties-common|vim|wget|unzip|clang|git
     volumes:
-      - ${DOCKER_BASE_PATH}/code-server:/config
-      - ${DOCKER_BASE_PATH}/code-server/custom-cont-init.d:/custom-cont-init.d:ro
+      - /mnt/docker/code-server:/config
+      - /mnt/docker/code-server/custom-cont-init.d:/custom-cont-init.d:ro
       - /var/run/docker.sock:/var/run/docker.sock
