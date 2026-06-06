@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Remove Eonvelope configuration and related files from the repository.
 - Add initial configuration files for OpenArchiver including .env.example, README.md, and docker-compose.yml.
 - Update environment variables for open-archiver service in docker-compose.yml.
+- Add OpenArchiver configuration and environment variables to Terraform setup.
 
 ## [2026-06-05]
 
