@@ -22,6 +22,9 @@ All notable changes to this project will be documented in this file.
 - Add default PORT_BACKEND and PORT_FRONTEND environment variables in docker-compose.yml.
 - Add missing volume mapping for Docker volumes in docker-compose.yml.
 
+### Changed
+- Remove DOCKER_BASE_PATH variable and update volume paths in configuration files.
+
 ## [2026-06-05]
 
 ### Dependencies
