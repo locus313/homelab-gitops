@@ -89,7 +89,7 @@ services:
       start_period: 10s
 
   meilisearch:
-    image: getmeili/meilisearch:v1.38
+    image: getmeili/meilisearch:v1.45.2
     container_name: open-archiver-meilisearch
     restart: unless-stopped
     environment:
@@ -107,7 +107,7 @@ services:
       start_period: 30s
 
   tika:
-    image: apache/tika:3.2.2.0-full
+    image: apache/tika:3.3.1.0-full
     container_name: open-archiver-tika
     restart: unless-stopped
     networks:
