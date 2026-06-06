@@ -211,7 +211,9 @@ export TF_VAR_code_server_ts_authkey=$(_bw_field "Homelab - Code-Server" "ts_aut
 # ---------------------------------------------------------------------------
 # OpenArchiver — self-hosted email archiving
 # Bitwarden item: "Homelab - OpenArchiver"
-#   password:               <postgres_password>
+#   password:               <postgres_password>  ← MUST use openssl rand -hex 32
+#                           (hex only — password is embedded raw in a URL and
+#                            must not contain '/', '@', ':', '#', or '?' chars)
 #   custom hidden fields:
 #     meili_master_key:     $(openssl rand -hex 32)
 #     redis_password:       $(openssl rand -hex 32)
