@@ -36,7 +36,7 @@ services:
       INGESTION_WORKER_CONCURRENCY: ${INGESTION_WORKER_CONCURRENCY:-5}
       TZ: ${TZ}
     volumes:
-      - ${DOCKER_BASE_PATH}/open-archiver/data:${STORAGE_LOCAL_ROOT_PATH}
+      - /mnt/docker/open-archiver/data:${STORAGE_LOCAL_ROOT_PATH}
     depends_on:
       postgres:
         condition: service_healthy

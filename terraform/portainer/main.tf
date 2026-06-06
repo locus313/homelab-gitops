@@ -944,10 +944,6 @@ resource "portainer_stack" "open_archiver" {
   prune           = true
 
   env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
     name  = "TRAEFIK_BASE_DOMAIN"
     value = var.traefik_base_domain
   }
