@@ -71,7 +71,7 @@ services:
     image: valkey/valkey:8-alpine
     container_name: open-archiver-valkey
     restart: unless-stopped
-    command: valkey-server --requirepass ${REDIS_PASSWORD}
+    command: valkey-server --requirepass "${REDIS_PASSWORD}"
     volumes:
       - open-archiver-valkeydata:/data
     networks:
