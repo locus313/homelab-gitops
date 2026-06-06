@@ -13,11 +13,13 @@ All notable changes to this project will be documented in this file.
 - Enhance OpenArchiver setup instructions with key generation examples.
 - Update OpenArchiver environment variables for PostgreSQL configuration.
 - Add DATABASE_URL environment variable for OpenArchiver PostgreSQL configuration.
+- Add environment variables for OpenArchiver backend and frontend ports.
 
 ### Fixed
 - Properly quote REDIS_PASSWORD in valkey command.
 - Update OpenArchiver database URL to use raw password instead of encoded.
 - Correct SYNC_FREQUENCY environment variable syntax in docker-compose.yml.
+- Add default PORT_BACKEND and PORT_FRONTEND environment variables in docker-compose.yml.
 
 ## [2026-06-05]
 
