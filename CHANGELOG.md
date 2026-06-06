@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-06-06]
+
+### Added
+- Remove Eonvelope configuration and related files from the repository.
+
 ## [2026-06-05]
 
 ### Dependencies
