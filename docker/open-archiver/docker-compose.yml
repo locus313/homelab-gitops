@@ -33,9 +33,12 @@ services:
     volumes:
       - ${DOCKER_BASE_PATH}/open-archiver/data:${STORAGE_LOCAL_ROOT_PATH}
     depends_on:
-      - postgres
-      - valkey
-      - meilisearch
+      postgres:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxynet
@@ -57,6 +60,12 @@ services:
       - open-archiver-pgdata:/var/lib/postgresql/data
     networks:
       - open-archiver-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-admin} -d ${POSTGRES_DB:-open_archive}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   valkey:
     image: valkey/valkey:8-alpine
@@ -67,6 +76,12 @@ services:
       - open-archiver-valkeydata:/data
     networks:
       - open-archiver-net
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   meilisearch:
     image: getmeili/meilisearch:v1.38
@@ -79,6 +94,12 @@ services:
       - open-archiver-meilidata:/meili_data
     networks:
       - open-archiver-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   tika:
     image: apache/tika:3.2.2.0-full
