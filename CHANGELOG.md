@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Remove DOCKER_BASE_PATH variable and update volume paths in configuration files.
+- Remove DOCKER_BASE_PATH variable and update volume paths in configuration files.
 
 ## [2026-06-05]
 
