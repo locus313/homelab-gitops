@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 - Add OpenArchiver configuration and environment variables to Terraform setup.
 - Add health checks for open-archiver services and update service dependencies.
 
+### Fixed
+- Properly quote REDIS_PASSWORD in valkey command.
+
 ## [2026-06-05]
 
 ### Dependencies
