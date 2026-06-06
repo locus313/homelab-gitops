@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Add initial configuration files for OpenArchiver including .env.example, README.md, and docker-compose.yml.
 - Update environment variables for open-archiver service in docker-compose.yml.
 - Add OpenArchiver configuration and environment variables to Terraform setup.
+- Add health checks for open-archiver services and update service dependencies.
 
 ## [2026-06-05]
 
