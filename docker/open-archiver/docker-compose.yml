@@ -1,0 +1,80 @@
+services:
+  open-archiver:
+    image: logiclabshq/open-archiver:v0.5.0
+    container_name: open-archiver
+    restart: unless-stopped
+    networks:
+      - proxynet
+      - open-archiver-net
+    env_file:
+      - .env
+    volumes:
+      - ${DOCKER_BASE_PATH}/open-archiver/data:${STORAGE_LOCAL_ROOT_PATH}
+    depends_on:
+      - postgres
+      - valkey
+      - meilisearch
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxynet
+      - traefik.http.services.open-archiver.loadbalancer.server.port=3000
+      - traefik.http.routers.open-archiver.rule=Host(`open-archiver.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.open-archiver.entrypoints=websecure
+      - traefik.http.routers.open-archiver.tls=true
+      - traefik.http.routers.open-archiver.tls.certresolver=cloudns
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: open-archiver-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-open_archive}
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - open-archiver-pgdata:/var/lib/postgresql/data
+    networks:
+      - open-archiver-net
+
+  valkey:
+    image: valkey/valkey:8-alpine
+    container_name: open-archiver-valkey
+    restart: unless-stopped
+    command: valkey-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - open-archiver-valkeydata:/data
+    networks:
+      - open-archiver-net
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.38
+    container_name: open-archiver-meilisearch
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_SCHEDULE_SNAPSHOT: ${MEILI_SCHEDULE_SNAPSHOT:-86400}
+    volumes:
+      - open-archiver-meilidata:/meili_data
+    networks:
+      - open-archiver-net
+
+  tika:
+    image: apache/tika:3.2.2.0-full
+    container_name: open-archiver-tika
+    restart: unless-stopped
+    networks:
+      - open-archiver-net
+
+volumes:
+  open-archiver-pgdata:
+    driver: local
+  open-archiver-valkeydata:
+    driver: local
+  open-archiver-meilidata:
+    driver: local
+
+networks:
+  open-archiver-net:
+    driver: bridge
+  proxynet:
+    external: true
