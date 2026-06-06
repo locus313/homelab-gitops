@@ -211,11 +211,27 @@ export TF_VAR_code_server_ts_authkey=$(_bw_field "Homelab - Code-Server" "ts_aut
 # ---------------------------------------------------------------------------
 # OpenArchiver — self-hosted email archiving
 # Bitwarden item: "Homelab - OpenArchiver"
-#   password: <postgres_password>  |  custom hidden fields:
-#   "meili_master_key": <key>  |  "redis_password": <password>
-#   "jwt_secret": <secret>  |  "encryption_key": <32-byte hex>
-#   "storage_encryption_key": <32-byte hex>  (optional, leave empty to disable)
-# Generate keys with: openssl rand -hex 32
+#   password:               <postgres_password>
+#   custom hidden fields:
+#     meili_master_key:     $(openssl rand -hex 32)
+#     redis_password:       $(openssl rand -hex 32)
+#     jwt_secret:           $(openssl rand -hex 32)
+#     encryption_key:       $(openssl rand -hex 32)
+#     storage_encryption_key: $(openssl rand -hex 32)  (leave empty to disable at-rest encryption)
+#
+# One-shot setup (copy-paste into a shell with BW_SESSION set):
+#   POSTGRES_PW=$(openssl rand -hex 32)
+#   bw get template item \
+#     | jq --arg pw "$POSTGRES_PW" \
+#          '.name="Homelab - OpenArchiver" | .login.password=$pw
+#            | .fields=[
+#                {"name":"meili_master_key",   "value":"'"$(openssl rand -hex 32)"'","type":1},
+#                {"name":"redis_password",      "value":"'"$(openssl rand -hex 32)"'","type":1},
+#                {"name":"jwt_secret",          "value":"'"$(openssl rand -hex 32)"'","type":1},
+#                {"name":"encryption_key",      "value":"'"$(openssl rand -hex 32)"'","type":1},
+#                {"name":"storage_encryption_key","value":"'"$(openssl rand -hex 32)"'","type":1}
+#              ]' \
+#     | bw encode | bw create item
 # ---------------------------------------------------------------------------
 export TF_VAR_open_archiver_postgres_password=$(_bw_password "Homelab - OpenArchiver")
 export TF_VAR_open_archiver_meili_master_key=$(_bw_field "Homelab - OpenArchiver" "meili_master_key")
