@@ -381,6 +381,18 @@ variable "open_archiver_storage_encryption_key" {
   sensitive   = true
 }
 
+variable "open_archiver_port_backend" {
+  description = "Port the OpenArchiver backend API listens on"
+  type        = string
+  default     = "4000"
+}
+
+variable "open_archiver_port_frontend" {
+  description = "Port the OpenArchiver frontend listens on"
+  type        = string
+  default     = "3000"
+}
+
 variable "open_archiver_storage_local_root_path" {
   description = "Path inside the container where OpenArchiver stores email data"
   type        = string

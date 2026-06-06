@@ -956,6 +956,18 @@ resource "portainer_stack" "open_archiver" {
     value = var.tz
   }
   env {
+    name  = "NODE_ENV"
+    value = "production"
+  }
+  env {
+    name  = "PORT_BACKEND"
+    value = var.open_archiver_port_backend
+  }
+  env {
+    name  = "PORT_FRONTEND"
+    value = var.open_archiver_port_frontend
+  }
+  env {
     name  = "APP_URL"
     value = local.open_archiver_app_url
   }
