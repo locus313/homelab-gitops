@@ -16,6 +16,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Properly quote REDIS_PASSWORD in valkey command.
+- Update OpenArchiver database URL to use raw password instead of encoded.
+- Correct SYNC_FREQUENCY environment variable syntax in docker-compose.yml.
 
 ## [2026-06-05]
 
