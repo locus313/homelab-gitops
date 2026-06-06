@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 - Update environment variables for open-archiver service in docker-compose.yml.
 - Add OpenArchiver configuration and environment variables to Terraform setup.
 - Add health checks for open-archiver services and update service dependencies.
+- Enhance OpenArchiver setup instructions with key generation examples.
+- Update OpenArchiver environment variables for PostgreSQL configuration.
 
 ### Fixed
 - Properly quote REDIS_PASSWORD in valkey command.
