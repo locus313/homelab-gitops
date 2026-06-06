@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - Add health checks for open-archiver services and update service dependencies.
 - Enhance OpenArchiver setup instructions with key generation examples.
 - Update OpenArchiver environment variables for PostgreSQL configuration.
+- Add DATABASE_URL environment variable for OpenArchiver PostgreSQL configuration.
 
 ### Fixed
 - Properly quote REDIS_PASSWORD in valkey command.
