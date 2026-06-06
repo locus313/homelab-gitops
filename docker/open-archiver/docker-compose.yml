@@ -10,7 +10,9 @@ services:
       NODE_ENV: production
       APP_URL: ${APP_URL}
       ORIGIN: ${ORIGIN}
-      DATABASE_URL: ${DATABASE_URL}
+      POSTGRES_DB: ${POSTGRES_DB:-open_archive}
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
       MEILI_HOST: http://meilisearch:7700
       REDIS_HOST: valkey
