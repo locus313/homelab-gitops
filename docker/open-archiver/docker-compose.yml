@@ -8,6 +8,8 @@ services:
       - open-archiver-net
     environment:
       NODE_ENV: production
+      PORT_BACKEND: ${PORT_BACKEND:-4000}
+      PORT_FRONTEND: ${PORT_FRONTEND:-3000}
       APP_URL: ${APP_URL}
       ORIGIN: ${ORIGIN}
       POSTGRES_DB: ${POSTGRES_DB:-open_archive}
