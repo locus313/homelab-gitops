@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Remove Eonvelope configuration and related files from the repository.
 - Add initial configuration files for OpenArchiver including .env.example, README.md, and docker-compose.yml.
+- Update environment variables for open-archiver service in docker-compose.yml.
 
 ## [2026-06-05]
 
