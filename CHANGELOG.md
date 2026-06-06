@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - Update OpenArchiver database URL to use raw password instead of encoded.
 - Correct SYNC_FREQUENCY environment variable syntax in docker-compose.yml.
 - Add default PORT_BACKEND and PORT_FRONTEND environment variables in docker-compose.yml.
+- Add missing volume mapping for Docker volumes in docker-compose.yml.
 
 ## [2026-06-05]
 
