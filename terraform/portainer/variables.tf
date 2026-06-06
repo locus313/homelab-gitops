@@ -329,6 +329,65 @@ variable "code_server_ts_extra_args" {
 }
 
 # ---------------------------------------------------------------------------
+# OpenArchiver
+# ---------------------------------------------------------------------------
+
+variable "open_archiver_postgres_db" {
+  description = "PostgreSQL database name for OpenArchiver"
+  type        = string
+  default     = "open_archive"
+}
+
+variable "open_archiver_postgres_user" {
+  description = "PostgreSQL username for OpenArchiver"
+  type        = string
+  default     = "admin"
+}
+
+variable "open_archiver_postgres_password" {
+  description = "PostgreSQL password for OpenArchiver"
+  type        = string
+  sensitive   = true
+}
+
+variable "open_archiver_meili_master_key" {
+  description = "Meilisearch master key for OpenArchiver (generate with: openssl rand -hex 16)"
+  type        = string
+  sensitive   = true
+}
+
+variable "open_archiver_redis_password" {
+  description = "Valkey/Redis password for OpenArchiver"
+  type        = string
+  sensitive   = true
+}
+
+variable "open_archiver_jwt_secret" {
+  description = "JWT signing secret for OpenArchiver (long random string)"
+  type        = string
+  sensitive   = true
+}
+
+variable "open_archiver_encryption_key" {
+  description = "32-byte hex master encryption key for OpenArchiver credentials (openssl rand -hex 32)"
+  type        = string
+  sensitive   = true
+}
+
+variable "open_archiver_storage_encryption_key" {
+  description = "32-byte hex key for AES-256 file-at-rest encryption (openssl rand -hex 32). Leave empty to disable."
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "open_archiver_storage_local_root_path" {
+  description = "Path inside the container where OpenArchiver stores email data"
+  type        = string
+  default     = "/var/data/open-archiver"
+}
+
+# ---------------------------------------------------------------------------
 # Netdata
 # ---------------------------------------------------------------------------
 

@@ -209,6 +209,25 @@ export TF_VAR_code_server_ts_authkey=$(_bw_field "Homelab - Code-Server" "ts_aut
 # export TF_VAR_code_server_ts_extra_args="--advertise-tags=tag:container --reset"
 
 # ---------------------------------------------------------------------------
+# OpenArchiver — self-hosted email archiving
+# Bitwarden item: "Homelab - OpenArchiver"
+#   password: <postgres_password>  |  custom hidden fields:
+#   "meili_master_key": <key>  |  "redis_password": <password>
+#   "jwt_secret": <secret>  |  "encryption_key": <32-byte hex>
+#   "storage_encryption_key": <32-byte hex>  (optional, leave empty to disable)
+# Generate keys with: openssl rand -hex 32
+# ---------------------------------------------------------------------------
+export TF_VAR_open_archiver_postgres_password=$(_bw_password "Homelab - OpenArchiver")
+export TF_VAR_open_archiver_meili_master_key=$(_bw_field "Homelab - OpenArchiver" "meili_master_key")
+export TF_VAR_open_archiver_redis_password=$(_bw_field "Homelab - OpenArchiver" "redis_password")
+export TF_VAR_open_archiver_jwt_secret=$(_bw_field "Homelab - OpenArchiver" "jwt_secret")
+export TF_VAR_open_archiver_encryption_key=$(_bw_field "Homelab - OpenArchiver" "encryption_key")
+export TF_VAR_open_archiver_storage_encryption_key=$(_bw_field "Homelab - OpenArchiver" "storage_encryption_key")
+# export TF_VAR_open_archiver_postgres_db="open_archive"
+# export TF_VAR_open_archiver_postgres_user="admin"
+# export TF_VAR_open_archiver_storage_local_root_path="/var/data/open-archiver"
+
+# ---------------------------------------------------------------------------
 # Netdata (deployed to both dh01 and dh02)
 # Bitwarden item: "Homelab - Netdata"
 #   password: <claim_token>  |  custom hidden field "rooms": <room_id>
