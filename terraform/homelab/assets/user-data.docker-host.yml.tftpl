@@ -12,7 +12,7 @@ Content-Disposition: attachment; filename="cloud-config.txt"
 hostname: ${name}
 manage_etc_hosts: localhost
 timezone: ${timezone}
-ssh_pwauth: true
+ssh_pwauth: false   # keys imported via ssh_import_id; password auth never needed over SSH
 disable_root: true
 
 # Pre-create the docker group so it exists when the user is created below;
