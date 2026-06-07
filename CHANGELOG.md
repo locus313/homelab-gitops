@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - Update Proxmox VE TLS verification instructions in .envrc.example.
 - Disable password authentication for SSH in user-data templates.
 - Disable Traefik dashboard and API access.
+- Update default initial login password in .env.example.
 
 ## [2026-06-06]
 
