@@ -19,10 +19,10 @@ accessLog:
       - "500-599"
 
 
-# Enable API and Dashboard here, don't do in production
+# Dashboard served via the HTTPS router label (api@internal on websecure).
+# No insecure entryPoint needed.
 api:
   dashboard: true
-  insecure: true
 
 entryPoints:
   web:
@@ -35,8 +35,6 @@ entryPoints:
   websecure:
     address: :443
     http3: true
-  traefik:
-    address: :8080
 
 certificatesResolvers:
   cloudns:
