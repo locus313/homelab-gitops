@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add CPU and memory limits for Tika service in Docker Compose.
 
+### Changed
+- Enhance copilot instructions with detailed service patterns and integration points.
+
 ## [2026-06-06]
 
 ### Added
