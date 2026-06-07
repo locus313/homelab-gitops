@@ -13,6 +13,9 @@ All notable changes to this project will be documented in this file.
 - Update README and bootstrap script for improved deployment instructions.
 - Update README and installation scripts for Homebrew integration and package management.
 
+### Fixed
+- Remove insecure API access and Traefik dashboard port from configuration.
+
 ## [2026-06-06]
 
 ### Added
