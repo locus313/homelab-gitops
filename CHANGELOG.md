@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - Update default initial login password in .env.example.
 - Set Docker socket volume to read-only in docker-compose.yml.
 - Update healthcheck command in docker-compose.yml to use wget.
+- Remove healthcheck configuration from docker-compose.yml.
 
 ## [2026-06-06]
 
