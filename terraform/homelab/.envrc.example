@@ -43,8 +43,18 @@ export HC_TIMEOUT="60.0"
 # ---------------------------------------------------------------------------
 export PROXMOX_VE_ENDPOINT="https://pve01.home.lan:8006"
 export PROXMOX_VE_API_TOKEN=$(_bw_field "Homelab - Proxmox VE" "api_token")
-# Skip TLS verification (Proxmox ships with a self-signed cert)
-export PROXMOX_VE_INSECURE="true"
+# TLS verification — prefer trusting the Proxmox CA over skipping verification entirely.
+#
+# RECOMMENDED: install the Proxmox CA cert on this machine once, then keep
+# PROXMOX_VE_INSECURE unset (defaults to false):
+#
+#   scp root@pve01:/etc/pve/pve-root-ca.pem /usr/local/share/ca-certificates/pve-root-ca.crt
+#   sudo update-ca-certificates
+#
+# FALLBACK: if you cannot install the CA cert (e.g. running in CI or a
+# temporary environment), uncomment the line below:
+# export PROXMOX_VE_INSECURE="true"
+#
 # SSH credentials — required for the provider to perform disk operations on the node
 export PROXMOX_VE_SSH_USERNAME=$(_bw_username "Homelab - Proxmox VE")
 export PROXMOX_VE_SSH_PASSWORD=$(_bw_password "Homelab - Proxmox VE")
