@@ -18,7 +18,7 @@ services:
     environment:
       TZ: ${TZ}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/api/status"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9000/api/status || exit 1"]
       interval: 30s
       retries: 3
       start_period: 40s
