@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Enhance copilot instructions with detailed service patterns and integration points.
+- Update README and bootstrap script for improved deployment instructions.
 
 ## [2026-06-06]
 
