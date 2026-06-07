@@ -17,12 +17,6 @@ services:
       - ${DOCKER_BASE_PATH}/portainer:/data
     environment:
       TZ: ${TZ}
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:9000/api/status || exit 1"]
-      interval: 30s
-      retries: 3
-      start_period: 40s
-      timeout: 10s
 
 networks:
   proxynet:
