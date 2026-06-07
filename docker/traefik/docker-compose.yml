@@ -22,12 +22,7 @@ services:
       TRAEFIK_BASE_DOMAIN: ${TRAEFIK_BASE_DOMAIN}
       TZ: ${TZ}
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.traefik-rtr.entrypoints=websecure
-      - traefik.http.routers.traefik-rtr.rule=Host(`traefik.${TRAEFIK_BASE_DOMAIN}`)
-      - traefik.http.routers.traefik-rtr.service=api@internal
-      - traefik.http.routers.traefik-rtr.tls=true
-      - traefik.http.routers.traefik-rtr.tls.certresolver=cloudns
+      - traefik.enable=false
 
 networks:
   proxynet:

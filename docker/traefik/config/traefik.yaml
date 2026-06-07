@@ -19,10 +19,9 @@ accessLog:
       - "500-599"
 
 
-# Dashboard served via the HTTPS router label (api@internal on websecure).
-# No insecure entryPoint needed.
+# API disabled — dashboard not needed.
 api:
-  dashboard: true
+  dashboard: false
 
 entryPoints:
   web:
