@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - Update CSRF protection settings for Stirling PDF Toolkit.
 - Add .env to .gitignore to prevent sensitive credential exposure.
 - Update actions/checkout and actions/setup-python versions in workflows.
+- Update Proxmox VE TLS verification instructions in .envrc.example.
 
 ## [2026-06-06]
 
