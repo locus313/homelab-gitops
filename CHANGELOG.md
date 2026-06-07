@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - Configure secure serversTransport for Portainer and remove global insecureSkipVerify.
 - Update CSRF protection settings for Stirling PDF Toolkit.
 - Add .env to .gitignore to prevent sensitive credential exposure.
+- Update actions/checkout and actions/setup-python versions in workflows.
 
 ## [2026-06-06]
 
