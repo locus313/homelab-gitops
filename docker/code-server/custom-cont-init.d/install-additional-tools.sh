@@ -87,11 +87,26 @@ if [ ! -x "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
     chown -R abc:abc /home/linuxbrew
     mkdir -p /config/.cache/Homebrew
     chown -R abc:abc /config/.cache/Homebrew
-    runuser -u abc -- bash -c 'NONINTERACTIVE=1 curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash' || true
+
+    # Download to a temp file rather than piping directly to bash.
+    # HTTPS + the high-profile Homebrew/install repo provide sufficient integrity
+    # for a homelab first-install without pinning a specific SHA.
+    _brew_installer="$(mktemp)"
+    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh \
+        -o "${_brew_installer}"
+    runuser -u abc -- bash -c "NONINTERACTIVE=1 bash '${_brew_installer}'" || true
+    rm -f "${_brew_installer}"
 fi
 
 # Install Homebrew packages as abc user
 if [ -x "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+    # Update Homebrew and upgrade all installed packages on every container start.
+    # Since /home/linuxbrew is a persistent volume, this keeps packages current
+    # whenever the container image is updated or recreated.
+    echo "**** Updating Homebrew and upgrading packages ****"
+    runuser -u abc -- /home/linuxbrew/.linuxbrew/bin/brew update --quiet || true
+    runuser -u abc -- /home/linuxbrew/.linuxbrew/bin/brew upgrade --quiet || true
+
     echo "**** Installing Homebrew packages ****"
 
     # Install lacework-cli

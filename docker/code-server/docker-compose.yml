@@ -47,4 +47,5 @@ services:
       - /mnt/docker/code-server:/config
       - /mnt/docker/code-server/custom-cont-init.d:/custom-cont-init.d:ro
       - /opt/homelab-gitops:/opt/homelab-gitops
+      - /mnt/docker/code-server/linuxbrew:/home/linuxbrew
       - /var/run/docker.sock:/var/run/docker.sock

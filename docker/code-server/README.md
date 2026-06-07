@@ -129,7 +129,8 @@ Watch the logs during first startup to see docker-mods installation and custom s
 - **Docker Socket**: `/var/run/docker.sock` - Docker integration for container management
 - **Tailscale Config**: `${DOCKER_BASE_PATH}/code-server/tailscale/config` - Tailscale configuration
 - **Custom Init Scripts**: `/mnt/docker/code-server/custom-cont-init.d` - Contains `bootstrap.sh` (read-only)
-- **Repo Clone**: `/opt/homelab-gitops` - Mounted read-write so `bootstrap.sh` can run `git pull` on startup
+- **Repo Clone**: `/opt/homelab-gitops` - Mounted so `bootstrap.sh` can run `git pull` on startup
+- **Homebrew**: `/mnt/docker/code-server/linuxbrew` - Persists Homebrew and installed packages across container image updates
 
 ## Docker Mods
 
