@@ -504,7 +504,7 @@ resource "portainer_stack" "stirling_pdf" {
   }
   env {
     name  = "SECURITY_CSRFDISABLED"
-    value = "true"
+    value = var.stirling_csrf_disabled
   }
   env {
     name  = "INSTALL_BOOK_AND_ADVANCED_HTML_OPS"

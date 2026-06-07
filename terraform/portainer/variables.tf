@@ -217,6 +217,12 @@ variable "stirling_security_initiallogin_password" {
   sensitive   = true
 }
 
+variable "stirling_csrf_disabled" {
+  description = "Disable CSRF protection in Stirling-PDF (set to \"true\" only if a reverse-proxy strips the Origin header and causes false CSRF rejections)"
+  type        = string
+  default     = "false"
+}
+
 # ---------------------------------------------------------------------------
 # MeTube
 # ---------------------------------------------------------------------------
