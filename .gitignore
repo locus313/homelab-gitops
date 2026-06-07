@@ -43,6 +43,8 @@ terraform.rc
 # Uncomment the line below if you want to ignore planout files.
 # planout
 
+# Ignore local environment files containing credentials
+.env
 # Ignore direnv environment configuration files
 .envrc
 
