@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-06-07]
+
+### Added
+- Add CPU and memory limits for Tika service in Docker Compose.
+
 ## [2026-06-06]
 
 ### Added
