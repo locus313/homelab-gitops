@@ -110,6 +110,11 @@ services:
     image: apache/tika:3.3.1.0-full
     container_name: open-archiver-tika
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "${TIKA_CPU_LIMIT:-1.0}"
+          memory: ${TIKA_MEMORY_LIMIT:-1G}
     networks:
       - open-archiver-net
 
