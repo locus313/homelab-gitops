@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - Update actions/checkout and actions/setup-python versions in workflows.
 - Update Proxmox VE TLS verification instructions in .envrc.example.
 - Disable password authentication for SSH in user-data templates.
+- Disable Traefik dashboard and API access.
 
 ## [2026-06-06]
 
