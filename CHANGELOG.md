@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Remove insecure API access and Traefik dashboard port from configuration.
+- Configure secure serversTransport for Portainer and remove global insecureSkipVerify.
 
 ## [2026-06-06]
 
