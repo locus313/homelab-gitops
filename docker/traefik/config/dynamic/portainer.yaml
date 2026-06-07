@@ -11,5 +11,13 @@ http:
   services:
     portainer-svc:
       loadBalancer:
+        # Portainer uses a self-signed certificate; the skip is scoped here
+        # rather than globally in traefik.yaml so all other backends still
+        # have full TLS verification enabled.
+        serversTransport: portainer-transport
         servers:
           - url: "https://portainer:9443"
+
+  serversTransports:
+    portainer-transport:
+      insecureSkipVerify: true
