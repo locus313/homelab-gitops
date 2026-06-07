@@ -23,7 +23,7 @@ Terminal heredoc operations are BROKEN in VS Code's Copilot integration. They ca
 
 Ask yourself: "Am I about to use `cat`, `echo`, `printf`, `tee`, or `>>`/`>` to write content to a file?"
 
-If YES -> **DO NOT EXECUTE.** Use file editing tools instead.
+If YES → **DO NOT EXECUTE.** Use file editing tools instead.
 
 ## Forbidden Patterns
 
@@ -46,9 +46,9 @@ tee file << 'EOF'
 
 Instead of terminal commands for file content:
 
-- **New files** -> Use the file creation/editing tool provided by your environment
-- **Modify files** -> Use the file editing tool provided by your environment
-- **Delete files** -> Use the file deletion tool or `rm` command
+- **New files** → Use the file creation/editing tool provided by your environment
+- **Modify files** → Use the file editing tool provided by your environment
+- **Delete files** → Use the file deletion tool or `rm` command
 
 ## Terminal IS Allowed For
 
