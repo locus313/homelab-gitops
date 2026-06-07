@@ -60,9 +60,21 @@ networks:
 
 **Pattern Exceptions:**
 - **Plex**: Uses `network_mode: host` instead of proxynet (requires direct network access for discovery)
-- **Netdata**: Uses host network with direct port `:19999` for system-level monitoring
-- **GPU Services** (Webtop, HandBrake): Mount `/dev/dri:/dev/dri` for hardware acceleration
-- **Docker Integration** (Homarr, Webtop): Mount `/var/run/docker.sock:/var/run/docker.sock` for container management
+- **Netdata**: Uses `network_mode: host` for direct system-level monitoring; accessible at `:19999` only (not via Traefik)
+- **Beszel Agent**: The agent sidecar uses `network_mode: host` + `/dev/dri` + `docker.sock` for full system monitoring; the hub runs normally on proxynet
+- **Code-Server**: Uses `network_mode: service:code-server-ts` — shares the Tailscale sidecar's network namespace instead of proxynet
+- **GPU Services** (Webtop, HandBrake, Kasm, Ollama): Mount `/dev/dri:/dev/dri` for hardware acceleration
+- **Docker Integration** (Homarr, Webtop, Portainer, Traefik, Netdata, Watchtower, Code-Server): Mount `/var/run/docker.sock` for container management or monitoring
+- **Multi-Service Stacks**:
+  - **Gitea**: `gitea` + `postgres:18` sidecar; exposes SSH on `222:22` for Git over SSH
+  - **Open-Archiver**: `open-archiver` + `postgres:17` + `valkey` (Redis-compatible) + `meilisearch` + `tika`; all sidecars on an isolated internal `open-archiver-net`
+  - **Open-WebUI**: `open-webui` + `ollama` sidecar; ollama mounts `/dev/dri` for GPU inference
+- **Kasm**: Privileged mode, `/dev/dri` GPU, exposes `${KASM_SETUP_PORT:-3000}:3000` (setup wizard) and `${KASM_PORT}:${KASM_PORT}` (runtime, configurable); also joined to default network
+- **Home Assistant**: Uses `proxynet` + `privileged: true` (NOT host network); mounts `/run/dbus` for device/Bluetooth access
+- **iVentoy**: Privileged mode + direct host ports (`26000`, `16000`, `10809`, `69/udp`) for PXE/TFTP boot services; does NOT use Traefik routing
+- **NetbootXYZ**: Exposes `69:69/udp` for TFTP and `8080:80` for asset serving alongside Traefik routing
+- **Storj Node**: Requires host port-forwarding for `28967` (TCP + UDP) for peer-to-peer connectivity
+- **Portainer**: Exposes `9443:9443` directly as a fallback for initial setup alongside Traefik dynamic config routing (uses HTTPS backend on 9443)
 
 **Image Version Pinning:**
 - **ALWAYS pin to specific versions** - never use `latest` tag
@@ -77,17 +89,28 @@ networks:
 
 ### Services
 - **Traefik**: Reverse proxy and SSL termination (DEPLOY FIRST)
+- **Portainer**: Container management UI with GitOps stack deployment (CE and EE editions)
 - **Homarr**: Homelab dashboard with Docker integration
 - **Beszel**: Lightweight server monitoring with agent architecture
+- **Netdata**: Real-time system and container performance monitoring
 - **Plex**: Media server with hardware transcoding support
 - **Ombi**: Media request management integrated with Plex
 - **Webtop**: Full Linux desktop environment in browser with GPU acceleration
+- **Kasm**: Container streaming platform for disposable browser-based desktops and apps (DaaS/RBI)
 - **Code-Server**: Browser-based VSCode with Tailscale integration
 - **HandBrake**: Video transcoder with GPU acceleration
 - **MeTube**: yt-dlp web interface for video downloading
 - **Stirling PDF**: PDF manipulation toolkit
 - **IT Tools**: Developer utilities collection
+- **Networking Toolbox**: 100+ offline-first networking, DNS, SSL, and security tools
 - **iVentoy/NetbootXYZ**: Network boot services
+- **Gitea**: Self-hosted Git service with PostgreSQL backend
+- **Gitea-Mirror**: Automated GitHub-to-Gitea repository mirroring with web UI
+- **Home Assistant**: Local-first home automation platform with device and energy management
+- **Open-Archiver**: Email archiving and search platform (IMAP, Google Workspace, M365, PST)
+- **Rackula**: Drag-and-drop rack layout designer with PNG/PDF/SVG export
+- **Zerobyte**: Restic-based backup automation with web UI and multi-protocol support
+- **Storj Node**: Decentralized storage node that earns STORJ tokens for sharing disk/bandwidth
 - **Watchtower**: Automated container updates
 - **Open-WebUI**: AI interface for local LLMs
 
@@ -96,7 +119,7 @@ networks:
 ### Environment Configuration Pattern
 Every service directory contains:
 - `docker-compose.yml` - Service definition
-- `.env.example` - Template with ALL required variables (19 services have this)
+- `.env.example` - Template with ALL required variables (26 services have this)
 - `README.md` - Service-specific documentation with setup instructions
 
 **Workflow:**
@@ -192,11 +215,21 @@ docker logs service-name
 ## Integration Points
 
 ### Terraform Infrastructure
-- **HyperCore provider** for VM provisioning
-- **Cloud images**: Ubuntu LTS versions in `terraform/modules/cloud-images/`
+- **Dual provider setup**: ScaleComputing HyperCore (`ScaleComputing/hypercore`) + Proxmox (`bpg/proxmox`) for a two-node Docker host architecture
+  - `sc_docker_vm` — always-on VM on the ScaleComputing cluster (resilient baseline)
+  - `dh01_docker_vm` — VM on `pve01` (Proxmox on an Intel N150 mini PC)
+- **Cloud images**: Ubuntu LTS (26.04 Resolute) in `terraform/modules/cloud-images/`
 - **VM templates**: Standardized configurations in `terraform/templates/`
+- **Auth**: All credentials passed via environment variables (`.envrc`); never hardcoded
+- See `docs/resilience-planning.md` for the full two-node architecture rationale
 
 ### GitHub Automation
+
+**Changelog Auto-Generation:**
+- Script: `.github/scripts/update-changelog.py` generates entries from commit messages
+- Trigger: Runs on push to `main` branch (via `changelog.yml` workflow), skipping commits that only touch `CHANGELOG.md` or `.github/dependabot.yml`
+- Output: Auto-commits updated `CHANGELOG.md` directly to `main`
+- Concurrency: Non-cancellable — rapid pushes queue up so each entry is recorded
 
 **Dependabot Auto-Configuration:**
 - Script: `.github/scripts/generate-dependabot.sh` auto-discovers all compose files
@@ -209,7 +242,7 @@ docker logs service-name
 **YAML Validation:**
 - Workflow: `yaml-lint.yml` runs `yamllint` on all YAML files
 - Configuration: `.github/.yamllint` (extends default, disables `document-start` rule)
-- Trigger: Every push/PR affecting YAML files
+- Trigger: Every push/PR affecting `*.yml` or `*.yaml` files
 - **Usage**: Run locally with `yamllint -c .github/.yamllint .` before committing
 
 ### External Dependencies
