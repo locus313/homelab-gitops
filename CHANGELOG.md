@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add CPU and memory limits for Tika service in Docker Compose.
 - Enhance aws-vault installation with version verification and checksum validation.
+- Add pre-commit hook for YAML linting, Docker image tag detection, and secret scanning.
 
 ### Changed
 - Enhance copilot instructions with detailed service patterns and integration points.
