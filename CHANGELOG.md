@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - Disable password authentication for SSH in user-data templates.
 - Disable Traefik dashboard and API access.
 - Update default initial login password in .env.example.
+- Set Docker socket volume to read-only in docker-compose.yml.
 
 ## [2026-06-06]
 
