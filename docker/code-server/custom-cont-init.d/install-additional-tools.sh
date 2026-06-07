@@ -40,10 +40,41 @@ if ! command -v session-manager-plugin &> /dev/null; then
 fi
 
 # Install aws-vault
+# Resolves the latest release via the GitHub API, downloads the binary and the
+# project-published checksums.txt, verifies they match, then installs.
+# This ensures we always run the latest version without a hardcoded SHA that
+# requires manual updates on each release.
 if ! command -v aws-vault &> /dev/null; then
     echo "**** Installing aws-vault ****"
-    curl -L -o /usr/local/bin/aws-vault https://github.com/99designs/aws-vault/releases/latest/download/aws-vault-linux-amd64
-    chmod 755 /usr/local/bin/aws-vault
+    _aws_vault_version="$(curl -fsSL \
+        https://api.github.com/repos/99designs/aws-vault/releases/latest \
+        | grep '"tag_name"' | head -1 | sed 's/.*"tag_name": *"\([^"]*\)".*/\1/')"
+
+    if [ -z "${_aws_vault_version}" ]; then
+        echo "**** WARNING: Could not determine latest aws-vault version, skipping ****" >&2
+    else
+        echo "**** Installing aws-vault ${_aws_vault_version} ****"
+        _aws_vault_tmp="$(mktemp)"
+        _aws_vault_checksums="$(mktemp)"
+        _base_url="https://github.com/99designs/aws-vault/releases/download/${_aws_vault_version}"
+
+        curl -fsSL "${_base_url}/aws-vault-linux-amd64"  -o "${_aws_vault_tmp}"
+        curl -fsSL "${_base_url}/checksums.txt"           -o "${_aws_vault_checksums}"
+
+        # Verify the binary against the published checksum
+        _expected="$(grep 'aws-vault-linux-amd64$' "${_aws_vault_checksums}" | awk '{print $1}')"
+        _actual="$(sha256sum "${_aws_vault_tmp}" | awk '{print $1}')"
+        if [ "${_expected}" != "${_actual}" ]; then
+            echo "**** ERROR: aws-vault checksum mismatch — aborting install ****" >&2
+            echo "  expected: ${_expected}" >&2
+            echo "  actual:   ${_actual}" >&2
+            rm -f "${_aws_vault_tmp}" "${_aws_vault_checksums}"
+        else
+            install -m 755 "${_aws_vault_tmp}" /usr/local/bin/aws-vault
+            echo "**** aws-vault ${_aws_vault_version} installed and verified ****"
+            rm -f "${_aws_vault_tmp}" "${_aws_vault_checksums}"
+        fi
+    fi
 fi
 
 # Install tfenv (Terraform version manager)
