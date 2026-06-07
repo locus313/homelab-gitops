@@ -46,4 +46,5 @@ services:
     volumes:
       - /mnt/docker/code-server:/config
       - /mnt/docker/code-server/custom-cont-init.d:/custom-cont-init.d:ro
+      - /opt/homelab-gitops:/opt/homelab-gitops
       - /var/run/docker.sock:/var/run/docker.sock

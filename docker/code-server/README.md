@@ -55,29 +55,35 @@ Code Server provides a browser-based Visual Studio Code experience, allowing you
 
 ## Deployment
 
-### Initial Setup (Required)
+### Initial Setup (One-time, on the Docker host)
 
-Since this uses Portainer GitOps, you need to manually deploy the custom init script to your Docker host:
+Two files need to exist on the Docker host before first deploy. After that, pushing
+changes to the repo is all that is required — no host updates needed.
+
+**1. Clone the repo** (if not already present):
 
 ```bash
-# On your Docker host, create the custom-cont-init.d directory
-mkdir -p ${DOCKER_BASE_PATH}/code-server/custom-cont-init.d
-
-# Copy the script from the repository to your host
-# Option 1: Using curl (replace URL with your raw GitHub file URL)
-curl -o ${DOCKER_BASE_PATH}/code-server/custom-cont-init.d/install-additional-tools.sh \
-  https://raw.githubusercontent.com/locus313/homelab-gitops/main/docker/code-server/custom-cont-init.d/install-additional-tools.sh
-
-# Option 2: Manually copy the file from docker/code-server/custom-cont-init.d/install-additional-tools.sh
-
-# Make it executable
-chmod +x ${DOCKER_BASE_PATH}/code-server/custom-cont-init.d/install-additional-tools.sh
+git clone https://github.com/locus313/homelab-gitops.git /opt/homelab-gitops
 ```
+
+**2. Place `bootstrap.sh`** in the custom init directory:
+
+```bash
+mkdir -p /mnt/docker/code-server/custom-cont-init.d
+
+cp /opt/homelab-gitops/docker/code-server/custom-cont-init.d/bootstrap.sh \
+   /mnt/docker/code-server/custom-cont-init.d/bootstrap.sh
+```
+
+That is the only file you will ever need to copy to the host. On every container
+start, `bootstrap.sh` runs `git pull` on `/opt/homelab-gitops` and then executes
+`install-additional-tools.sh` directly from the local clone. Push a change to
+`install-additional-tools.sh` in GitHub and it is picked up automatically on the
+next container restart.
 
 ### Deploy via Portainer
 ```bash
 # Portainer will automatically deploy from your GitOps repository
-# The compose file references: ${DOCKER_BASE_PATH}/code-server/custom-cont-init.d
 ```
 
 ### Manual Deployment
@@ -122,7 +128,8 @@ Watch the logs during first startup to see docker-mods installation and custom s
 - **Config**: `${DOCKER_BASE_PATH}/code-server` - Contains Code Server configuration
 - **Docker Socket**: `/var/run/docker.sock` - Docker integration for container management
 - **Tailscale Config**: `${DOCKER_BASE_PATH}/code-server/tailscale/config` - Tailscale configuration
-- **Custom Init Scripts**: `./custom-cont-init.d` - Local initialization scripts (read-only)
+- **Custom Init Scripts**: `/mnt/docker/code-server/custom-cont-init.d` - Contains `bootstrap.sh` (read-only)
+- **Repo Clone**: `/opt/homelab-gitops` - Mounted read-write so `bootstrap.sh` can run `git pull` on startup
 
 ## Docker Mods
 
