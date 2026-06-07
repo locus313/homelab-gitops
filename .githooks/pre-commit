@@ -1,0 +1,114 @@
+#!/bin/bash
+# Pre-commit hook for homelab-gitops.
+#
+# Checks:
+#   1. YAML linting on staged .yml/.yaml files (mirrors CI yaml-lint.yml)
+#   2. Detect 'latest' image tags in staged docker-compose files
+#   3. Scan staged files for potential hardcoded secrets
+#
+# Install once per clone:
+#   git config core.hooksPath .githooks
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+ERRORS=0
+
+# Staged files (added, modified — not deleted)
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [[ -z "$STAGED" ]]; then
+    exit 0
+fi
+
+# ─── 1. YAML LINT ──────────────────────────────────────────────────────────────
+YAML_FILES=$(echo "$STAGED" | grep -E '\.(yml|yaml)$' || true)
+
+if [[ -n "$YAML_FILES" ]]; then
+    if ! command -v yamllint &>/dev/null; then
+        echo "  ⚠  yamllint not found — skipping YAML lint (install: pip install yamllint)" >&2
+    else
+        YAMLLINT_CONFIG="$REPO_ROOT/.github/.yamllint"
+        YAML_ERRORS=0
+        while IFS= read -r file; do
+            if ! yamllint -c "$YAMLLINT_CONFIG" "$file" 2>&1; then
+                YAML_ERRORS=1
+            fi
+        done <<< "$YAML_FILES"
+        if [[ $YAML_ERRORS -ne 0 ]]; then
+            echo "" >&2
+            echo "  ✗  YAML lint failed. Fix the errors above before committing." >&2
+            echo "" >&2
+            ERRORS=1
+        fi
+    fi
+fi
+
+# ─── 2. DOCKER IMAGE 'LATEST' TAG DETECTION ────────────────────────────────────
+COMPOSE_FILES=$(echo "$STAGED" | grep -E '(docker-compose|compose)([-.].*)?\.ya?ml$' || true)
+
+if [[ -n "$COMPOSE_FILES" ]]; then
+    LATEST_FOUND=0
+    while IFS= read -r file; do
+        # Match image lines using :latest or image with no tag (implicitly latest)
+        MATCHES=$(grep -nE '^\s+image:\s+[^#]*(:[Ll]atest|^[^:]+)$' "$file" \
+            | grep -vE '(#\s*ok|#\s*latest-ok)' \
+            | grep -E ':[Ll]atest' || true)
+        if [[ -n "$MATCHES" ]]; then
+            echo "" >&2
+            echo "  ✗  Unpinned 'latest' image tag found in: $file" >&2
+            echo "$MATCHES" | while IFS= read -r line; do
+                echo "     $line" >&2
+            done
+            LATEST_FOUND=1
+        fi
+    done <<< "$COMPOSE_FILES"
+    if [[ $LATEST_FOUND -ne 0 ]]; then
+        echo "" >&2
+        echo "     Pin images to specific versions (e.g., image: vendor/app:1.2.3)." >&2
+        echo "     To suppress for a line, add:  # latest-ok" >&2
+        echo "" >&2
+        ERRORS=1
+    fi
+fi
+
+# ─── 3. SECRET SCANNING ────────────────────────────────────────────────────────
+# Patterns: common secret shapes in config files.
+# .env.example files are intentionally excluded (they contain placeholder values).
+SECRET_FILES=$(echo "$STAGED" | grep -vE '(\.env\.example|\.env\.sample|\.env\.template)$' || true)
+
+if [[ -n "$SECRET_FILES" ]]; then
+    SECRET_PATTERN='(password|passwd|secret|api[_-]?key|apikey|token|private[_-]?key|access[_-]?key|auth[_-]?token)\s*[:=]\s*["\x27]?[A-Za-z0-9+/!@#$%^&*_\-]{8,}["\x27]?'
+    SECRET_FOUND=0
+    while IFS= read -r file; do
+        # Skip binary files
+        if file "$file" 2>/dev/null | grep -qE 'binary|executable|ELF'; then
+            continue
+        fi
+        MATCHES=$(grep -inE "$SECRET_PATTERN" "$file" \
+            | grep -vE '(your_|<|>|\$\{|\$\(|example|placeholder|changeme|replace|TODO|fixme|xxx|yyy|zzz|env\.|os\.)' \
+            || true)
+        if [[ -n "$MATCHES" ]]; then
+            echo "" >&2
+            echo "  ✗  Potential hardcoded secret in: $file" >&2
+            echo "$MATCHES" | head -5 | while IFS= read -r line; do
+                echo "     $line" >&2
+            done
+            SECRET_FOUND=1
+        fi
+    done <<< "$SECRET_FILES"
+    if [[ $SECRET_FOUND -ne 0 ]]; then
+        echo "" >&2
+        echo "     Use environment variables (\$VAR) or reference .env files instead." >&2
+        echo "     If this is a false positive, verify no real secret is present." >&2
+        echo "" >&2
+        ERRORS=1
+    fi
+fi
+
+# ─── RESULT ────────────────────────────────────────────────────────────────────
+if [[ $ERRORS -ne 0 ]]; then
+    exit 1
+fi
+
+exit 0

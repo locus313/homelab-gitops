@@ -1,6 +1,10 @@
 #!/bin/bash
 # Validates commit messages follow the Conventional Commits specification.
 #
+# Hooks in this directory:
+#   pre-commit  → YAML lint, 'latest' image tag detection, secret scanning
+#   commit-msg  → Conventional Commits format + 100-char subject limit (this file)
+#
 # Install once per clone:
 #   git config core.hooksPath .githooks
 #
