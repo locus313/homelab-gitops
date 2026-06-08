@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Bump bpg/proxmox (#357).
 - Bump the docker-images group across 2 directories with 3 updates (#358).
 - Bump postgres in /docker/open-archiver (#359).
+- Bump valkey/valkey in /docker/open-archiver (#360).
 
 ## [2026-06-07]
 
