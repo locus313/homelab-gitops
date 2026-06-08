@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 - Bump postgres in /docker/open-archiver (#359).
 - Bump valkey/valkey in /docker/open-archiver (#360).
 
+### Changed
+- Downgrade postgres and valkey images in docker-compose.
+
 ## [2026-06-07]
 
 ### Added
