@@ -14,7 +14,7 @@ updates:
           - "minor"
           - "patch"
     ignore:
-      # Stateful services — major version bumps require manual migration
+      # Stateful services — major version bumps require manual data migration
       - dependency-name: "postgres"
         update-types: ["version-update:semver-major"]
       - dependency-name: "valkey/valkey"

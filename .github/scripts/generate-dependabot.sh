@@ -29,6 +29,14 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # Stateful services — major version bumps require manual data migration
+      - dependency-name: "postgres"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "valkey/valkey"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "getmeili/meilisearch"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "terraform"
     directories:
