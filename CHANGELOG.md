@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Dependencies
 - Bump bpg/proxmox (#357).
 - Bump the docker-images group across 2 directories with 3 updates (#358).
+- Bump postgres in /docker/open-archiver (#359).
 
 ## [2026-06-07]
 
