@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Dependencies
 - Bump the docker-images group across 4 directories with 5 updates (#362).
 
+### Changed
+- Update getmeili/meilisearch dependency to allow minor and patch version updates.
+
 ## [2026-06-08]
 
 ### Dependencies
