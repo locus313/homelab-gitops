@@ -19,8 +19,9 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "valkey/valkey"
         update-types: ["version-update:semver-major"]
+      # Meilisearch breaks data format compatibility on any version bump — update manually
       - dependency-name: "getmeili/meilisearch"
-        update-types: ["version-update:semver-major"]
+        update-types: ["version-update:semver-major", "version-update:semver-minor", "version-update:semver-patch"]
 
   - package-ecosystem: "terraform"
     directories:
