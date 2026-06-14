@@ -22,7 +22,7 @@ Traefik is a modern reverse proxy and load balancer that makes deploying microse
 
 2. Edit the `.env` file with your specific values:
    - `TRAEFIK_BASE_DOMAIN`: Your base domain for services
-   - `CLOUDNS_AUTH_ID`: CloudNS authentication ID (for DNS challenges)
+   - `CLOUDNS_SUB_AUTH_ID`: CloudNS sub-authentication ID (for DNS challenges)
    - `CLOUDNS_AUTH_PASSWORD`: CloudNS authentication password
 
 3. Deploy the service:
@@ -32,8 +32,16 @@ Traefik is a modern reverse proxy and load balancer that makes deploying microse
 
 ## Access
 
-- Web Dashboard: `https://traefik.yourdomain.com`
-- API: Available through the dashboard or direct API calls
+> [!NOTE]
+> The Traefik dashboard and API are **disabled** in this deployment (`api.dashboard: false`). This is intentional — exposing the dashboard or API adds attack surface without operational need.
+
+To inspect routing state or diagnose issues, use container logs:
+
+```bash
+docker logs -f traefik
+tail -f ${DOCKER_BASE_PATH}/traefik/logs/traefik.log
+tail -f ${DOCKER_BASE_PATH}/traefik/logs/access.log
+```
 
 ## SSL Certificates
 
@@ -75,33 +83,28 @@ labels:
 
 ## Entrypoints
 
-- **web**: HTTP traffic (port 80) - redirects to HTTPS
-- **websecure**: HTTPS traffic (port 443)
+- **web**: HTTP traffic (port 80) — redirects all requests to HTTPS
+- **websecure**: HTTPS traffic (port 443) with HTTP/3 enabled
 
-## Middleware
+## What Is Configured
 
-Common middleware available:
-- SSL redirect
-- Authentication (BasicAuth, OAuth)
-- Rate limiting
-- IP whitelisting
-- Headers modification
+This deployment uses a minimal, security-focused configuration:
 
-## Monitoring
+- HTTP → HTTPS redirect on all incoming requests
+- DNS-01 TLS via CloudNS (`certresolver: cloudns`)
+- Access and error logs written to `${DOCKER_BASE_PATH}/traefik/logs/`
+- Docker provider watches for container labels (`traefik.enable=true`)
+- File provider watches `config/dynamic/` for static route definitions
+- Dashboard and API are disabled
 
-The dashboard provides:
-- Real-time service status
-- Request metrics
-- SSL certificate status
-- Health check results
-- Error rates and response times
+Middleware such as BasicAuth, rate limiting, and IP allowlisting are **not** configured by default. Add them in `config/dynamic/` if needed.
 
 ## Security
 
 - All HTTP traffic is redirected to HTTPS
 - SSL certificates are automatically renewed
-- Dashboard access can be restricted
-- Middleware for authentication and access control
+- Dashboard and API are disabled to reduce attack surface
+- Docker socket is mounted read-only (`/var/run/docker.sock:ro`)
 
 ## Volumes
 
@@ -111,7 +114,11 @@ The dashboard provides:
 
 ## Network
 
-Traefik creates and manages the `proxynet` external network that other services connect to for reverse proxy functionality.
+Traefik connects to the `proxynet` external network. All other services must also join `proxynet` to be discovered and routed. Create the network once before deploying any service:
+
+```bash
+docker network create proxynet
+```
 
 ## DNS Provider
 

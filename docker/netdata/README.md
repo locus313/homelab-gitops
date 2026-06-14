@@ -69,6 +69,10 @@ If you configure Netdata Cloud:
 
 To disable cloud features, uncomment `DO_NOT_TRACK=1` in your `.env` file.
 
+## Remote Access Without Netdata Cloud
+
+If you prefer not to use Netdata Cloud, Tailscale (already available via the Code-Server Tailscale sidecar in this homelab) provides secure remote access to `http://<tailscale-ip>:19999` without exposing the port to the public internet.
+
 ## Troubleshooting
 
 **Container won't start:**

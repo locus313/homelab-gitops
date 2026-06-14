@@ -19,8 +19,8 @@ OpenArchiver is a secure, self-hosted platform for archiving, storing, indexing,
 | open-archiver | `logiclabshq/open-archiver:v0.5.0` | Frontend + backend |
 | postgres | `postgres:17-alpine` | Metadata database |
 | valkey | `valkey/valkey:8-alpine` | Redis-compatible job queue |
-| meilisearch | `getmeili/meilisearch:v1.38` | Full-text search engine |
-| tika | `apache/tika:3.2.2.0-full` | Attachment content extraction |
+| meilisearch | `getmeili/meilisearch:v1.46.1` | Full-text search engine |
+| tika | `apache/tika:3.3.1.0-full` | Attachment content extraction |
 
 ## Configuration
 

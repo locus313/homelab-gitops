@@ -2,7 +2,7 @@
 
 Automatically mirrors GitHub repositories to your self-hosted Gitea/Forgejo instance, with a web UI and scheduled sync support.
 
-- **Image**: `ghcr.io/raylabshq/gitea-mirror:v3.15.10`
+- **Image**: `ghcr.io/raylabshq/gitea-mirror:v3.17.1`
 - **Web UI**: `https://gitea-mirror.<TRAEFIK_BASE_DOMAIN>`
 - **Upstream**: [RayLabsHQ/gitea-mirror](https://github.com/RayLabsHQ/gitea-mirror)
 

@@ -15,8 +15,8 @@ Portainer is a lightweight container management UI that provides a web interface
 
 | Edition | Image | License |
 |---------|-------|---------|
-| Community (CE) | `portainer/portainer-ce:2.39.2` | Free |
-| Business (EE) | `portainer/portainer-ee:2.39.2` | Requires license key |
+| Community (CE) | `portainer/portainer-ce:2.39.3` | Free |
+| Business (EE) | `portainer/portainer-ee:2.39.3` | Requires license key |
 
 ## Configuration
 

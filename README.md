@@ -29,7 +29,7 @@ graph LR
     NAS(["NAS / Storj Node :14002"]):::external
     DOCKER[("docker.sock")]:::dock
 
-    TRAEFIK["Traefik v3.7.1<br/>:80 redirect, :443 HTTPS<br/>:8181 Dashboard"]:::traefik
+    TRAEFIK["Traefik v3.7.5<br/>:80 redirect, :443 HTTPS"]:::traefik
 
     INTERNET --> TRAEFIK
     CLOUDNS -.-> TRAEFIK

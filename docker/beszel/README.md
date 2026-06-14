@@ -46,10 +46,12 @@ Beszel is a lightweight server monitoring solution that provides real-time insig
 
 ## Initial Setup
 
-1. Access the web interface to complete initial setup
-2. Generate authentication keys for agents
-3. Configure monitoring thresholds and alerts
-4. Add additional servers by deploying agents
+1. Access the web interface and create your admin account
+2. In the Beszel Hub UI, go to **Settings → Agent Keys** and copy the generated public key
+3. Paste the public key into the `BESZEL_PUBLIC_KEY` variable in your `.env` file
+4. Restart the agent container so it picks up the key: `docker compose restart beszel-agent`
+5. The agent will appear as connected in the Hub dashboard
+6. Configure monitoring thresholds and alerts as needed
 
 ## Volumes
 

@@ -89,9 +89,12 @@ Home Assistant can discover devices on your network. The container has access to
 ## Backup
 
 Home Assistant configuration is stored in:
-- `${DOCKER_BASE_PATH}/home-assistant/config/`
+- `${DOCKER_BASE_PATH}/home-assistant/config/` — YAML configs, automations, scripts, integrations
 
-Regular backups of this directory are recommended. Home Assistant also provides built-in backup functionality through the web interface.
+> [!IMPORTANT]
+> This deployment uses a **PostgreSQL sidecar** for the Home Assistant recorder (all state change history). The database lives at `${DOCKER_BASE_PATH}/homeassistant-db/` and must be backed up separately from the YAML config. Regular backups of both directories are recommended. See [docs/resilience-planning.md](../../docs/resilience-planning.md) for context on why PostgreSQL is used instead of the built-in SQLite recorder.
+
+Home Assistant also provides built-in backup functionality through the web interface (Settings → System → Backups).
 
 ## Updating
 
