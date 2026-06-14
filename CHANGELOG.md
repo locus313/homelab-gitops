@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - `.github/agents` — Update gem-devops and add 8 new agents.
+- `docs` — Update various service README files with version bumps and setup instructions.
 
 ## [2026-06-11]
 
