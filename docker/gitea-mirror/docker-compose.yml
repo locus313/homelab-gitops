@@ -1,6 +1,6 @@
 services:
   gitea-mirror:
-    image: ghcr.io/raylabshq/gitea-mirror:v3.17.1
+    image: ghcr.io/raylabshq/gitea-mirror:v3.19.1
     container_name: gitea-mirror
     restart: unless-stopped
     user: ${PUID}:${PGID}
