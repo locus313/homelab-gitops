@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-06-20]
+
+### Dependencies
+- Bumped `actions/checkout` from 6.0.3 to 7.0.0.
+
 ## [2026-06-19]
 
 ### Dependencies
