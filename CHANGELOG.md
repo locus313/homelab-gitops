@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add UniFi Config Reviewer agent for network security auditing.
 - `.github/skills` — Add 5 new Copilot skills from awesome-copilot.
+- `.github` — Make repo AI-ready (#371).
 
 ## [2026-06-20]
 
