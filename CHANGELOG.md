@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - `.github/skills` — Add 5 new Copilot skills from awesome-copilot.
 - `.github` — Make repo AI-ready (#371).
 - `.github/instructions` — Add 5 new Copilot instruction files.
+- `.github/agents` — Add 3 new agents and update gem-devops from awesome-copilot.
 
 ## [2026-06-20]
 
