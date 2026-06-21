@@ -263,6 +263,21 @@ docker logs service-name
 4. **Validate YAML**: Ensure all files pass linting
 5. **Environment examples**: Always provide complete `.env.example` files
 
+## Maintenance Matrix
+
+When you change a file, **also update** these downstream files:
+
+| Changed file | Must also update |
+|---|---|
+| `docker/<svc>/docker-compose.yml` (add/remove env var) | `docker/<svc>/.env.example` |
+| `docker/<svc>/docker-compose.yml` (change internal port) | Traefik `loadbalancer.server.port` label in same file |
+| `docker/<svc>/docker-compose.yml` (rename service/container) | Volume paths, Traefik labels, `docker/<svc>/README.md` access URL |
+| `docker/<svc>/.env.example` (add/rename variable) | `docker/<svc>/docker-compose.yml`, `docker/<svc>/README.md` |
+| `terraform/modules/<module>/` (change variable interface) | `terraform/homelab/`, `terraform/portainer/`, `terraform/test/` callers |
+| `.github/scripts/generate-dependabot.sh` | Run locally to verify `.github/dependabot.yml` output is correct |
+| `.github/workflows/yaml-lint.yml` (change Python version) | `.github/workflows/copilot-setup-steps.yml` (keep versions in sync) |
+| Any new `docker/<svc>/docker-compose.yml` added | Push to `main` so `update-dependabot.yml` picks it up and updates Dependabot |
+
 ## Common Pitfalls
 
 - **Missing proxynet network**: Services will fail to start

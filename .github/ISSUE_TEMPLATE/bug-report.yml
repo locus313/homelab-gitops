@@ -1,0 +1,73 @@
+name: Bug Report
+description: Something isn't working as expected in an existing service or configuration
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill in as much detail as possible.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the repo is affected?
+      options:
+        - Docker service (docker/)
+        - Terraform (terraform/)
+        - CI/CD workflow (.github/workflows/)
+        - Traefik / networking
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: service
+    attributes:
+      label: Service or file path
+      description: e.g. `docker/traefik`, `terraform/homelab/main.tf`
+      placeholder: docker/traefik
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug clearly and concisely.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. cd docker/traefik
+        2. docker compose up -d
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or output
+      description: Paste `docker logs <service>` output or CI run output here.
+      render: shell
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: |
+        - OS: Ubuntu 24.04
+        - Docker version: 27.x
+        - Terraform version: 1.x (if applicable)
