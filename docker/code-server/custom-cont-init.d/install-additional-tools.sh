@@ -80,7 +80,7 @@ fi
 # Install tfenv (Terraform version manager)
 if [ ! -d "/config/.tfenv" ]; then
     echo "**** Installing tfenv ****"
-    git clone --depth=1 https://github.com/tfutils/tfenv.git /config/.tfenv
+    git clone --depth=1 --branch v3.2.2 https://github.com/tfutils/tfenv.git /config/.tfenv
     # Install specific Terraform versions
     /config/.tfenv/bin/tfenv install 0.12.31
     /config/.tfenv/bin/tfenv install 0.14.3
