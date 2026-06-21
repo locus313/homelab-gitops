@@ -296,6 +296,18 @@ yamllint -c .github/.yamllint .
 
 ---
 
+## Contributing
+
+1. Fork the repo and create a branch: `feat(docker/<name>): add <Service> stack`
+2. Follow the [standard service pattern](#getting-started) — every new service needs `docker-compose.yml`, `.env.example`, and `README.md`
+3. Always pin image versions — never use `latest`
+4. Run `yamllint -c .github/.yamllint .` before committing
+5. Open a PR — the checklist in the PR template walks through all required steps
+
+See [`AGENTS.md`](AGENTS.md) for detailed conventions and [`copilot-instructions.md`](.github/copilot-instructions.md) for the full contribution guide.
+
+---
+
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix |

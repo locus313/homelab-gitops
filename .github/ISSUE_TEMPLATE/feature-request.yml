@@ -1,0 +1,60 @@
+name: Feature Request
+description: Suggest a new Docker service stack, Terraform module, or configuration improvement
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to request a new service, a Terraform improvement, or a workflow enhancement.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Request type
+      options:
+        - New Docker service stack
+        - Update existing service (version bump or config change)
+        - New Terraform module or workspace
+        - CI/CD workflow improvement
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: service
+    attributes:
+      label: Service name or path
+      description: For new services, the name you'd use in `docker/<name>`. For existing, the current path.
+      placeholder: docker/new-service
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What would you like?
+      description: Describe what you want and why it would be useful for the homelab.
+    validations:
+      required: true
+
+  - type: textarea
+    id: usecase
+    attributes:
+      label: Use case
+      description: How would this be used? What problem does it solve?
+    validations:
+      required: true
+
+  - type: input
+    id: upstream
+    attributes:
+      label: Upstream image or project URL
+      description: Link to the Docker Hub image, GitHub repo, or project homepage.
+      placeholder: https://hub.docker.com/r/vendor/image
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
+      description: Special networking requirements, GPU needs, host ports, multi-container setup, etc.
