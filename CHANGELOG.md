@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-06-21]
+
+### Added
+- Add UniFi Config Reviewer agent for network security auditing.
+
 ## [2026-06-20]
 
 ### Dependencies
