@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 - `.github/instructions` — Add 5 new Copilot instruction files.
 - `.github/agents` — Add 3 new agents and update gem-devops from awesome-copilot.
 
+### Fixed
+- `netbootxyz` — Use HTTPS and verify SHA256 checksum for Proxmox ISO.
+
 ## [2026-06-20]
 
 ### Dependencies
