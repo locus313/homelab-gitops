@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - `netbootxyz` — Use HTTPS and verify SHA256 checksum for Proxmox ISO.
+- `code-server` — Pin tfenv clone to v3.2.2 to prevent supply-chain risk.
 
 ## [2026-06-20]
 
