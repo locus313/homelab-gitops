@@ -39,7 +39,8 @@ VERSION="${1:-8.4-1}"
 readonly MAJOR="${VERSION%%-*}"                 # "8.4" from "8.4-1"
 readonly MAJOR_SHORT="${MAJOR%%.*}"             # "8" from "8.4"
 readonly ISO_NAME="proxmox-ve_${VERSION}.iso"
-readonly ISO_URL="http://download.proxmox.com/iso/${ISO_NAME}"
+readonly ISO_URL="https://download.proxmox.com/iso/${ISO_NAME}"
+readonly CHECKSUM_URL="https://download.proxmox.com/iso/SHA256SUMS"
 readonly ASSETS_DIR="${ASSETS_DIR:-/docker/netbootxyz/assets}"
 readonly DEST="${ASSETS_DIR}/proxmox-${MAJOR_SHORT}"
 readonly REPO_DIR="${REPO_DIR:-/opt/homelab-gitops}"
@@ -62,6 +63,26 @@ echo "==> Downloading Proxmox VE ${VERSION}"
 echo "    Source : ${ISO_URL}"
 echo "    Dest   : ${ISO_PATH}"
 curl -fL --progress-bar -o "${ISO_PATH}" "${ISO_URL}"
+
+# ---------------------------------------------------------------------------
+# Verify ISO integrity before use
+# ---------------------------------------------------------------------------
+echo "==> Verifying ISO integrity..."
+CHECKSUM_FILE="${WORK}/SHA256SUMS"
+curl -fsSL "${CHECKSUM_URL}" -o "${CHECKSUM_FILE}"
+EXPECTED=$(grep "${ISO_NAME}" "${CHECKSUM_FILE}" | awk '{print $1}')
+ACTUAL=$(sha256sum "${ISO_PATH}" | awk '{print $1}')
+if [[ -z "${EXPECTED}" ]]; then
+    echo "ERROR: ${ISO_NAME} not found in SHA256SUMS — cannot verify integrity" >&2
+    exit 1
+fi
+if [[ "${EXPECTED}" != "${ACTUAL}" ]]; then
+    echo "ERROR: Checksum mismatch — ISO may be corrupt or tampered" >&2
+    echo "  expected: ${EXPECTED}" >&2
+    echo "  actual:   ${ACTUAL}" >&2
+    exit 1
+fi
+echo "==> Checksum OK: ${ACTUAL}"
 
 # ---------------------------------------------------------------------------
 # Extract PXE boot files from the ISO
