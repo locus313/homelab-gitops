@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bump the docker-images group across 6 directories with 6 updates (#373).
+- Bump the terraform-providers group across 2 directories with 2 updates (#372).
 
 ## [2026-06-21]
 
