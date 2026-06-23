@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Remove open-archiver service and terraform stack.
+- `.github/skills` — Update 2 outdated skills and install 7 new skills.
 
 ## [2026-06-22]
 
