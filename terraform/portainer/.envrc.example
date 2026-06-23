@@ -209,43 +209,6 @@ export TF_VAR_code_server_ts_authkey=$(_bw_field "Homelab - Code-Server" "ts_aut
 # export TF_VAR_code_server_ts_extra_args="--advertise-tags=tag:container --reset"
 
 # ---------------------------------------------------------------------------
-# OpenArchiver — self-hosted email archiving
-# Bitwarden item: "Homelab - OpenArchiver"
-#   password:               <postgres_password>  ← MUST use openssl rand -hex 32
-#                           (hex only — password is embedded raw in a URL and
-#                            must not contain '/', '@', ':', '#', or '?' chars)
-#   custom hidden fields:
-#     meili_master_key:     $(openssl rand -hex 32)
-#     redis_password:       $(openssl rand -hex 32)
-#     jwt_secret:           $(openssl rand -hex 32)
-#     encryption_key:       $(openssl rand -hex 32)
-#     storage_encryption_key: $(openssl rand -hex 32)  (leave empty to disable at-rest encryption)
-#
-# One-shot setup (copy-paste into a shell with BW_SESSION set):
-#   POSTGRES_PW=$(openssl rand -hex 32)
-#   bw get template item \
-#     | jq --arg pw "$POSTGRES_PW" \
-#          '.name="Homelab - OpenArchiver" | .login.password=$pw
-#            | .fields=[
-#                {"name":"meili_master_key",   "value":"'"$(openssl rand -hex 32)"'","type":1},
-#                {"name":"redis_password",      "value":"'"$(openssl rand -hex 32)"'","type":1},
-#                {"name":"jwt_secret",          "value":"'"$(openssl rand -hex 32)"'","type":1},
-#                {"name":"encryption_key",      "value":"'"$(openssl rand -hex 32)"'","type":1},
-#                {"name":"storage_encryption_key","value":"'"$(openssl rand -hex 32)"'","type":1}
-#              ]' \
-#     | bw encode | bw create item
-# ---------------------------------------------------------------------------
-export TF_VAR_open_archiver_postgres_password=$(_bw_password "Homelab - OpenArchiver")
-export TF_VAR_open_archiver_meili_master_key=$(_bw_field "Homelab - OpenArchiver" "meili_master_key")
-export TF_VAR_open_archiver_redis_password=$(_bw_field "Homelab - OpenArchiver" "redis_password")
-export TF_VAR_open_archiver_jwt_secret=$(_bw_field "Homelab - OpenArchiver" "jwt_secret")
-export TF_VAR_open_archiver_encryption_key=$(_bw_field "Homelab - OpenArchiver" "encryption_key")
-export TF_VAR_open_archiver_storage_encryption_key=$(_bw_field "Homelab - OpenArchiver" "storage_encryption_key")
-# export TF_VAR_open_archiver_postgres_db="open_archive"
-# export TF_VAR_open_archiver_postgres_user="admin"
-# export TF_VAR_open_archiver_storage_local_root_path="/var/data/open-archiver"
-
-# ---------------------------------------------------------------------------
 # Netdata (deployed to both dh01 and dh02)
 # Bitwarden item: "Homelab - Netdata"
 #   password: <claim_token>  |  custom hidden field "rooms": <room_id>

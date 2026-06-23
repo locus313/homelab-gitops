@@ -9,9 +9,6 @@ locals {
 
   # Fully-qualified URLs derived from base domain
   zerobyte_base_url        = "https://zerobyte.${var.traefik_base_domain}"
-  open_archiver_app_url    = "https://open-archiver.${var.traefik_base_domain}"
-  open_archiver_db_url     = "postgresql://${var.open_archiver_postgres_user}:${var.open_archiver_postgres_password}@postgres:5432/${var.open_archiver_postgres_db}"
-
   # Portainer-managed filesystem paths for stacks that use relative bind mounts.
   # Portainer clones/syncs the stack directory here on each GitOps update so
   # Docker can resolve ./relative paths against a stable host path.
@@ -918,94 +915,6 @@ resource "portainer_stack" "netdata_dh01" {
   env {
     name  = "NETDATA_CLAIM_ROOMS"
     value = var.netdata_claim_rooms
-  }
-}
-
-# ---------------------------------------------------------------------------
-# OpenArchiver — self-hosted email archiving
-# ---------------------------------------------------------------------------
-
-resource "portainer_stack" "open_archiver" {
-  name            = "open-archiver"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
-
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/open-archiver/docker-compose.yml"
-
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
-
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "NODE_ENV"
-    value = "production"
-  }
-  env {
-    name  = "PORT_BACKEND"
-    value = var.open_archiver_port_backend
-  }
-  env {
-    name  = "PORT_FRONTEND"
-    value = var.open_archiver_port_frontend
-  }
-  env {
-    name  = "APP_URL"
-    value = local.open_archiver_app_url
-  }
-  env {
-    name  = "ORIGIN"
-    value = local.open_archiver_app_url
-  }
-  env {
-    name  = "STORAGE_LOCAL_ROOT_PATH"
-    value = var.open_archiver_storage_local_root_path
-  }
-  env {
-    name  = "POSTGRES_DB"
-    value = var.open_archiver_postgres_db
-  }
-  env {
-    name  = "POSTGRES_USER"
-    value = var.open_archiver_postgres_user
-  }
-  env {
-    name  = "POSTGRES_PASSWORD"
-    value = var.open_archiver_postgres_password
-  }
-  env {
-    name  = "DATABASE_URL"
-    value = local.open_archiver_db_url
-  }
-  env {
-    name  = "MEILI_MASTER_KEY"
-    value = var.open_archiver_meili_master_key
-  }
-  env {
-    name  = "REDIS_PASSWORD"
-    value = var.open_archiver_redis_password
-  }
-  env {
-    name  = "JWT_SECRET"
-    value = var.open_archiver_jwt_secret
-  }
-  env {
-    name  = "ENCRYPTION_KEY"
-    value = var.open_archiver_encryption_key
-  }
-  env {
-    name  = "STORAGE_ENCRYPTION_KEY"
-    value = var.open_archiver_storage_encryption_key
   }
 }
 

@@ -67,7 +67,6 @@ networks:
 - **Docker Integration** (Homarr, Webtop, Portainer, Traefik, Netdata, Watchtower, Code-Server): Mount `/var/run/docker.sock` for container management or monitoring
 - **Multi-Service Stacks**:
   - **Gitea**: `gitea` + `postgres:18` sidecar; exposes SSH on `222:22` for Git over SSH
-  - **Open-Archiver**: `open-archiver` + `postgres:17` + `valkey` (Redis-compatible) + `meilisearch` + `tika`; all sidecars on an isolated internal `open-archiver-net`
   - **Open-WebUI**: `open-webui` + `ollama` sidecar; ollama mounts `/dev/dri` for GPU inference
 - **Kasm**: Privileged mode, `/dev/dri` GPU, exposes `${KASM_SETUP_PORT:-3000}:3000` (setup wizard) and `${KASM_PORT}:${KASM_PORT}` (runtime, configurable); also joined to default network
 - **Home Assistant**: Uses `proxynet` + `privileged: true` (NOT host network); mounts `/run/dbus` for device/Bluetooth access
@@ -107,7 +106,6 @@ networks:
 - **Gitea**: Self-hosted Git service with PostgreSQL backend
 - **Gitea-Mirror**: Automated GitHub-to-Gitea repository mirroring with web UI
 - **Home Assistant**: Local-first home automation platform with device and energy management
-- **Open-Archiver**: Email archiving and search platform (IMAP, Google Workspace, M365, PST)
 - **Rackula**: Drag-and-drop rack layout designer with PNG/PDF/SVG export
 - **Zerobyte**: Restic-based backup automation with web UI and multi-protocol support
 - **Storj Node**: Decentralized storage node that earns STORJ tokens for sharing disk/bandwidth
