@@ -19,6 +19,9 @@ All notable changes to this project will be documented in this file.
 - `docker/mail-archiver` — Remove Traefik buffering middleware, raise Kestrel limit.
 - `docker/traefik` — Disable websecure read timeout for large file uploads.
 
+### Changed
+- `docker/mail-archiver` — Remove redundant Kestrel body size limit.
+
 ## [2026-06-23]
 
 ### Changed
