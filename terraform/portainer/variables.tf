@@ -356,3 +356,37 @@ variable "netdata_claim_rooms" {
   default     = ""
 }
 
+# ---------------------------------------------------------------------------
+# Mail Archiver
+# ---------------------------------------------------------------------------
+
+variable "mail_archiver_admin_user" {
+  description = "Mail Archiver initial admin username"
+  type        = string
+  default     = "admin"
+}
+
+variable "mail_archiver_admin_password" {
+  description = "Mail Archiver initial admin password"
+  type        = string
+  sensitive   = true
+}
+
+variable "mail_archiver_db_name" {
+  description = "Mail Archiver PostgreSQL database name"
+  type        = string
+  default     = "mailarchiver"
+}
+
+variable "mail_archiver_db_user" {
+  description = "Mail Archiver PostgreSQL database user"
+  type        = string
+  default     = "mailuser"
+}
+
+variable "mail_archiver_db_password" {
+  description = "Mail Archiver PostgreSQL database password"
+  type        = string
+  sensitive   = true
+}
+

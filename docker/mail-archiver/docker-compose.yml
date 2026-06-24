@@ -1,0 +1,49 @@
+services:
+  mail-archiver:
+    image: s1t5/mailarchiver:2606.3
+    container_name: mail-archiver
+    restart: unless-stopped
+    depends_on:
+      mail-archiver-db:
+        condition: service_healthy
+    networks:
+      - proxynet
+    volumes:
+      - ${DOCKER_BASE_PATH}/mail-archiver/keys:/app/DataProtection-Keys
+    environment:
+      TZ: ${TZ}
+      ConnectionStrings__DefaultConnection: >-
+        Host=mail-archiver-db;Database=${MAIL_ARCHIVER_DB_NAME};Username=${MAIL_ARCHIVER_DB_USER};Password=${MAIL_ARCHIVER_DB_PASSWORD}
+      Authentication__Username: ${MAIL_ARCHIVER_ADMIN_USER}
+      Authentication__Password: ${MAIL_ARCHIVER_ADMIN_PASSWORD}
+      TimeZone__DisplayTimeZoneId: ${TZ}
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.mail-archiver.loadbalancer.server.port=5000
+      - traefik.http.routers.mail-archiver.rule=Host(`mail-archiver.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.mail-archiver.entrypoints=websecure
+      - traefik.http.routers.mail-archiver.tls=true
+      - traefik.http.routers.mail-archiver.tls.certresolver=cloudns
+
+  mail-archiver-db:
+    image: postgres:18.4
+    container_name: mail-archiver-db
+    restart: unless-stopped
+    networks:
+      - proxynet
+    volumes:
+      - ${DOCKER_BASE_PATH}/mail-archiver/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${MAIL_ARCHIVER_DB_NAME}
+      POSTGRES_USER: ${MAIL_ARCHIVER_DB_USER}
+      POSTGRES_PASSWORD: ${MAIL_ARCHIVER_DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${MAIL_ARCHIVER_DB_USER} -d ${MAIL_ARCHIVER_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+networks:
+  proxynet:
+    external: true
