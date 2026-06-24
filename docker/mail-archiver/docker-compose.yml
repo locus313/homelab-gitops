@@ -20,8 +20,6 @@ services:
       Upload__MaxFileSizeGB: "10"
       Upload__KeepAliveTimeoutHours: "4"
       Upload__RequestHeadersTimeoutHours: "2"
-      # Raise Kestrel's default ~28 MB body limit so large uploads stream through
-      Kestrel__Limits__MaxRequestBodySize: "10737418240"
     labels:
       - traefik.enable=true
       - traefik.http.services.mail-archiver.loadbalancer.server.port=5000
