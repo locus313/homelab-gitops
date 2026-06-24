@@ -1,0 +1,33 @@
+http:
+  middlewares:
+    mail-archiver-upload:
+      buffering:
+        # Allow up to 500 MB request bodies for ZIP/EML imports
+        maxRequestBodyBytes: 524288000
+        memRequestBodyBytes: 10485760
+
+  routers:
+    mail-archiver-import:
+      entryPoints:
+        - websecure
+      rule: 'Host(`mail-archiver.{{ env "TRAEFIK_BASE_DOMAIN" }}`) && PathPrefix(`/MailAccounts/ImportEml`)'
+      service: mail-archiver-svc
+      middlewares:
+        - mail-archiver-upload
+      tls:
+        certResolver: cloudns
+    mail-archiver-import-mbox:
+      entryPoints:
+        - websecure
+      rule: 'Host(`mail-archiver.{{ env "TRAEFIK_BASE_DOMAIN" }}`) && PathPrefix(`/MailAccounts/ImportMbox`)'
+      service: mail-archiver-svc
+      middlewares:
+        - mail-archiver-upload
+      tls:
+        certResolver: cloudns
+
+  services:
+    mail-archiver-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://mail-archiver:5000'
