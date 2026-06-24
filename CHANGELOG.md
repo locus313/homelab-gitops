@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - `docker/mail-archiver` — Raise Traefik upload limit to 10 GB.
 - `docker/mail-archiver` — Raise Kestrel max request body size to 10 GB.
 - `docker/mail-archiver` — Use app's own upload env vars instead of Kestrel limit.
+- `docker/mail-archiver` — Remove Traefik buffering middleware, raise Kestrel limit.
 
 ## [2026-06-23]
 
