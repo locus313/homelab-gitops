@@ -23,6 +23,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - `docker/mail-archiver` — Remove redundant Kestrel body size limit.
 
+### Dependencies
+- Bump the docker-images group across 2 directories with 2 updates (#374).
+
 ## [2026-06-23]
 
 ### Changed
