@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-06-24]
+
+### Added
+- `docker/mail-archiver` — Add Mail Archiver stack with PostgreSQL backend.
+
 ## [2026-06-23]
 
 ### Changed
