@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - `docker/traefik` — Add mail-archiver upload middleware for large EML/mbox imports.
 - `docker/mail-archiver` — Attach upload middleware via Docker label.
 - `docker/mail-archiver` — Move buffering middleware fully into Docker labels.
+- `docker/mail-archiver` — Raise Traefik upload limit to 10 GB.
 
 ## [2026-06-23]
 
