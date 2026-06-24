@@ -1,6 +1,6 @@
 services:
   mail-archiver:
-    image: s1t5/mailarchiver:2606.3
+    image: s1t5/mailarchiver:2606.4
     container_name: mail-archiver
     restart: unless-stopped
     depends_on:
