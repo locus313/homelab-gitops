@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - `docker/mail-archiver` — Simplify postgres healthcheck to use pg_isready without args.
 - `docker/mail-archiver` — Fix postgres 18+ volume mount path.
 - `docker/traefik` — Add mail-archiver upload middleware for large EML/mbox imports.
+- `docker/mail-archiver` — Attach upload middleware via Docker label.
 
 ## [2026-06-23]
 
