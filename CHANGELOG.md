@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - `docker/mail-archiver` — Fix postgres 18+ volume mount path.
 - `docker/traefik` — Add mail-archiver upload middleware for large EML/mbox imports.
 - `docker/mail-archiver` — Attach upload middleware via Docker label.
+- `docker/mail-archiver` — Move buffering middleware fully into Docker labels.
 
 ## [2026-06-23]
 
