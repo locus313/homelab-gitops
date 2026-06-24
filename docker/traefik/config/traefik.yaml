@@ -34,6 +34,9 @@ entryPoints:
   websecure:
     address: :443
     http3: true
+    transport:
+      respondingTimeouts:
+        readTimeout: 0  # Disabled — allows large file uploads (e.g. mail-archiver)
 
 certificatesResolvers:
   cloudns:
