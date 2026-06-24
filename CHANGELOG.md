@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - `docker/mail-archiver` — Add Mail Archiver stack with PostgreSQL backend.
 
+### Fixed
+- `docker/mail-archiver` — Simplify postgres healthcheck to use pg_isready without args.
+
 ## [2026-06-23]
 
 ### Changed
