@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - `docker/mail-archiver` — Add Mail Archiver stack with PostgreSQL backend.
+- `docker/mail-archiver` — Add AllowedHosts, OIDC, and local import support.
 
 ### Fixed
 - `docker/mail-archiver` — Simplify postgres healthcheck to use pg_isready without args.
