@@ -17,8 +17,9 @@ services:
       Authentication__Username: ${MAIL_ARCHIVER_ADMIN_USER}
       Authentication__Password: ${MAIL_ARCHIVER_ADMIN_PASSWORD}
       TimeZone__DisplayTimeZoneId: ${TZ}
-      # Raise Kestrel's default ~28 MB body limit to match the app's 10 GB max
-      Kestrel__Limits__MaxRequestBodySize: "10737418240"
+      Upload__MaxFileSizeGB: "10"
+      Upload__KeepAliveTimeoutHours: "4"
+      Upload__RequestHeadersTimeoutHours: "2"
     labels:
       - traefik.enable=true
       - traefik.http.services.mail-archiver.loadbalancer.server.port=5000
