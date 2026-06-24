@@ -10,6 +10,8 @@ services:
       - proxynet
     volumes:
       - ${DOCKER_BASE_PATH}/mail-archiver/keys:/app/DataProtection-Keys
+      # Uncomment to enable local mbox/EML import from a host directory:
+      # - ${MAIL_ARCHIVER_IMPORT_PATH}:/data/import
     environment:
       TZ: ${TZ}
       ConnectionStrings__DefaultConnection: >-
@@ -17,9 +19,24 @@ services:
       Authentication__Username: ${MAIL_ARCHIVER_ADMIN_USER}
       Authentication__Password: ${MAIL_ARCHIVER_ADMIN_PASSWORD}
       TimeZone__DisplayTimeZoneId: ${TZ}
+      AllowedHosts: "mail-archiver.${TRAEFIK_BASE_DOMAIN}"
+      MailSync__IgnoreSelfSignedCert: "false"
       Upload__MaxFileSizeGB: "10"
       Upload__KeepAliveTimeoutHours: "4"
       Upload__RequestHeadersTimeoutHours: "2"
+      # Uncomment to enable local mbox/EML import (also uncomment the volume above):
+      # LocalImport__AllowedPaths__0: /data/import
+      # Uncomment to enable OIDC SSO (see https://github.com/s1t5/mail-archiver/blob/main/doc/OIDC_Implementation.md):
+      # OAuth__Enabled: "true"
+      # OAuth__Authority: ${MAIL_ARCHIVER_OAUTH_AUTHORITY}
+      # OAuth__ClientId: ${MAIL_ARCHIVER_OAUTH_CLIENT_ID}
+      # OAuth__ClientSecret: ${MAIL_ARCHIVER_OAUTH_CLIENT_SECRET}
+      # OAuth__DisplayName: ${MAIL_ARCHIVER_OAUTH_DISPLAY_NAME}
+      # OAuth__ClientScopes__0: openid
+      # OAuth__ClientScopes__1: profile
+      # OAuth__ClientScopes__2: email
+      # OAuth__AutoApproveUsers: "false"
+      # OAuth__AdminEmails__0: ${MAIL_ARCHIVER_OAUTH_ADMIN_EMAIL}
     labels:
       - traefik.enable=true
       - traefik.http.services.mail-archiver.loadbalancer.server.port=5000

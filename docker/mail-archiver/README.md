@@ -29,6 +29,12 @@ docker compose up -d
 | `MAIL_ARCHIVER_DB_NAME` | PostgreSQL database name |
 | `MAIL_ARCHIVER_DB_USER` | PostgreSQL username |
 | `MAIL_ARCHIVER_DB_PASSWORD` | PostgreSQL password |
+| `MAIL_ARCHIVER_IMPORT_PATH` | *(Optional)* Host path for local mbox/EML import |
+| `MAIL_ARCHIVER_OAUTH_AUTHORITY` | *(Optional)* OIDC provider URL |
+| `MAIL_ARCHIVER_OAUTH_CLIENT_ID` | *(Optional)* OIDC client ID |
+| `MAIL_ARCHIVER_OAUTH_CLIENT_SECRET` | *(Optional)* OIDC client secret |
+| `MAIL_ARCHIVER_OAUTH_DISPLAY_NAME` | *(Optional)* SSO button label (default: `SSO`) |
+| `MAIL_ARCHIVER_OAUTH_ADMIN_EMAIL` | *(Optional)* Email address granted admin on SSO login |
 
 ## Access
 
@@ -40,6 +46,7 @@ docker compose up -d
 |------|-------------|
 | `${DOCKER_BASE_PATH}/mail-archiver/keys` | ASP.NET Data Protection keys |
 | `${DOCKER_BASE_PATH}/mail-archiver/db` | PostgreSQL data |
+| `${MAIL_ARCHIVER_IMPORT_PATH}` | *(Optional)* Host directory for local mbox/EML import |
 
 ## Initial Setup
 
@@ -56,3 +63,11 @@ On first access, log in with the credentials defined in `MAIL_ARCHIVER_ADMIN_USE
 - Multi-user support with per-account permissions
 - Retention policies (auto-delete from mail server after configurable period)
 - OIDC authentication support (see [upstream docs](https://github.com/s1t5/mail-archiver/blob/main/doc/OIDC_Implementation.md))
+
+## OIDC / SSO Setup
+
+To enable OIDC SSO, uncomment the `OAuth__*` environment variables in `docker-compose.yml` and set the corresponding values in `.env`. See the [upstream OIDC guide](https://github.com/s1t5/mail-archiver/blob/main/doc/OIDC_Implementation.md) for provider-specific instructions.
+
+## Local mbox / EML Import
+
+To import mail from local files, uncomment the import volume and `LocalImport__AllowedPaths__0` in `docker-compose.yml`, and set `MAIL_ARCHIVER_IMPORT_PATH` in `.env` to the directory containing your files.
