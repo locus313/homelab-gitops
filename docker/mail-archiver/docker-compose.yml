@@ -25,7 +25,7 @@ services:
       - traefik.http.routers.mail-archiver.tls=true
       - traefik.http.routers.mail-archiver.tls.certresolver=cloudns
       - traefik.http.routers.mail-archiver.middlewares=mail-archiver-upload
-      - traefik.http.middlewares.mail-archiver-upload.buffering.maxRequestBodyBytes=524288000
+      - traefik.http.middlewares.mail-archiver-upload.buffering.maxRequestBodyBytes=10737418240
       - traefik.http.middlewares.mail-archiver-upload.buffering.memRequestBodyBytes=10485760
 
   mail-archiver-db:
