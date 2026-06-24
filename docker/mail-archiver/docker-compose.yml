@@ -24,6 +24,7 @@ services:
       - traefik.http.routers.mail-archiver.entrypoints=websecure
       - traefik.http.routers.mail-archiver.tls=true
       - traefik.http.routers.mail-archiver.tls.certresolver=cloudns
+      - traefik.http.routers.mail-archiver.middlewares=mail-archiver-upload@file
 
   mail-archiver-db:
     image: postgres:18.4
