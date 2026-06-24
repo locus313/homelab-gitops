@@ -36,7 +36,7 @@ entryPoints:
     http3: true
     transport:
       respondingTimeouts:
-        readTimeout: 0  # Disabled — allows large file uploads (e.g. mail-archiver)
+        readTimeout: 4h  # Allows large file uploads (e.g. mail-archiver supports up to 10 GB)
 
 certificatesResolvers:
   cloudns:
