@@ -1,7 +1,0 @@
-http:
-  middlewares:
-    mail-archiver-upload:
-      buffering:
-        # Allow up to 500 MB request bodies for ZIP/EML imports
-        maxRequestBodyBytes: 524288000
-        memRequestBodyBytes: 10485760
