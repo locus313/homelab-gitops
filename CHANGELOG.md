@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - `docker/mail-archiver` — Use app's own upload env vars instead of Kestrel limit.
 - `docker/mail-archiver` — Remove Traefik buffering middleware, raise Kestrel limit.
 - `docker/traefik` — Disable websecure read timeout for large file uploads.
+- `docker/traefik` — Set websecure readTimeout to 4h instead of unlimited.
 
 ### Changed
 - `docker/mail-archiver` — Remove redundant Kestrel body size limit.
