@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-06-27]
+
+### Dependencies
+- Bump actions/setup-python (#377).
+
 ## [2026-06-25]
 
 ### Dependencies
