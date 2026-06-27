@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 - Bump actions/setup-python (#377).
 - Bump linuxserver/kasm (#376).
 
+### Changed
+- `.github` — Remove static dependabot script/workflow, simplify yaml-lint.
+
 ## [2026-06-25]
 
 ### Dependencies
