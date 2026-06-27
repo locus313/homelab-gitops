@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bump actions/setup-python (#377).
+- Bump linuxserver/kasm (#376).
 
 ## [2026-06-25]
 
