@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-07-06]
+
+### Dependencies
+- Bump s1t5/mailarchiver in /docker/mail-archiver (#385).
+
 ## [2026-07-03]
 
 ### Dependencies
