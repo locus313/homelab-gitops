@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-07-07]
+
+### Dependencies
+- Bump tailscale/tailscale (#386).
+
 ## [2026-07-06]
 
 ### Dependencies
