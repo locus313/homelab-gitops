@@ -8,5 +8,5 @@
 
 services:
   portainer:
-    image: portainer/portainer-ee:2.39.4
+    image: portainer/portainer-ee:2.39.5
     command: --license-key ${PORTAINER_LICENSE_KEY}
