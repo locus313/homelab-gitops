@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bump the docker-images group across 4 directories with 5 updates (#395).
+- Bump vultr/vultr (#394).
 
 ## [2026-07-17]
 
