@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-07-21]
+
+### Dependencies
+- Bump alexta69/metube (#396).
+
 ## [2026-07-20]
 
 ### Dependencies
