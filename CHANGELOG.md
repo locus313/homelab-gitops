@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-07-25]
+
+### Dependencies
+- Bumped `actions/setup-python` from 6.3.0 to 7.0.0.
+
 ## [2026-07-22]
 
 ### Dependencies
