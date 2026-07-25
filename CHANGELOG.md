@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Dependencies
 - Bumped `actions/setup-python` from 6.3.0 to 7.0.0.
 - Bump actions/checkout (#399).
+- Bump the docker-images group across 4 directories with 4 updates (#398).
 
 ## [2026-07-22]
 
