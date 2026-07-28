@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bump the docker-images group across 4 directories with 5 updates (#402).
+- Bump portainer/portainer (#401).
 
 ## [2026-07-25]
 
