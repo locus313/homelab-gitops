@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-08-03]
+
+### Dependencies
+- Bump linuxserver/code-server (#405).
+
 ## [2026-07-29]
 
 ### Dependencies
