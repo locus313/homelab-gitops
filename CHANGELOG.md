@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bump linuxserver/code-server (#405).
+- Bump portainer/portainer (#404).
 
 ## [2026-07-29]
 
