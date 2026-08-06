@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-08-06]
+
+### Dependencies
+- Bump raylabshq/gitea-mirror (#407).
+
 ## [2026-08-04]
 
 ### Dependencies
