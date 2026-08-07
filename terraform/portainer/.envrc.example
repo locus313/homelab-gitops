@@ -46,12 +46,12 @@ _bw_field()    { printf '%s' "$_BW_ITEMS" | jq -r "[.[] | select(.name==\"$1\") 
 _BW_ITEMS=$(bw list items 2>/dev/null)
 
 # ---------------------------------------------------------------------------
-# Vultr Object Storage — Terraform S3 backend credentials
+# Hetzner Object Storage — Terraform S3 backend credentials
 # (same bucket as terraform/homelab — different state key)
-# Bitwarden item: "Homelab - Vultr S3"  (username: <access_key>, password: <secret_key>)
+# Bitwarden item: "Homelab - hetzner s3 creds"  (username: <access_key>, password: <secret_key>)
 # ---------------------------------------------------------------------------
-export AWS_ACCESS_KEY_ID=$(_bw_username "Homelab - Vultr S3")
-export AWS_SECRET_ACCESS_KEY=$(_bw_password "Homelab - Vultr S3")
+export AWS_ACCESS_KEY_ID=$(_bw_username "Homelab - hetzner s3 creds")
+export AWS_SECRET_ACCESS_KEY=$(_bw_password "Homelab - hetzner s3 creds")
 
 # ---------------------------------------------------------------------------
 # Portainer connection

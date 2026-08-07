@@ -60,11 +60,11 @@ export PROXMOX_VE_SSH_USERNAME=$(_bw_username "Homelab - Proxmox VE")
 export PROXMOX_VE_SSH_PASSWORD=$(_bw_password "Homelab - Proxmox VE")
 
 # ---------------------------------------------------------------------------
-# Vultr Object Storage — Terraform S3 backend credentials
-# Bitwarden item: "Homelab - Vultr S3"  (username: <access_key>, password: <secret_key>)
+# Hetzner Object Storage — Terraform S3 backend credentials
+# Bitwarden item: "Homelab - hetzner s3 creds"  (username: <access_key>, password: <secret_key>)
 # ---------------------------------------------------------------------------
-export AWS_ACCESS_KEY_ID=$(_bw_username "Homelab - Vultr S3")
-export AWS_SECRET_ACCESS_KEY=$(_bw_password "Homelab - Vultr S3")
+export AWS_ACCESS_KEY_ID=$(_bw_username "Homelab - hetzner s3 creds")
+export AWS_SECRET_ACCESS_KEY=$(_bw_password "Homelab - hetzner s3 creds")
 
 # ---------------------------------------------------------------------------
 # Required Terraform variables (no defaults)
