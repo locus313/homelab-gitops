@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
-    bucket                      = "homelab-terraform-state"
+    bucket                      = "lo5t-homelab-terraform-state"
     key                         = "homelab/templates/terraform.tfstate"
-    endpoint                    = "https://sjc1.vultrobjects.com"
-    region                      = "us-east-1"
+    endpoint                    = "https://fsn1.your-objectstorage.com"
+    region                      = "fsn1"
     skip_region_validation      = true
     skip_credentials_validation = true
     # skip_requesting_account_id  = true
