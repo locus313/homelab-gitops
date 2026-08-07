@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - `terraform` — Migrate S3 backend from Vultr to Hetzner Object Storage.
+- `terraform` — Migrate templates and test workspace backends to Hetzner Object Storage.
 
 ## [2026-08-06]
 
