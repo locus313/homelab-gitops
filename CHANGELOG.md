@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-08-07]
+
+### Dependencies
+- Bump s1t5/mailarchiver (#408).
+
 ## [2026-08-06]
 
 ### Dependencies
