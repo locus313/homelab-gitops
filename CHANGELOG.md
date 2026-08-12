@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-08-12]
+
+### Dependencies
+- Bump jlesage/handbrake (#411).
+
 ## [2026-08-11]
 
 ### Dependencies
