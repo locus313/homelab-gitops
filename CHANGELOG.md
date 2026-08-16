@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-08-16]
+
+### Added
+- `.github/workflows` — Add automated Plex image update workflow.
+
 ## [2026-08-14]
 
 ### Dependencies
