@@ -1,0 +1,44 @@
+name: Update Plex Image
+
+"on":
+  schedule:
+    # Dependabot can't parse Plex's non-semver tag scheme (1.43.2.10687-<hash>),
+    # so this runs the same daily cadence as the docker-compose ecosystem.
+    - cron: '0 6 * * *'
+
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  update-plex:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Check for a newer Plex image
+        id: check
+        run: .github/scripts/update-plex.sh
+
+      - name: Open pull request
+        if: steps.check.outputs.updated == 'true'
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676  # v8.1.1
+        with:
+          commit-message: "chore(docker/plex): update image to ${{ steps.check.outputs.new_tag }}"
+          title: "chore(docker/plex): update image to ${{ steps.check.outputs.new_tag }}"
+          body: |
+            Bumps `plexinc/pms-docker` from `${{ steps.check.outputs.old_tag }}`
+            to `${{ steps.check.outputs.new_tag }}`.
+
+            Opened automatically because Plex's tag scheme isn't semver, so
+            Dependabot can't track it.
+          branch: chore/update-plex-image
+          delete-branch: true
