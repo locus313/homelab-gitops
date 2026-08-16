@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - `.github/workflows` — Add automated Plex image update workflow.
 
+### Changed
+- `docker/plex` — Update image to 1.43.3.10861-07dfddaeb (#413).
+
 ## [2026-08-14]
 
 ### Dependencies
