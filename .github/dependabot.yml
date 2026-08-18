@@ -5,7 +5,8 @@ updates:
     directories:
       - "/docker/*"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "friday"
     groups:
       docker-images:
         patterns:
@@ -28,7 +29,7 @@ updates:
       - "/terraform/**"
     schedule:
       interval: "weekly"
-      day: "monday"
+      day: "friday"
     groups:
       terraform-providers:
         patterns:
@@ -42,7 +43,7 @@ updates:
       - "/"
     schedule:
       interval: "weekly"
-      day: "saturday"
+      day: "friday"
     groups:
       github-actions:
         patterns:
