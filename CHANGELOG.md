@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Dependencies
 - Bump the docker-images group across 5 directories with 6 updates (#414).
 - Bump the docker-images group across 4 directories with 4 updates (#415).
+- Bumped `peter-evans/create-pull-request` from 7.0.11 to 8.1.1.
 
 ## [2026-08-16]
 
