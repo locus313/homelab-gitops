@@ -1,6 +1,6 @@
 services:
   plex:
-    image: plexinc/pms-docker:1.43.3.10861-07dfddaeb
+    image: plexinc/pms-docker:1.43.3.10896-cb3ebc72d
     container_name: plex
     restart: unless-stopped
     # Uses host network for Plex server discovery and DLNA
