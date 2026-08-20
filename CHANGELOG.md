@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-08-20]
+
+### Changed
+- `workflow` — Update Plex image update schedule to weekly on Fridays.
+
 ## [2026-08-19]
 
 ### Changed
