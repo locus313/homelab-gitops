@@ -3,8 +3,8 @@ name: Update Plex Image
 "on":
   schedule:
     # Dependabot can't parse Plex's non-semver tag scheme (1.43.2.10687-<hash>),
-    # so this runs the same daily cadence as the docker-compose ecosystem.
-    - cron: '0 6 * * *'
+    # so this runs the same weekly Friday cadence as the docker-compose ecosystem.
+    - cron: '0 6 * * 5'
 
   workflow_dispatch: {}
 
