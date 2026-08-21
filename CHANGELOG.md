@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-08-21]
+
+### Dependencies
+- Bump the docker-images group across 4 directories with 6 updates (#420).
+
 ## [2026-08-20]
 
 ### Changed
