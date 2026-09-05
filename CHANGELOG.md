@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-09-05]
+
+### Changed
+- `.github` — Refresh Copilot agents, skills, and instructions (#424).
+
 ## [2026-09-04]
 
 ### Dependencies
