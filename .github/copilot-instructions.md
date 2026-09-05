@@ -269,7 +269,6 @@ When you change a file, **also update** these downstream files:
 | `docker/<svc>/docker-compose.yml` (rename service/container) | Volume paths, Traefik labels, `docker/<svc>/README.md` access URL |
 | `docker/<svc>/.env.example` (add/rename variable) | `docker/<svc>/docker-compose.yml`, `docker/<svc>/README.md` |
 | `terraform/modules/<module>/` (change variable interface) | `terraform/homelab/`, `terraform/portainer/`, `terraform/test/` callers |
-| `.github/workflows/yaml-lint.yml` (change Python version) | `.github/workflows/copilot-setup-steps.yml` (keep versions in sync) |
 | Any new `docker/<svc>/docker-compose.yml` added | Add a matching entry to `.github/dependabot.yml` |
 
 ## Common Pitfalls
