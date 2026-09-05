@@ -30,8 +30,8 @@ homelab-gitops/
 │   │   └── vm-cluster/      # Multi-VM cluster module
 │   └── templates/           # New workspace starter templates
 ├── .github/
-│   ├── workflows/           # yaml-lint, changelog, update-dependabot
-│   ├── scripts/             # update-changelog.py, generate-dependabot.sh
+│   ├── workflows/           # yaml-lint, changelog
+│   ├── scripts/             # update-changelog.py, update-plex.sh
 │   ├── copilot-instructions.md
 │   ├── skills/              # Copilot Agent Skills (~34 skills)
 │   ├── agents/              # Copilot Agent definitions
@@ -169,11 +169,10 @@ Breaking changes: `feat!: drop TLS 1.0 support`
 |----------|---------|--------------|
 | `yaml-lint.yml` | push (`*.yml`, `*.yaml`) | Runs `yamllint` on all YAML files |
 | `changelog.yml` | push to `main` | Auto-appends entries to `CHANGELOG.md` and commits |
-| `update-dependabot.yml` | push to `main` | Discovers all compose files, updates `.github/dependabot.yml` via PR |
 
 **Portainer GitOps:** Each `docker/<service>` directory is a Portainer stack. Portainer polls the repo and redeploys automatically on commit.
 
-**Dependabot:** Auto-configured by `.github/scripts/generate-dependabot.sh`. Docker image updates run daily; GitHub Actions updates run weekly (Saturdays).
+**Dependabot:** Manually maintained in `.github/dependabot.yml`. Docker image updates run daily; GitHub Actions updates run weekly (Saturdays). Add a new `docker-compose.yml` entry when adding a service.
 
 ## Adding a New Docker Service
 
@@ -195,7 +194,6 @@ All 3 files must be created together — they are always in sync:
 | Service internal port | Traefik `loadbalancer.server.port` label |
 | Service name / container_name | Volume paths, Traefik labels, README access URL |
 | Terraform module interface | All workspaces that call the module (`homelab/`, `portainer/`, `test/`) |
-| `.github/scripts/generate-dependabot.sh` | Run locally to verify `.github/dependabot.yml` output |
 
 ## Common Pitfalls
 
