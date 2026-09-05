@@ -8,7 +8,7 @@ locals {
   pgid_str = tostring(var.pgid)
 
   # Fully-qualified URLs derived from base domain
-  zerobyte_base_url        = "https://zerobyte.${var.traefik_base_domain}"
+  zerobyte_base_url = "https://zerobyte.${var.traefik_base_domain}"
   # Portainer-managed filesystem paths for stacks that use relative bind mounts.
   # Portainer clones/syncs the stack directory here on each GitOps update so
   # Docker can resolve ./relative paths against a stable host path.
