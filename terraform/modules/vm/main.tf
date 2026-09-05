@@ -17,7 +17,7 @@ resource "hypercore_vm" "vm" {
   description = var.description
   vcpu        = var.vcpu
   memory      = var.memory
-  
+
   clone = {
     source_vm_uuid = var.template_vm_uuid
     meta_data = templatefile(var.meta_data_template_path, merge(
