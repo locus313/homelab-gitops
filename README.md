@@ -282,9 +282,9 @@ Terraform modules live in `terraform/modules/` and cover VM creation with cloud-
 
 Commit messages pushed to `main` are automatically harvested by `.github/scripts/update-changelog.py` and committed to `CHANGELOG.md`. The workflow skips commits that only touch `CHANGELOG.md` or `.github/dependabot.yml` to avoid loops.
 
-### Dependabot auto-configuration
+### Dependabot configuration
 
-`.github/scripts/generate-dependabot.sh` scans the repository for every `docker-compose*.yml` file and opens a PR with an updated `.github/dependabot.yml`. Docker Compose updates run daily; GitHub Actions pin updates run weekly (Saturdays).
+`.github/dependabot.yml` is manually maintained — add an entry when a new `docker-compose.yml` is added. Docker Compose updates run daily; GitHub Actions pin updates run weekly (Saturdays).
 
 ### YAML validation
 

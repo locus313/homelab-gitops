@@ -229,13 +229,10 @@ docker logs service-name
 - Output: Auto-commits updated `CHANGELOG.md` directly to `main`
 - Concurrency: Non-cancellable — rapid pushes queue up so each entry is recorded
 
-**Dependabot Auto-Configuration:**
-- Script: `.github/scripts/generate-dependabot.sh` auto-discovers all compose files
-- Trigger: Runs on push to `main` branch (via `update-dependabot.yml` workflow)
-- Output: Creates PR with updated `.github/dependabot.yml` if changes detected
-- Pattern matching: Finds `docker-compose.yml`, `compose.yml`, and variants
+**Dependabot Configuration:**
+- File: `.github/dependabot.yml` is manually maintained (no auto-discovery script/workflow)
+- Add a new `package-ecosystem: "docker-compose"` entry when adding a service's compose file
 - Schedule: Docker compose updates daily, GitHub Actions weekly (Saturdays)
-- **Critical**: Script uses regex `'.*/\(docker-\)?compose\(-[\w]+\)?\(?>\.[\w-]+\)?\.ya?ml'` to find compose files
 
 **YAML Validation:**
 - Workflow: `yaml-lint.yml` runs `yamllint` on all YAML files
@@ -272,9 +269,8 @@ When you change a file, **also update** these downstream files:
 | `docker/<svc>/docker-compose.yml` (rename service/container) | Volume paths, Traefik labels, `docker/<svc>/README.md` access URL |
 | `docker/<svc>/.env.example` (add/rename variable) | `docker/<svc>/docker-compose.yml`, `docker/<svc>/README.md` |
 | `terraform/modules/<module>/` (change variable interface) | `terraform/homelab/`, `terraform/portainer/`, `terraform/test/` callers |
-| `.github/scripts/generate-dependabot.sh` | Run locally to verify `.github/dependabot.yml` output is correct |
 | `.github/workflows/yaml-lint.yml` (change Python version) | `.github/workflows/copilot-setup-steps.yml` (keep versions in sync) |
-| Any new `docker/<svc>/docker-compose.yml` added | Push to `main` so `update-dependabot.yml` picks it up and updates Dependabot |
+| Any new `docker/<svc>/docker-compose.yml` added | Add a matching entry to `.github/dependabot.yml` |
 
 ## Common Pitfalls
 
