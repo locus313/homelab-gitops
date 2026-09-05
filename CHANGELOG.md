@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - `.github` — Refresh Copilot agents, skills, and instructions (#424).
 - `terraform` — Apply terraform fmt (#425).
+- Remove stale references to deleted generate-dependabot.sh/workflow (#426).
 
 ## [2026-09-04]
 
