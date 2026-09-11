@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - `docker/plex` — Update image to 1.43.4.10903-e5521bd8c (#428).
 
+### Dependencies
+- Bump the terraform-providers group across 2 directories with 2 updates (#429).
+
 ## [2026-09-05]
 
 ### Changed
