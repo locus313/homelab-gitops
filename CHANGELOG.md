@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-09-11]
+
+### Changed
+- `docker/plex` — Update image to 1.43.4.10903-e5521bd8c (#428).
+
 ## [2026-09-05]
 
 ### Changed
