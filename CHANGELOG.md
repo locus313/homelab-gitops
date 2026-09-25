@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-09-25]
+
+### Dependencies
+- Bump stirling-tools/stirling-pdf in /docker/stirling-pdf (#437).
+
 ## [2026-09-18]
 
 ### Dependencies
