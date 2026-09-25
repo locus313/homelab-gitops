@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bump stirling-tools/stirling-pdf in /docker/stirling-pdf (#437).
+- Bump the docker-images group across 9 directories with 12 updates (#436).
 
 ## [2026-09-18]
 
