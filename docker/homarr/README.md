@@ -36,6 +36,17 @@ Homarr is a customizable homelab dashboard that provides a centralized view of a
 
 - Web Interface: `https://homarr.yourdomain.com` (if using Traefik)
 
+## Upgrading from v1 to v2
+
+v2 migrates the database in place at first startup, and v1 cannot read the migrated database. Switching the image tag back is not a rollback.
+
+1. Stop the container: `docker compose down`
+2. Back up the whole `${DOCKER_BASE_PATH}/homarr/appdata` directory and keep your `SECRET_ENCRYPTION_KEY`
+3. Pull and start v2: `docker compose pull && docker compose up -d`
+4. Check board sizing in edit mode. v2 uses fixed 200x200 cells, so migrated 12-column layouts can look smaller; reduce the column count in the board layout settings if needed.
+
+See the [Homarr Docker docs](https://homarr.dev/docs/getting-started/installation/docker/) for details.
+
 ## Docker Integration
 
 This setup includes Docker socket access for container monitoring and management features. Homarr can display container status and basic management capabilities.
@@ -75,7 +86,7 @@ Make sure to:
 
 ## Homarr Labs Image
 
-This deployment uses the official Homarr Labs image (`ghcr.io/homarr-labs/homarr:v1.34.0`) which provides:
+This deployment uses the official Homarr Labs image (`ghcr.io/homarr-labs/homarr:v2.3.0`) which provides:
 
 - Regular feature updates
 - Community support
