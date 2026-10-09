@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bump the docker-images group across 8 directories with 9 updates (#442).
+- Bumped `gitea/gitea` from 1.27.3 to 28.0.0 in `/docker/gitea`.
 
 ## [2026-10-02]
 
