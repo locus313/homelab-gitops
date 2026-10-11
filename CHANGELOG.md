@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - `terraform/portainer` — Extract portainer-stack module (#445).
 - Improve agent environment from retro (#446).
 - Use env -u GH_TOKEN for gh commands needing read:org (#447).
+- Trim agent steering files (#448).
 
 ## [2026-10-09]
 
