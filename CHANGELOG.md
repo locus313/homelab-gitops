@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Add agent skills configuration (#444).
 - `terraform/portainer` — Extract portainer-stack module (#445).
+- Improve agent environment from retro (#446).
 
 ## [2026-10-09]
 
