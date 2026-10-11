@@ -37,7 +37,7 @@ variable "skip_ssl_verify" {
 variable "repo_url" {
   description = "Git repository URL for GitOps stack deployments"
   type        = string
-  default     = "https://github.com/locus313/homelab-gitops.git"
+  default     = "https://github.com/locus313/homelab-gitops"
 }
 
 variable "repo_base_path" {
