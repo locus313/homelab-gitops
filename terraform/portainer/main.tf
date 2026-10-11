@@ -26,50 +26,27 @@ locals {
 # reflects the current repo state when the container restarts.
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "traefik" {
-  name            = "traefik"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "traefik" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/traefik/docker-compose.yml"
-
+  name                  = "traefik"
+  compose_path          = "docker/traefik/docker-compose.yml"
+  endpoint_id           = var.portainer_endpoint_id
+  repo_url              = var.repo_url
+  tz                    = var.tz
   support_relative_path = true
   filesystem_path       = local.traefik_fs_path
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
+  env = {
+    CLOUDNS_PROPAGATION_TIMEOUT = var.cloudns_propagation_timeout
+    DOCKER_BASE_PATH            = var.docker_base_path
+    NAS_IP                      = var.nas_ip
+    TRAEFIK_BASE_DOMAIN         = var.traefik_base_domain
+  }
 
-  env {
-    name  = "CLOUDNS_SUB_AUTH_ID"
-    value = var.cloudns_sub_auth_id
-  }
-  env {
-    name  = "CLOUDNS_AUTH_PASSWORD"
-    value = var.cloudns_auth_password
-  }
-  env {
-    name  = "CLOUDNS_PROPAGATION_TIMEOUT"
-    value = var.cloudns_propagation_timeout
-  }
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "NAS_IP"
-    value = var.nas_ip
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
+  secret_env = {
+    CLOUDNS_SUB_AUTH_ID   = var.cloudns_sub_auth_id
+    CLOUDNS_AUTH_PASSWORD = var.cloudns_auth_password
   }
 }
 
@@ -89,39 +66,20 @@ resource "portainer_stack" "traefik" {
 # Home Assistant
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "home_assistant" {
-  name            = "home-assistant"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "home_assistant" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/home-assistant/docker-compose.yml"
+  name         = "home-assistant"
+  compose_path = "docker/home-assistant/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
-
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
+  env = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    PUID                = local.puid_str
+    PGID                = local.pgid_str
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
   }
 }
 
@@ -129,43 +87,24 @@ resource "portainer_stack" "home_assistant" {
 # Plex — media server (network_mode: host)
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "plex" {
-  name            = "plex"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "plex" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/plex/docker-compose.yml"
+  name         = "plex"
+  compose_path = "docker/plex/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
+  env = {
+    PUID             = local.puid_str
+    PGID             = local.pgid_str
+    DOCKER_BASE_PATH = var.docker_base_path
+    MEDIA_PATH       = var.media_path
+  }
 
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "PLEX_CLAIM"
-    value = var.plex_claim
-  }
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "MEDIA_PATH"
-    value = var.media_path
+  secret_env = {
+    PLEX_CLAIM = var.plex_claim
   }
 }
 
@@ -173,39 +112,20 @@ resource "portainer_stack" "plex" {
 # Ombi — media request management
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "ombi" {
-  name            = "ombi"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "ombi" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/ombi/docker-compose.yml"
+  name         = "ombi"
+  compose_path = "docker/ombi/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
-
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
+  env = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    PUID                = local.puid_str
+    PGID                = local.pgid_str
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
   }
 }
 
@@ -213,51 +133,26 @@ resource "portainer_stack" "ombi" {
 # Gitea — self-hosted Git service
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "gitea" {
-  name            = "gitea"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "gitea" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/gitea/docker-compose.yml"
+  name         = "gitea"
+  compose_path = "docker/gitea/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
+  env = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    PUID                = local.puid_str
+    PGID                = local.pgid_str
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    GITEA_DB_NAME       = var.gitea_db_name
+    GITEA_DB_USER       = var.gitea_db_user
+  }
 
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
-  }
-  env {
-    name  = "GITEA_DB_NAME"
-    value = var.gitea_db_name
-  }
-  env {
-    name  = "GITEA_DB_USER"
-    value = var.gitea_db_user
-  }
-  env {
-    name  = "GITEA_DB_PASSWORD"
-    value = var.gitea_db_password
+  secret_env = {
+    GITEA_DB_PASSWORD = var.gitea_db_password
   }
 }
 
@@ -265,43 +160,24 @@ resource "portainer_stack" "gitea" {
 # Gitea Mirror — repository mirroring service
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "gitea_mirror" {
-  name            = "gitea-mirror"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "gitea_mirror" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/gitea-mirror/docker-compose.yml"
+  name         = "gitea-mirror"
+  compose_path = "docker/gitea-mirror/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
+  env = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    PUID                = local.puid_str
+    PGID                = local.pgid_str
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+  }
 
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
-  }
-  env {
-    name  = "BETTER_AUTH_SECRET"
-    value = var.better_auth_secret
+  secret_env = {
+    BETTER_AUTH_SECRET = var.better_auth_secret
   }
 }
 
@@ -309,43 +185,24 @@ resource "portainer_stack" "gitea_mirror" {
 # Homarr — homelab dashboard
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "homarr" {
-  name            = "homarr"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "homarr" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/homarr/docker-compose.yml"
+  name         = "homarr"
+  compose_path = "docker/homarr/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
+  env = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    PUID                = local.puid_str
+    PGID                = local.pgid_str
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+  }
 
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "SECRET_ENCRYPTION_KEY"
-    value = var.homarr_secret_encryption_key
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
+  secret_env = {
+    SECRET_ENCRYPTION_KEY = var.homarr_secret_encryption_key
   }
 }
 
@@ -353,35 +210,19 @@ resource "portainer_stack" "homarr" {
 # Beszel — lightweight server monitoring hub
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "beszel" {
-  name            = "beszel"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "beszel" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/beszel/docker-compose.yml"
+  name         = "beszel"
+  compose_path = "docker/beszel/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
-
-  env {
-    name  = "BESZEL_PUBLIC_KEY"
-    value = var.beszel_public_key
-  }
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
+  env = {
+    BESZEL_PUBLIC_KEY   = var.beszel_public_key
+    DOCKER_BASE_PATH    = var.docker_base_path
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
   }
 }
 
@@ -389,47 +230,25 @@ resource "portainer_stack" "beszel" {
 # Zerobyte — backup management
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "zerobyte" {
-  name            = "zerobyte"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "zerobyte" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/zerobyte/docker-compose.yml"
+  name         = "zerobyte"
+  compose_path = "docker/zerobyte/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
+  env = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    PUID                = local.puid_str
+    PGID                = local.pgid_str
+    BASE_URL            = local.zerobyte_base_url
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+  }
 
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "APP_SECRET"
-    value = var.zerobyte_app_secret
-  }
-  env {
-    name  = "BASE_URL"
-    value = local.zerobyte_base_url
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
+  secret_env = {
+    APP_SECRET = var.zerobyte_app_secret
   }
 }
 
@@ -437,27 +256,17 @@ resource "portainer_stack" "zerobyte" {
 # IT Tools — developer utilities
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "it_tools" {
-  name            = "it-tools"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "it_tools" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/it-tools/docker-compose.yml"
+  name         = "it-tools"
+  compose_path = "docker/it-tools/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
-
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
+  env = {
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
   }
 }
 
@@ -465,79 +274,33 @@ resource "portainer_stack" "it_tools" {
 # Stirling PDF — PDF manipulation toolkit
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "stirling_pdf" {
-  name            = "stirling-pdf"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "stirling_pdf" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/stirling-pdf/docker-compose.yml"
+  name         = "stirling-pdf"
+  compose_path = "docker/stirling-pdf/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
+  env = {
+    DOCKER_BASE_PATH                   = var.docker_base_path
+    DOCKER_ENABLE_SECURITY             = "true"
+    SECURITY_ENABLELOGIN               = "true"
+    SECURITY_INITIALLOGIN_USERNAME     = var.stirling_security_initiallogin_username
+    SECURITY_CSRFDISABLED              = var.stirling_csrf_disabled
+    INSTALL_BOOK_AND_ADVANCED_HTML_OPS = "false"
+    METRICS_ENABLED                    = "true"
+    PUID                               = local.puid_str
+    PGID                               = local.pgid_str
+    SYSTEM_DEFAULTLOCALE               = "en-US"
+    SYSTEM_MAXFILESIZE                 = "2000"
+    SYSTEM_GOOGLEVISIBILITY            = "false"
+    TRAEFIK_BASE_DOMAIN                = var.traefik_base_domain
+  }
 
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "DOCKER_ENABLE_SECURITY"
-    value = "true"
-  }
-  env {
-    name  = "SECURITY_ENABLELOGIN"
-    value = "true"
-  }
-  env {
-    name  = "SECURITY_INITIALLOGIN_USERNAME"
-    value = var.stirling_security_initiallogin_username
-  }
-  env {
-    name  = "SECURITY_INITIALLOGIN_PASSWORD"
-    value = var.stirling_security_initiallogin_password
-  }
-  env {
-    name  = "SECURITY_CSRFDISABLED"
-    value = var.stirling_csrf_disabled
-  }
-  env {
-    name  = "INSTALL_BOOK_AND_ADVANCED_HTML_OPS"
-    value = "false"
-  }
-  env {
-    name  = "METRICS_ENABLED"
-    value = "true"
-  }
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "SYSTEM_DEFAULTLOCALE"
-    value = "en-US"
-  }
-  env {
-    name  = "SYSTEM_MAXFILESIZE"
-    value = "2000"
-  }
-  env {
-    name  = "SYSTEM_GOOGLEVISIBILITY"
-    value = "false"
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
+  secret_env = {
+    SECURITY_INITIALLOGIN_PASSWORD = var.stirling_security_initiallogin_password
   }
 }
 
@@ -545,55 +308,24 @@ resource "portainer_stack" "stirling_pdf" {
 # MeTube — yt-dlp web interface
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "metube" {
-  name            = "metube"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "metube" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/metube/docker-compose.yml"
+  name         = "metube"
+  compose_path = "docker/metube/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
-
-  env {
-    name  = "OUTPUT_TEMPLATE"
-    value = var.metube_output_template
-  }
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
-  }
-  env {
-    name  = "UMASK"
-    value = "002"
-  }
-  env {
-    name  = "YTDL_OPTIONS"
-    value = var.metube_ytdl_options
-  }
-  env {
-    name  = "MEDIA_PATH"
-    value = var.media_path
-  }
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
+  env = {
+    OUTPUT_TEMPLATE     = var.metube_output_template
+    PUID                = local.puid_str
+    PGID                = local.pgid_str
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    UMASK               = "002"
+    YTDL_OPTIONS        = var.metube_ytdl_options
+    MEDIA_PATH          = var.media_path
+    DOCKER_BASE_PATH    = var.docker_base_path
   }
 }
 
@@ -601,51 +333,23 @@ resource "portainer_stack" "metube" {
 # HandBrake — video transcoder with GPU acceleration
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "handbrake" {
-  name            = "handbrake"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "handbrake" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/handbrake/docker-compose.yml"
+  name         = "handbrake"
+  compose_path = "docker/handbrake/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
-
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "UMASK"
-    value = "0022"
-  }
-  env {
-    name  = "MEDIA_PATH"
-    value = var.media_path
-  }
-  env {
-    name  = "BACKUP_PATH"
-    value = var.backup_path
+  env = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    PUID                = local.puid_str
+    PGID                = local.pgid_str
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    UMASK               = "0022"
+    MEDIA_PATH          = var.media_path
+    BACKUP_PATH         = var.backup_path
   }
 }
 
@@ -653,48 +357,23 @@ resource "portainer_stack" "handbrake" {
 # NetbootXYZ — network boot service
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "netbootxyz" {
-  name            = "netbootxyz"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "netbootxyz" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/netbootxyz/docker-compose.yml"
-  support_relative_path     = true
+  name                  = "netbootxyz"
+  compose_path          = "docker/netbootxyz/docker-compose.yml"
+  endpoint_id           = var.portainer_endpoint_id
+  repo_url              = var.repo_url
+  tz                    = var.tz
+  support_relative_path = true
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
-
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "NGINX_PORT"
-    value = "80"
-  }
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "WEB_APP_PORT"
-    value = "3000"
+  env = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    NGINX_PORT          = "80"
+    PUID                = local.puid_str
+    PGID                = local.pgid_str
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    WEB_APP_PORT        = "3000"
   }
 }
 
@@ -711,71 +390,31 @@ resource "portainer_stack" "netbootxyz" {
 # Rackula — infrastructure documentation
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "rackula" {
-  name            = "rackula"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "rackula" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/rackula/docker-compose.yml"
+  name         = "rackula"
+  compose_path = "docker/rackula/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
+  env = {
+    DOCKER_BASE_PATH                   = var.docker_base_path
+    PUID                               = local.puid_str
+    PGID                               = local.pgid_str
+    TRAEFIK_BASE_DOMAIN                = var.traefik_base_domain
+    RACKULA_API_PORT                   = var.rackula_api_port
+    RACKULA_AUTH_MODE                  = var.rackula_auth_mode
+    RACKULA_LOCAL_USERNAME             = var.rackula_local_username
+    RACKULA_AUTH_SESSION_COOKIE_SECURE = "true"
+    ALLOW_INSECURE_CORS                = "false"
+  }
 
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
-  }
-  env {
-    name  = "RACKULA_API_PORT"
-    value = var.rackula_api_port
-  }
-  env {
-    name  = "RACKULA_API_WRITE_TOKEN"
-    value = var.rackula_api_write_token
-  }
-  env {
-    name  = "RACKULA_AUTH_MODE"
-    value = var.rackula_auth_mode
-  }
-  env {
-    name  = "RACKULA_AUTH_SESSION_SECRET"
-    value = var.rackula_auth_session_secret
-  }
-  env {
-    name  = "RACKULA_LOCAL_USERNAME"
-    value = var.rackula_local_username
-  }
-  env {
-    name  = "RACKULA_LOCAL_PASSWORD"
-    value = var.rackula_local_password
-  }
-  env {
-    name  = "RACKULA_AUTH_SESSION_COOKIE_SECURE"
-    value = "true"
-  }
-  env {
-    name  = "ALLOW_INSECURE_CORS"
-    value = "false"
+  secret_env = {
+    RACKULA_API_WRITE_TOKEN     = var.rackula_api_write_token
+    RACKULA_AUTH_SESSION_SECRET = var.rackula_auth_session_secret
+    RACKULA_LOCAL_PASSWORD      = var.rackula_local_password
   }
 }
 
@@ -783,68 +422,31 @@ resource "portainer_stack" "rackula" {
 # Code-Server — browser-based VS Code with Tailscale integration
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "code_server" {
-  name            = "code-server"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "code_server" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/code-server/docker-compose.yml"
-  support_relative_path     = true
+  name                  = "code-server"
+  compose_path          = "docker/code-server/docker-compose.yml"
+  endpoint_id           = var.portainer_endpoint_id
+  repo_url              = var.repo_url
+  tz                    = var.tz
+  support_relative_path = true
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
+  env = {
+    PUID              = local.puid_str
+    PGID              = local.pgid_str
+    DEFAULT_WORKSPACE = var.code_server_default_workspace
+    TS_EXTRA_ARGS     = var.code_server_ts_extra_args
+    TS_SERVE_CONFIG   = "/config/code-server.json"
+    TS_SOCKET         = "/var/run/tailscale/tailscaled.sock"
+    TS_STATE_DIR      = "/var/lib/tailscale"
+    TS_USERSPACE      = "false"
+  }
 
-  env {
-    name  = "PUID"
-    value = local.puid_str
-  }
-  env {
-    name  = "PGID"
-    value = local.pgid_str
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "PASSWORD"
-    value = var.code_server_password
-  }
-  env {
-    name  = "SUDO_PASSWORD"
-    value = var.code_server_sudo_password
-  }
-  env {
-    name  = "DEFAULT_WORKSPACE"
-    value = var.code_server_default_workspace
-  }
-  env {
-    name  = "TS_AUTHKEY"
-    value = var.code_server_ts_authkey
-  }
-  env {
-    name  = "TS_EXTRA_ARGS"
-    value = var.code_server_ts_extra_args
-  }
-  env {
-    name  = "TS_SERVE_CONFIG"
-    value = "/config/code-server.json"
-  }
-  env {
-    name  = "TS_SOCKET"
-    value = "/var/run/tailscale/tailscaled.sock"
-  }
-  env {
-    name  = "TS_STATE_DIR"
-    value = "/var/lib/tailscale"
-  }
-  env {
-    name  = "TS_USERSPACE"
-    value = "false"
+  secret_env = {
+    PASSWORD      = var.code_server_password
+    SUDO_PASSWORD = var.code_server_sudo_password
+    TS_AUTHKEY    = var.code_server_ts_authkey
   }
 }
 
@@ -852,27 +454,17 @@ resource "portainer_stack" "code_server" {
 # Watchtower — automated container image updates
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "watchtower" {
-  name            = "watchtower"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "watchtower" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/watchtower/docker-compose.yml"
+  name         = "watchtower"
+  compose_path = "docker/watchtower/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
-
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "WATCHTOWER_CLEANUP"
-    value = var.watchtower_cleanup
+  env = {
+    WATCHTOWER_CLEANUP = var.watchtower_cleanup
   }
 }
 
@@ -882,75 +474,43 @@ resource "portainer_stack" "watchtower" {
 # Both nodes auto-register to Netdata Cloud using their system hostname.
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "netdata_dh01" {
-  name            = "netdata"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.dh01_endpoint_id
+module "netdata_dh01" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/netdata/docker-compose.yml"
+  name         = "netdata"
+  compose_path = "docker/netdata/docker-compose.yml"
+  endpoint_id  = var.dh01_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
+  env = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    NETDATA_CLAIM_URL   = var.netdata_claim_url
+    NETDATA_CLAIM_ROOMS = var.netdata_claim_rooms
+  }
 
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "NETDATA_CLAIM_TOKEN"
-    value = var.netdata_claim_token
-  }
-  env {
-    name  = "NETDATA_CLAIM_URL"
-    value = var.netdata_claim_url
-  }
-  env {
-    name  = "NETDATA_CLAIM_ROOMS"
-    value = var.netdata_claim_rooms
+  secret_env = {
+    NETDATA_CLAIM_TOKEN = var.netdata_claim_token
   }
 }
 
-resource "portainer_stack" "netdata_dh02" {
-  name            = "netdata"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "netdata_dh02" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/netdata/docker-compose.yml"
+  name         = "netdata"
+  compose_path = "docker/netdata/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
+  env = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    NETDATA_CLAIM_URL   = var.netdata_claim_url
+    NETDATA_CLAIM_ROOMS = var.netdata_claim_rooms
+  }
 
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
-  }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "NETDATA_CLAIM_TOKEN"
-    value = var.netdata_claim_token
-  }
-  env {
-    name  = "NETDATA_CLAIM_URL"
-    value = var.netdata_claim_url
-  }
-  env {
-    name  = "NETDATA_CLAIM_ROOMS"
-    value = var.netdata_claim_rooms
+  secret_env = {
+    NETDATA_CLAIM_TOKEN = var.netdata_claim_token
   }
 }
 
@@ -958,50 +518,129 @@ resource "portainer_stack" "netdata_dh02" {
 # Mail Archiver — email archiving with IMAP/M365 sync and advanced search
 # ---------------------------------------------------------------------------
 
-resource "portainer_stack" "mail_archiver" {
-  name            = "mail-archiver"
-  deployment_type = "standalone"
-  method          = "repository"
-  endpoint_id     = var.portainer_endpoint_id
+module "mail_archiver" {
+  source = "../modules/portainer-stack"
 
-  repository_url            = var.repo_url
-  repository_reference_name = "refs/heads/main"
-  file_path_in_repository   = "docker/mail-archiver/docker-compose.yml"
+  name         = "mail-archiver"
+  compose_path = "docker/mail-archiver/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
 
-  update_interval = "1h"
-  pull_image      = true
-  prune           = true
+  env = {
+    DOCKER_BASE_PATH         = var.docker_base_path
+    TRAEFIK_BASE_DOMAIN      = var.traefik_base_domain
+    MAIL_ARCHIVER_ADMIN_USER = var.mail_archiver_admin_user
+    MAIL_ARCHIVER_DB_NAME    = var.mail_archiver_db_name
+    MAIL_ARCHIVER_DB_USER    = var.mail_archiver_db_user
+  }
 
-  env {
-    name  = "DOCKER_BASE_PATH"
-    value = var.docker_base_path
+  secret_env = {
+    MAIL_ARCHIVER_ADMIN_PASSWORD = var.mail_archiver_admin_password
+    MAIL_ARCHIVER_DB_PASSWORD    = var.mail_archiver_db_password
   }
-  env {
-    name  = "TZ"
-    value = var.tz
-  }
-  env {
-    name  = "TRAEFIK_BASE_DOMAIN"
-    value = var.traefik_base_domain
-  }
-  env {
-    name  = "MAIL_ARCHIVER_ADMIN_USER"
-    value = var.mail_archiver_admin_user
-  }
-  env {
-    name  = "MAIL_ARCHIVER_ADMIN_PASSWORD"
-    value = var.mail_archiver_admin_password
-  }
-  env {
-    name  = "MAIL_ARCHIVER_DB_NAME"
-    value = var.mail_archiver_db_name
-  }
-  env {
-    name  = "MAIL_ARCHIVER_DB_USER"
-    value = var.mail_archiver_db_user
-  }
-  env {
-    name  = "MAIL_ARCHIVER_DB_PASSWORD"
-    value = var.mail_archiver_db_password
-  }
+}
+
+# ---------------------------------------------------------------------------
+# State migration from standalone portainer_stack resources
+# ---------------------------------------------------------------------------
+
+moved {
+  from = portainer_stack.traefik
+  to   = module.traefik.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.home_assistant
+  to   = module.home_assistant.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.plex
+  to   = module.plex.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.ombi
+  to   = module.ombi.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.gitea
+  to   = module.gitea.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.gitea_mirror
+  to   = module.gitea_mirror.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.homarr
+  to   = module.homarr.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.beszel
+  to   = module.beszel.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.zerobyte
+  to   = module.zerobyte.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.it_tools
+  to   = module.it_tools.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.stirling_pdf
+  to   = module.stirling_pdf.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.metube
+  to   = module.metube.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.handbrake
+  to   = module.handbrake.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.netbootxyz
+  to   = module.netbootxyz.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.rackula
+  to   = module.rackula.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.code_server
+  to   = module.code_server.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.watchtower
+  to   = module.watchtower.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.netdata_dh01
+  to   = module.netdata_dh01.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.netdata_dh02
+  to   = module.netdata_dh02.portainer_stack.this
+}
+
+moved {
+  from = portainer_stack.mail_archiver
+  to   = module.mail_archiver.portainer_stack.this
 }

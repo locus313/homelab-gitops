@@ -25,6 +25,7 @@ homelab-gitops/
 │   ├── portainer/           # Portainer stack deployment via API
 │   ├── modules/             # Reusable Terraform modules
 │   │   ├── cloud-images/    # Ubuntu LTS cloud image management
+│   │   ├── portainer-stack/ # Portainer GitOps stack module (used by terraform/portainer)
 │   │   ├── proxmox-vm/      # Proxmox VM module
 │   │   ├── vm/              # ScaleComputing VM module
 │   │   └── vm-cluster/      # Multi-VM cluster module
