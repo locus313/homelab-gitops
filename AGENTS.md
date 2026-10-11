@@ -119,7 +119,7 @@ services:
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
-      TZ: ${TZ}                     # Always America/Los_Angeles
+      TZ: ${TZ}
     labels:
       - traefik.enable=true
       - traefik.http.services.service-name.loadbalancer.server.port=INTERNAL_PORT
@@ -209,7 +209,6 @@ Create these 3 files together, then add the Terraform stack:
 - **`latest` image tag** — always pin; Dependabot can't track `latest`
 - **Missing `.env.example`** — Portainer GitOps users need this to configure the stack
 - **Hardcoded domain in Traefik label** — must be `` Host(`<name>.${TRAEFIK_BASE_DOMAIN}`) ``
-- **Wrong `TZ`** — must be `America/Los_Angeles`
 - **GPU services without `/dev/dri`** — HandBrake, Webtop, Kasm, Ollama all need device mount
 - **Port conflicts** — use Traefik routing; only add host ports for services that genuinely need them (PXE, P2P, etc.)
 
