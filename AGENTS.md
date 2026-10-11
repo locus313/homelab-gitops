@@ -34,7 +34,7 @@ homelab-gitops/
 │   ├── workflows/           # yaml-lint, changelog
 │   ├── scripts/             # update-changelog.py, update-plex.sh
 │   ├── copilot-instructions.md
-│   ├── skills/              # Copilot Agent Skills (~34 skills)
+│   ├── skills/              # Copilot Agent Skills
 │   ├── agents/              # Copilot Agent definitions
 │   ├── chatmodes/           # Copilot Chat modes
 │   └── instructions/        # Copilot instruction files (applyTo patterns)
@@ -77,12 +77,14 @@ yamllint -c .github/.yamllint .
 **Terraform workspace:**
 ```bash
 cd terraform/homelab        # or terraform/portainer
-cp .envrc.example .envrc    # fill in credentials
-source .envrc
+cp .envrc.example .envrc    # fill in values
+direnv allow                # secrets come from Bitwarden: export BW_SESSION first
 terraform init
 terraform plan
 terraform apply
 ```
+
+Agents cannot unlock Bitwarden, so they cannot run `plan` or `apply`. Ask the user to run `direnv exec . terraform plan` and paste the output.
 
 ## Testing
 
@@ -92,10 +94,11 @@ This is a configuration repo — validation replaces unit tests.
 |-------|---------|
 | YAML lint (all files) | `yamllint -c .github/.yamllint .` |
 | Validate a compose file | `docker compose -f docker/<service>/docker-compose.yml config` |
-| Validate Terraform | `cd terraform/<workspace> && terraform validate` |
-| Preview infrastructure | `cd terraform/<workspace> && terraform plan` |
+| Format Terraform | `terraform fmt -check -recursive terraform` |
+| Validate Terraform | `cd terraform/<workspace> && terraform init -backend=false && terraform validate` |
+| Preview infrastructure | `cd terraform/<workspace> && terraform plan` (user runs it) |
 
-CI runs `yamllint` automatically on every push that touches `.yml`/`.yaml` files.
+CI runs `yamllint` on pushes touching `.yml`/`.yaml` files, and `terraform fmt` plus `terraform validate` on pushes touching `.tf` files.
 
 ## Key Patterns and Conventions
 
@@ -169,19 +172,22 @@ Breaking changes: `feat!: drop TLS 1.0 support`
 | Workflow | Trigger | What it does |
 |----------|---------|--------------|
 | `yaml-lint.yml` | push (`*.yml`, `*.yaml`) | Runs `yamllint` on all YAML files |
+| `terraform-check.yml` | push (`*.tf`) | Runs `terraform fmt -check` and `terraform validate` per workspace |
 | `changelog.yml` | push to `main` | Auto-appends entries to `CHANGELOG.md` and commits |
 
 **Portainer GitOps:** Each `docker/<service>` directory is a Portainer stack. Portainer polls the repo and redeploys automatically on commit.
 
-**Dependabot:** Manually maintained in `.github/dependabot.yml`. Docker image updates run daily; GitHub Actions updates run weekly (Saturdays). Add a new `docker-compose.yml` entry when adding a service.
+**Dependabot:** Manually maintained in `.github/dependabot.yml`. Docker compose directories are matched by the `/docker/*` glob, so new services need no entry.
 
 ## Adding a New Docker Service
 
-All 3 files must be created together — they are always in sync:
+Create these 3 files together, then add the Terraform stack:
 
 1. **`docker/<service-name>/docker-compose.yml`** — use the standard pattern above
 2. **`docker/<service-name>/.env.example`** — list every `${VAR}` referenced in the compose file with a descriptive placeholder value
 3. **`docker/<service-name>/README.md`** — document: purpose, access URL (`https://<service>.<domain>`), prerequisites, notes
+
+4. **`terraform/portainer/main.tf`** — add a `module "<service>"` call to `../modules/portainer-stack` (`name`, `compose_path`, `endpoint_id`, `repo_url`, `tz`, `env`, `secret_env`), plus any new variables in `terraform/portainer/variables.tf`. Mark secrets `sensitive = true` and pass them through `secret_env`.
 
 **Image version:** Check the registry for the latest stable tag before committing.  
 **YAML check:** Run `yamllint -c .github/.yamllint docker/<service-name>/docker-compose.yml` before committing.  
@@ -194,6 +200,7 @@ All 3 files must be created together — they are always in sync:
 | `docker-compose.yml` environment vars | `.env.example` (add/remove vars) |
 | Service internal port | Traefik `loadbalancer.server.port` label |
 | Service name / container_name | Volume paths, Traefik labels, README access URL |
+| `.env.example` variable added/renamed | `docker-compose.yml`, `README.md`, and the stack's `env`/`secret_env` in `terraform/portainer/main.tf` |
 | Terraform module interface | All workspaces that call the module (`homelab/`, `portainer/`, `test/`) |
 
 ## Common Pitfalls
