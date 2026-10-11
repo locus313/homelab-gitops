@@ -57,4 +57,4 @@ http:
 
 ## Tooling gotchas
 
-- `gh pr edit` fails when the token lacks `read:org`; use `gh api -X PATCH repos/<owner>/<repo>/pulls/<n> -F body=@-`.
+- Copilot CLI injects a `GH_TOKEN` without `read:org`, so `gh pr edit` fails. Run it as `env -u GH_TOKEN gh pr edit ...` to use the stored `gh` login.
