@@ -204,3 +204,17 @@ All 3 files must be created together — they are always in sync:
 - **Wrong `TZ`** — must be `America/Los_Angeles`
 - **GPU services without `/dev/dri`** — HandBrake, Webtop, Kasm, Ollama all need device mount
 - **Port conflicts** — use Traefik routing; only add host ports for services that genuinely need them (PXE, P2P, etc.)
+
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked in GitHub Issues (`gh` CLI). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default canonical labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context. See `docs/agents/domain.md`.
