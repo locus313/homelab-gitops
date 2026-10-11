@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-10-11]
+
+### Changed
+- Add agent skills configuration (#444).
+
 ## [2026-10-09]
 
 ### Dependencies
