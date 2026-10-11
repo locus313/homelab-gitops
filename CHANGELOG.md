@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Improve agent environment from retro (#446).
 - Use env -u GH_TOKEN for gh commands needing read:org (#447).
 - Trim agent steering files (#448).
+- Remove update-docs-on-code-change instructions (#449).
 
 ## [2026-10-09]
 
