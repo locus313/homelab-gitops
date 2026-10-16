@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bump the docker-images group across 12 directories with 15 updates (#451).
+- Bump s1t5/mailarchiver in /docker/mail-archiver (#452).
 
 ## [2026-10-11]
 
