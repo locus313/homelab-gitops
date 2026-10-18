@@ -19,43 +19,33 @@ All services share the `proxynet` external Docker network. Traefik is the single
 graph LR
     classDef traefik fill:#e94560,stroke:#fff,color:#fff,font-weight:bold
     classDef group fill:#1565c0,stroke:#90caf9,color:#fff
-    classDef gpu fill:#6a1b9a,stroke:#ce93d8,color:#fff
     classDef hostnet fill:#4e342e,stroke:#ffcc02,color:#fff
     classDef external fill:#1b5e20,stroke:#a5d6a7,color:#eee
-    classDef dock fill:#0277bd,stroke:#4fc3f7,color:#fff
 
-    INTERNET(["Internet / LAN"]):::external
-    CLOUDNS(["CloudNS - DNS-01"]):::external
-    NAS(["NAS / Storj Node :14002"]):::external
-    DOCKER[("docker.sock")]:::dock
+    CLIENT(["Browser / LAN client"]):::external
+    CLOUDNS(["CloudNS<br/>DNS-01 challenge"]):::external
+    TRAEFIK["Traefik<br/>:80 redirect, :443 HTTPS"]:::traefik
 
-    TRAEFIK["Traefik v3.7.5<br/>:80 redirect, :443 HTTPS"]:::traefik
+    subgraph PROXY["proxynet (Docker bridge)"]
+        MGMT["Management<br/>Portainer, Homarr, Rackula"]:::group
+        MEDIA["Media<br/>Ombi, MeTube, HandBrake"]:::group
+        TOOLS["Dev tools<br/>IT-Tools, Stirling-PDF,<br/>Networking Toolbox, Code-Server"]:::group
+        VCS["Version control<br/>Gitea, Gitea Mirror"]:::group
+        OPS["Home and ops<br/>Home Assistant, Beszel Hub, Zerobyte,<br/>Watchtower, Mail Archiver, Storj Node"]:::group
+        AI["AI and desktop<br/>Open-WebUI, Ollama, Webtop, Kasm"]:::group
+    end
 
-    INTERNET --> TRAEFIK
-    CLOUDNS -.-> TRAEFIK
+    HOSTNET["Host network (no Traefik)<br/>Plex, Netdata, Beszel Agent"]:::hostnet
+    BOOT["PXE (raw host ports)<br/>NetbootXYZ, iVentoy"]:::hostnet
 
-    TRAEFIK --> DASH["Dashboard and Management<br/>Homarr :7575, Portainer :9443, Rackula :80"]:::group
-    TRAEFIK --> MEDIA["Media and Downloads<br/>Ombi :3579, MeTube :8081, HandBrake :5800 GPU"]:::gpu
-    TRAEFIK --> AI["AI / LLM<br/>Open-WebUI :8080, Ollama :11434 GPU"]:::gpu
-    TRAEFIK --> TOOLS["Developer Tools<br/>IT-Tools :80, Stirling-PDF :8080<br/>Net-Toolbox :3000, Code-Server"]:::group
-    TRAEFIK --> DESKTOP["Remote Desktop<br/>Webtop :3000 GPU, Kasm GPU"]:::gpu
-    TRAEFIK --> INFRA["Infrastructure and Monitoring<br/>Home-Assistant :8123, Beszel Hub :8090<br/>Zerobyte :4096, Watchtower, Storj-Node"]:::group
-    TRAEFIK --> BOOT["Network Boot / PXE<br/>NetbootXYZ UDP:69 + :3000<br/>iVentoy UDP:69 + :26000"]:::group
-    TRAEFIK --> VCS["Version Control<br/>Gitea :3000, Gitea Mirror :4321"]:::group
-    TRAEFIK --> NAS
-
-    HOSTNET["Host Network<br/>Plex :32400 GPU<br/>Netdata :19999<br/>Beszel Agent GPU"]:::hostnet
-
-    INFRA -.-> HOSTNET
-    TRAEFIK -.-> DOCKER
-    DASH -.-> DOCKER
-    INFRA -.-> DOCKER
-    DESKTOP -.-> DOCKER
-    TOOLS -.-> DOCKER
-    HOSTNET -.-> DOCKER
+    CLIENT -->|HTTPS| TRAEFIK
+    CLOUDNS -.->|certificates| TRAEFIK
+    TRAEFIK --> MGMT & MEDIA & TOOLS & VCS & OPS & AI
+    CLIENT -.->|direct ports| HOSTNET
+    CLIENT -.->|TFTP / HTTP| BOOT
 ```
 
-> **Color key:** Red = Traefik ingress · Blue = `proxynet` service groups · Purple = GPU-accelerated · Brown/yellow = host-network services
+> **Color key:** Red = Traefik ingress · Blue = services on `proxynet` behind Traefik · Brown = services that bypass Traefik. Host placement, GitOps flow, TLS, and storage are in [docs/architecture.md](docs/architecture.md).
 
 ### Standard service pattern
 
@@ -244,14 +234,21 @@ homelab-gitops/
 │       ├── .env.example
 │       └── README.md
 ├── terraform/
-│   ├── homelab/                # Main homelab infra (SC cluster + Proxmox)
+│   ├── homelab/                # VMs: ScaleComputing + Proxmox
+│   ├── portainer/              # Portainer GitOps stacks (one module per service)
 │   ├── modules/
 │   │   ├── cloud-images/       # Ubuntu LTS cloud image references
+│   │   ├── portainer-stack/    # Portainer GitOps stack module
 │   │   ├── proxmox-vm/         # Proxmox VM module
-│   │   └── vm/                 # ScaleComputing VM module
-│   └── portainer/              # Portainer provisioning
+│   │   ├── vm/                 # ScaleComputing VM module
+│   │   └── vm-cluster/         # Multi-VM cluster module
+│   ├── templates/              # Starter workspaces
+│   └── test/                   # Module test workspace
 ├── docs/
-│   └── resilience-planning.md  # Two-node HA design and rationale
+│   ├── architecture.md         # Diagrams: hosts, GitOps flow, TLS, storage
+│   ├── resilience-planning.md  # Two-node design plan (not all deployed)
+│   └── adr/                    # Architecture decision records
+├── GLOSSARY.md                 # Project vocabulary
 ├── .github/
 │   ├── workflows/              # CI/CD pipelines
 │   ├── scripts/                # Automation helpers
@@ -272,7 +269,7 @@ The homelab runs across two hosts managed by Terraform:
 
 Terraform modules live in `terraform/modules/` and cover VM creation with cloud-init, configurable CPU/memory/disk, and per-node password generation. Credentials are passed through environment variables via `.envrc` — never hardcoded.
 
-> See [docs/resilience-planning.md](docs/resilience-planning.md) for the full failover strategy and the rationale for the two-node architecture.
+> See [docs/architecture.md](docs/architecture.md) for host, GitOps, TLS, and storage diagrams, and [docs/resilience-planning.md](docs/resilience-planning.md) for the rationale behind the two-node architecture.
 
 ---
 
