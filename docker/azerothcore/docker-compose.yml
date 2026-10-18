@@ -1,0 +1,105 @@
+x-build: &build
+  context: .
+  args:
+    AC_REF: ${AC_REF}
+    MOD_GUILD_DISCORD_REF: ${MOD_GUILD_DISCORD_REF}
+    TZ: ${TZ}
+    USER_ID: ${PUID}
+    GROUP_ID: ${PGID}
+
+x-ac-env: &ac-env
+  AC_LOGS_DIR: /azerothcore/env/dist/logs
+  AC_LOGIN_DATABASE_INFO: ac-database;3306;root;${AZEROTHCORE_DB_ROOT_PASSWORD};acore_auth
+  AC_WORLD_DATABASE_INFO: ac-database;3306;root;${AZEROTHCORE_DB_ROOT_PASSWORD};acore_world
+  AC_CHARACTER_DATABASE_INFO: ac-database;3306;root;${AZEROTHCORE_DB_ROOT_PASSWORD};acore_characters
+
+services:
+  ac-database:
+    image: mysql:8.4.6
+    container_name: ac-database
+    restart: unless-stopped
+    volumes:
+      - ${DOCKER_BASE_PATH}/azerothcore/mysql:/var/lib/mysql
+    environment:
+      TZ: ${TZ}
+      MYSQL_ROOT_PASSWORD: ${AZEROTHCORE_DB_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  ac-client-data-init:
+    image: azerothcore/ac-client-data:${AC_REF}
+    container_name: ac-client-data-init
+    pull_policy: never
+    build:
+      <<: *build
+      target: client-data
+    volumes:
+      - ${DOCKER_BASE_PATH}/azerothcore/data:/azerothcore/env/dist/data
+
+  ac-db-import:
+    image: azerothcore/ac-db-import:${AC_REF}
+    container_name: ac-db-import
+    pull_policy: never
+    build:
+      <<: *build
+      target: db-import
+    environment:
+      <<: *ac-env
+    volumes:
+      - ${DOCKER_BASE_PATH}/azerothcore/etc:/azerothcore/env/dist/etc
+      - ${DOCKER_BASE_PATH}/azerothcore/logs:/azerothcore/env/dist/logs
+    depends_on:
+      ac-database:
+        condition: service_healthy
+
+  ac-authserver:
+    image: azerothcore/ac-authserver:${AC_REF}
+    container_name: ac-authserver
+    pull_policy: never
+    restart: unless-stopped
+    build:
+      <<: *build
+      target: authserver
+    environment:
+      <<: *ac-env
+    ports:
+      - "3724:3724"
+    volumes:
+      - ${DOCKER_BASE_PATH}/azerothcore/etc:/azerothcore/env/dist/etc
+      - ${DOCKER_BASE_PATH}/azerothcore/logs:/azerothcore/env/dist/logs
+    depends_on:
+      ac-database:
+        condition: service_healthy
+      ac-db-import:
+        condition: service_completed_successfully
+
+  ac-worldserver:
+    image: azerothcore/ac-worldserver:${AC_REF}
+    container_name: ac-worldserver
+    pull_policy: never
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    build:
+      <<: *build
+      target: worldserver
+    environment:
+      <<: *ac-env
+      AC_DATA_DIR: /azerothcore/env/dist/data
+    ports:
+      - "8085:8085"
+    volumes:
+      - ${DOCKER_BASE_PATH}/azerothcore/etc:/azerothcore/env/dist/etc
+      - ${DOCKER_BASE_PATH}/azerothcore/logs:/azerothcore/env/dist/logs
+      - ${DOCKER_BASE_PATH}/azerothcore/data:/azerothcore/env/dist/data:ro
+    depends_on:
+      ac-database:
+        condition: service_healthy
+      ac-db-import:
+        condition: service_completed_successfully
+      ac-client-data-init:
+        condition: service_completed_successfully

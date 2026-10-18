@@ -16,3 +16,6 @@ Project vocabulary. Use these terms in docs, issues, and commits.
 | **Portainer stack module** | `terraform/modules/portainer-stack`, which declares one stack, its env, and its secrets. |
 | **`DOCKER_BASE_PATH`** | Root host path for persistent service data (default `/docker`). |
 | **`TRAEFIK_BASE_DOMAIN`** | Base domain used in every Traefik `Host()` rule. |
+| **Local build stack** | A stack whose image is built on the host with `docker compose build`, not pulled from a registry. Portainer only runs the prebuilt tag. |
+| **Realm** | An AzerothCore game world that players choose in the client, registered in the `realmlist` table. |
+| **Module** | An AzerothCore extension compiled into the worldserver at build time, such as `mod-guild-discord`. |

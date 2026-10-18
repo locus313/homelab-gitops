@@ -542,6 +542,32 @@ module "mail_archiver" {
 }
 
 # ---------------------------------------------------------------------------
+# AzerothCore — WotLK test realm (local build stack; image built on the host)
+# ---------------------------------------------------------------------------
+
+module "azerothcore" {
+  source = "../modules/portainer-stack"
+
+  name         = "azerothcore"
+  compose_path = "docker/azerothcore/docker-compose.yml"
+  endpoint_id  = var.portainer_endpoint_id
+  repo_url     = var.repo_url
+  tz           = var.tz
+
+  env = {
+    DOCKER_BASE_PATH      = var.docker_base_path
+    PUID                  = local.puid_str
+    PGID                  = local.pgid_str
+    AC_REF                = var.azerothcore_ref
+    MOD_GUILD_DISCORD_REF = var.azerothcore_mod_guild_discord_ref
+  }
+
+  secret_env = {
+    AZEROTHCORE_DB_ROOT_PASSWORD = var.azerothcore_db_root_password
+  }
+}
+
+# ---------------------------------------------------------------------------
 # State migration from standalone portainer_stack resources
 # ---------------------------------------------------------------------------
 
