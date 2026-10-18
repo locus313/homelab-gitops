@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 - Add architecture diagrams, glossary, and ADRs (#455).
 - Add mermaid check, pre-commit, and coding standards (#456).
 
+### Added
+- `docker/azerothcore` — Add AzerothCore test stack with mod-guild-discord (#457).
+
 ## [2026-10-16]
 
 ### Dependencies
