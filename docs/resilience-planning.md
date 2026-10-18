@@ -1,5 +1,7 @@
 # Homelab Resilience Planning
 
+> **Status: design plan.** This describes intended resilience work, not what is deployed. Syncthing replication and the failover procedure are not implemented. For deployed state, read `terraform/` and `docker/`; see [architecture.md](architecture.md).
+
 ## Background
 
 `dh01` (Intel N150) was the primary host running all services via Portainer GitOps. A hardware failure

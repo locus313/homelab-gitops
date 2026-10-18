@@ -47,7 +47,7 @@ http:
 
 ## Terraform
 
-- Two-node Docker host architecture: `sc_docker_vm` on ScaleComputing HyperCore (always-on baseline) and `dh01_docker_vm` on Proxmox `pve01`. See `docs/resilience-planning.md`.
+- Two-node Docker host architecture: `sc_docker_vm` on ScaleComputing HyperCore (always-on baseline) and `dh01_docker_vm` on Proxmox `pve01`. See `docs/architecture.md`.
 - Ubuntu LTS cloud images live in `terraform/modules/cloud-images/`; starter workspaces in `terraform/templates/`.
 - Credentials come from environment variables via `.envrc`, never hardcoded. The `.envrc` files pull secrets from Bitwarden through direnv, so an agent cannot run `terraform plan` or `apply`: ask the user to run `direnv exec . terraform plan` in the workspace and paste the output.
 

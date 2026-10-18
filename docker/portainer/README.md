@@ -58,7 +58,7 @@ Portainer uses HTTPS internally on port 9443 (self-signed certificate). Traefik 
 
 - `${DOCKER_BASE_PATH}/portainer` — Portainer data, settings, and BoltDB state
 
-A bind mount is used instead of a named Docker volume so that Syncthing can sync Portainer state between hosts as part of the homelab resilience strategy. See `docs/resilience-planning.md`.
+A bind mount is used instead of a named Docker volume so Portainer state lives under `${DOCKER_BASE_PATH}`, alongside every other service's data.
 
 ## Initial Setup
 
