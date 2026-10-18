@@ -249,6 +249,7 @@ homelab-gitops/
 │   ├── resilience-planning.md  # Two-node design plan (not all deployed)
 │   └── adr/                    # Architecture decision records
 ├── GLOSSARY.md                 # Project vocabulary
+├── CODING_STANDARDS.md         # Review rules
 ├── .github/
 │   ├── workflows/              # CI/CD pipelines
 │   ├── scripts/                # Automation helpers

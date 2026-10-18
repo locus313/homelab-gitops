@@ -31,15 +31,23 @@ homelab-gitops/
 │   │   └── vm-cluster/      # Multi-VM cluster module
 │   └── templates/           # New workspace starter templates
 ├── .github/
-│   ├── workflows/           # yaml-lint, changelog
-│   ├── scripts/             # update-changelog.py, update-plex.sh
+│   ├── workflows/           # yaml-lint, terraform-check, mermaid-check, changelog
+│   ├── scripts/             # update-changelog.py, update-plex.sh, check-mermaid.mjs
 │   ├── copilot-instructions.md
 │   ├── skills/              # Copilot Agent Skills (kept minimal)
 │   ├── agents/              # Custom agents; unifi-config-reviewer is a WIP owned by the user — never delete
 │   └── instructions/        # Copilot instruction files (applyTo patterns)
+├── docs/
+│   ├── architecture.md      # Mermaid diagrams of deployed state
+│   ├── adr/                 # Architecture decision records
+│   └── resilience-planning.md  # Plan only; not deployed state
+├── GLOSSARY.md              # Project vocabulary; use its terms
+├── CODING_STANDARDS.md      # Rules the reviewer enforces
 ├── CHANGELOG.md             # Auto-updated by changelog.yml on every push to main
 └── README.md
 ```
+
+Deployed state lives in `terraform/` and `docker/`. Treat `docs/resilience-planning.md` as intent, never as evidence of what runs.
 
 ## Tech Stack
 
@@ -96,6 +104,9 @@ This is a configuration repo — validation replaces unit tests.
 | Format Terraform | `terraform fmt -check -recursive terraform` |
 | Validate Terraform | `cd terraform/<workspace> && terraform init -backend=false && terraform validate` |
 | Preview infrastructure | `cd terraform/<workspace> && terraform plan` (user runs it) |
+| Mermaid syntax | `npm i --no-save --no-package-lock mermaid@11 jsdom && git ls-files '*.md' \| xargs node .github/scripts/check-mermaid.mjs` (remove `node_modules` afterwards) |
+
+`.pre-commit-config.yaml` runs `yamllint` and `terraform fmt` locally; install with `pre-commit install`.
 
 CI runs `yamllint` on pushes touching `.yml`/`.yaml` files, and `terraform fmt` plus `terraform validate` on pushes touching `.tf` files.
 
@@ -172,6 +183,7 @@ Breaking changes: `feat!: drop TLS 1.0 support`
 |----------|---------|--------------|
 | `yaml-lint.yml` | push (`*.yml`, `*.yaml`) | Runs `yamllint` on all YAML files |
 | `terraform-check.yml` | push (`*.tf`) | Runs `terraform fmt -check` and `terraform validate` per workspace |
+| `mermaid-check.yml` | push (`*.md`) | Parses every `mermaid` block with `mermaid@11` |
 | `changelog.yml` | push to `main` | Auto-appends entries to `CHANGELOG.md` and commits |
 
 **Portainer GitOps:** Each `docker/<service>` directory is a Portainer stack. Portainer polls the repo and redeploys automatically on commit.
