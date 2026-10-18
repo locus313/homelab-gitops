@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - `.github` — Prune unused skills, agents, and instructions (#453).
+- `.github` — Trim steering files and add terraform fmt pre-commit check (#454).
 
 ## [2026-10-16]
 
