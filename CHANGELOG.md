@@ -13,6 +13,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - `docker/azerothcore` — Add AzerothCore test stack with mod-guild-discord (#457).
 
+### Fixed
+- `docker/azerothcore` — Build dbimport and use master for module ref (#458).
+
 ## [2026-10-16]
 
 ### Dependencies
