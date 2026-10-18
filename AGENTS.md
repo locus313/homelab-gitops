@@ -34,9 +34,8 @@ homelab-gitops/
 │   ├── workflows/           # yaml-lint, changelog
 │   ├── scripts/             # update-changelog.py, update-plex.sh
 │   ├── copilot-instructions.md
-│   ├── skills/              # Copilot Agent Skills
-│   ├── agents/              # Copilot Agent definitions
-│   ├── chatmodes/           # Copilot Chat modes
+│   ├── skills/              # Copilot Agent Skills (kept minimal)
+│   ├── agents/              # Custom agents; unifi-config-reviewer is a WIP owned by the user — never delete
 │   └── instructions/        # Copilot instruction files (applyTo patterns)
 ├── CHANGELOG.md             # Auto-updated by changelog.yml on every push to main
 └── README.md
