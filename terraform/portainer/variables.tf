@@ -404,7 +404,7 @@ variable "azerothcore_ref" {
 variable "azerothcore_mod_guild_discord_ref" {
   description = "mod-guild-discord ref compiled into the local image"
   type        = string
-  default     = "main"
+  default     = "master"
 }
 
 variable "azerothcore_db_root_password" {

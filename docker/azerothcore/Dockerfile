@@ -6,7 +6,7 @@ FROM ubuntu:${UBUNTU_VERSION} AS build
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG AC_REF
-ARG MOD_GUILD_DISCORD_REF=main
+ARG MOD_GUILD_DISCORD_REF=master
 ARG CTYPE=RelWithDebInfo
 
 RUN apt-get update \
@@ -39,7 +39,7 @@ RUN --mount=type=cache,target=/ccache,sharing=locked \
        -G Ninja \
        -DCMAKE_INSTALL_PREFIX=/azerothcore/env/dist \
        -DAPPS_BUILD=all \
-       -DTOOLS_BUILD=none \
+       -DTOOLS_BUILD=db-only \
        -DSCRIPTS=static \
        -DMODULES=static \
        -DCMAKE_BUILD_TYPE="$CTYPE" \
