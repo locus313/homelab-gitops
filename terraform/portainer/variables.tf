@@ -390,3 +390,25 @@ variable "mail_archiver_db_password" {
   sensitive   = true
 }
 
+
+# ---------------------------------------------------------------------------
+# AzerothCore
+# ---------------------------------------------------------------------------
+
+variable "azerothcore_ref" {
+  description = "AzerothCore commit SHA the local image was built from"
+  type        = string
+  default     = "d5e818f28ee80f5a39115c3bbaa695a6f859303e"
+}
+
+variable "azerothcore_mod_guild_discord_ref" {
+  description = "mod-guild-discord ref compiled into the local image"
+  type        = string
+  default     = "main"
+}
+
+variable "azerothcore_db_root_password" {
+  description = "AzerothCore MySQL root password"
+  type        = string
+  sensitive   = true
+}

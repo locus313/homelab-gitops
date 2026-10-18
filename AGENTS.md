@@ -155,6 +155,7 @@ networks:
 | `iventoy` | Privileged, direct host ports (`26000`, `16000`, `10809`, `69/udp`), no Traefik |
 | `home-assistant` | `proxynet` + `privileged: true` + `/run/dbus` |
 | `gitea` | Adds `postgres:18` sidecar; SSH on `222:22` |
+| `azerothcore` | Local build stack (`pull_policy: never`, image built on host); MySQL sidecar; host ports `3724` + `8085`, no Traefik |
 | `storj-node` | Requires host port-forward `28967` (TCP + UDP) |
 | `portainer` | Also exposes `9443:9443` directly as a fallback |
 
