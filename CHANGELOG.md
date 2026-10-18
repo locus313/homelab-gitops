@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - `.github` — Prune unused skills, agents, and instructions (#453).
 - `.github` — Trim steering files and add terraform fmt pre-commit check (#454).
 - Add architecture diagrams, glossary, and ADRs (#455).
+- Add mermaid check, pre-commit, and coding standards (#456).
 
 ## [2026-10-16]
 
