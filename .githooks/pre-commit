@@ -5,6 +5,7 @@
 #   1. YAML linting on staged .yml/.yaml files (mirrors CI yaml-lint.yml)
 #   2. Detect 'latest' image tags in staged docker-compose files
 #   3. Scan staged files for potential hardcoded secrets
+#   4. terraform fmt -check on staged .tf files (mirrors CI terraform-check.yml)
 #
 # Install once per clone:
 #   git config core.hooksPath .githooks
@@ -101,6 +102,20 @@ if [[ -n "$SECRET_FILES" ]]; then
         echo "" >&2
         echo "     Use environment variables (\$VAR) or reference .env files instead." >&2
         echo "     If this is a false positive, verify no real secret is present." >&2
+        echo "" >&2
+        ERRORS=1
+    fi
+fi
+
+# ─── 4. TERRAFORM FORMAT ───────────────────────────────────────────────────────
+TF_FILES=$(echo "$STAGED" | grep -E '\.tf$' || true)
+
+if [[ -n "$TF_FILES" ]]; then
+    if ! command -v terraform &>/dev/null; then
+        echo "  ⚠  terraform not found — skipping fmt check" >&2
+    elif ! echo "$TF_FILES" | xargs terraform fmt -check -diff >&2; then
+        echo "" >&2
+        echo "  ✗  terraform fmt failed. Run: terraform fmt -recursive terraform" >&2
         echo "" >&2
         ERRORS=1
     fi
