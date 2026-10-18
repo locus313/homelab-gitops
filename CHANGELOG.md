@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-10-18]
+
+### Changed
+- `.github` — Prune unused skills, agents, and instructions (#453).
+
 ## [2026-10-16]
 
 ### Dependencies
