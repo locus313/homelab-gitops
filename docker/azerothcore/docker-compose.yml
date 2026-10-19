@@ -103,3 +103,23 @@ services:
         condition: service_completed_successfully
       ac-client-data-init:
         condition: service_completed_successfully
+
+  ac-discord-relay:
+    image: azerothcore/ac-discord-relay:${AC_REF}
+    container_name: ac-discord-relay
+    pull_policy: never
+    restart: unless-stopped
+    build:
+      context: https://github.com/locus313/mod-guild-discord.git#${MOD_GUILD_DISCORD_REF}:apps/discord-relay
+    environment:
+      TZ: ${TZ}
+      DISCORD_TOKEN: ${AZEROTHCORE_DISCORD_TOKEN}
+      DB_HOST: ac-database
+      DB_PORT: 3306
+      DB_USER: discord_relay
+      DB_PASSWORD: ${AZEROTHCORE_DISCORD_RELAY_DB_PASSWORD}
+      DB_NAME: acore_characters
+      MAP_RELOAD_SECONDS: 60
+    depends_on:
+      ac-database:
+        condition: service_healthy
