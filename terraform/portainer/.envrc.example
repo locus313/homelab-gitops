@@ -131,6 +131,10 @@ export TF_VAR_gitea_db_password=$(_bw_password "Homelab - Gitea DB")
 # Bitwarden item: "Homelab - AzerothCore DB"  (password: <db_root_password>)
 # ---------------------------------------------------------------------------
 export TF_VAR_azerothcore_db_root_password=$(_bw_password "Homelab - AzerothCore DB")
+# Bitwarden item: "Homelab - AzerothCore Discord Bot"  (password: <bot token>)
+export TF_VAR_azerothcore_discord_token=$(_bw_password "Homelab - AzerothCore Discord Bot")
+# Bitwarden item: "Homelab - AzerothCore Relay DB"  (password: <discord_relay MySQL password>)
+export TF_VAR_azerothcore_discord_relay_db_password=$(_bw_password "Homelab - AzerothCore Relay DB")
 
 # ---------------------------------------------------------------------------
 # Gitea Mirror

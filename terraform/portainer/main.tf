@@ -563,7 +563,9 @@ module "azerothcore" {
   }
 
   secret_env = {
-    AZEROTHCORE_DB_ROOT_PASSWORD = var.azerothcore_db_root_password
+    AZEROTHCORE_DB_ROOT_PASSWORD          = var.azerothcore_db_root_password
+    AZEROTHCORE_DISCORD_TOKEN             = var.azerothcore_discord_token
+    AZEROTHCORE_DISCORD_RELAY_DB_PASSWORD = var.azerothcore_discord_relay_db_password
   }
 }
 

@@ -412,3 +412,15 @@ variable "azerothcore_db_root_password" {
   type        = string
   sensitive   = true
 }
+
+variable "azerothcore_discord_token" {
+  description = "Discord bot token for the AzerothCore discord-relay sidecar"
+  type        = string
+  sensitive   = true
+}
+
+variable "azerothcore_discord_relay_db_password" {
+  description = "Password of the discord_relay MySQL account used by the sidecar"
+  type        = string
+  sensitive   = true
+}
