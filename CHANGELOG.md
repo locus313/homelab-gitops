@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-10-20]
+
+### Added
+- `docker/azerothcore` — Add discord-relay sidecar for Discord to game chat (#459).
+
 ## [2026-10-18]
 
 ### Changed
