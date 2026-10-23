@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bump the docker-images group across 11 directories with 13 updates (#463).
+- Bump bpg/proxmox (#461).
 
 ## [2026-10-20]
 
