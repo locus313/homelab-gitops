@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - `.github/scripts` — Ignore floating plex tags (#464).
 
+### Changed
+- `docker/plex` — Update image to 1.43.5.11029-6bf8af3f0 (#465).
+
 ## [2026-10-20]
 
 ### Added
