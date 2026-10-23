@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 - Bump the docker-images group across 11 directories with 13 updates (#463).
 - Bump bpg/proxmox (#461).
 
+### Fixed
+- `.github/scripts` — Ignore floating plex tags (#464).
+
 ## [2026-10-20]
 
 ### Added
