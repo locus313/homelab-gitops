@@ -7,18 +7,21 @@ set -euo pipefail
 COMPOSE_FILE="docker/plex/docker-compose.yml"
 CURRENT_TAG=$(grep -oP 'plexinc/pms-docker:\K\S+' "$COMPOSE_FILE")
 
-# Docker Hub tags are sorted by last_pushed; the arch-specific and "latest"
-# tags share the same digest as the real multi-arch release, so skip them.
+# Plex also pushes floating tags (latest, public, beta, plexpass) and
+# per-arch tags; only accept pinned multi-arch releases (1.2.3.4-hash) and
+# pick the highest version rather than the most recently pushed tag.
 LATEST_TAG=$(curl -fsSL \
-  "https://hub.docker.com/v2/repositories/plexinc/pms-docker/tags?page_size=25&ordering=last_updated" |
+  "https://hub.docker.com/v2/repositories/plexinc/pms-docker/tags?page_size=100&ordering=last_updated" |
   python3 -c '
-import json, sys
-data = json.load(sys.stdin)
-for tag in data["results"]:
-    name = tag["name"]
-    if name != "latest" and not name.endswith(("-amd64", "-arm64", "-armhf")):
-        print(name)
-        break
+import json, re, sys
+pat = re.compile(r"^(\d+(?:\.\d+){3})-[0-9a-f]{7,}$")
+vers = []
+for tag in json.load(sys.stdin)["results"]:
+    m = pat.match(tag["name"])
+    if m:
+        vers.append((tuple(map(int, m.group(1).split("."))), tag["name"]))
+if vers:
+    print(max(vers)[1])
 ')
 
 if [[ -z "$LATEST_TAG" || "$LATEST_TAG" == "$CURRENT_TAG" ]]; then
