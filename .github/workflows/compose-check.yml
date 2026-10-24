@@ -4,6 +4,7 @@ name: Compose Check
   push:
     paths:
       - 'docker/**'
+      - '.github/dependabot.yml'
       - '.github/workflows/compose-check.yml'
 
   workflow_dispatch:
@@ -29,6 +30,23 @@ jobs:
             echo "::error::Use Compose 'configs' instead of ./ bind mounts"
             exit 1
           fi
+
+      - name: Require Dependabot major-version ignore for stateful images
+        run: |
+          status=0
+          images=$(grep -hoE '^\s+image: *[^ ]+' docker/*/docker-compose.yml \
+            | sed -E 's/^\s+image: *//; s/:.*//' | sort -u)
+          for img in $images; do
+            case "$img" in
+              mysql|mariadb|postgres|redis|valkey/valkey|mongo) ;;
+              *) continue ;;
+            esac
+            if ! grep -qE "dependency-name: \"$img\"" .github/dependabot.yml; then
+              echo "::error file=.github/dependabot.yml::stateful image '$img' needs a semver-major ignore entry"
+              status=1
+            fi
+          done
+          exit $status
 
       - name: Validate compose files
         run: |

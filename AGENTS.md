@@ -108,9 +108,7 @@ This is a configuration repo — validation replaces unit tests.
 | Preview infrastructure | `cd terraform/<workspace> && terraform plan` (user runs it) |
 | Mermaid syntax | `npm i --no-save --no-package-lock mermaid@11 jsdom && git ls-files '*.md' \| xargs node .github/scripts/check-mermaid.mjs` (remove `node_modules` afterwards) |
 
-`.pre-commit-config.yaml` runs `yamllint` and `terraform fmt` locally; install with `pre-commit install`.
-
-CI runs `yamllint` on pushes touching `.yml`/`.yaml` files, `docker compose config` on pushes touching `docker/**` (also rejects `./` bind mounts), and `terraform fmt` plus `terraform validate` on pushes touching `.tf` files.
+`.pre-commit-config.yaml` runs `yamllint` and `terraform fmt` locally; install with `pre-commit install`. CI checks live in `.github/workflows/`; read the workflow file for what a check enforces.
 
 ## Key Patterns and Conventions
 
@@ -155,17 +153,11 @@ Breaking changes: `feat!: drop TLS 1.0 support`
 
 ## CI/CD
 
-| Workflow | Trigger | What it does |
-|----------|---------|--------------|
-| `yaml-lint.yml` | push (`*.yml`, `*.yaml`) | Runs `yamllint` on all YAML files |
-| `terraform-check.yml` | push (`*.tf`) | Runs `terraform fmt -check` and `terraform validate` per workspace |
-| `compose-check.yml` | push (`docker/**`) | Runs `docker compose config -q` per stack; fails on `./` bind mounts |
-| `mermaid-check.yml` | push (`*.md`) | Parses every `mermaid` block with `mermaid@11` |
-| `changelog.yml` | push to `main` | Auto-appends entries to `CHANGELOG.md` and commits |
+Workflows in `.github/workflows/` validate pushes; `changelog.yml` appends to `CHANGELOG.md` on `main`.
 
 **Portainer GitOps:** Each `docker/<service>` directory is a Portainer stack. Portainer polls the repo and redeploys automatically on commit.
 
-**Dependabot:** Manually maintained in `.github/dependabot.yml`. Docker compose directories are matched by the `/docker/*` glob, so new services need no entry.
+**Dependabot:** Manually maintained in `.github/dependabot.yml`. Docker compose directories are matched by the `/docker/*` glob, so new services need no entry, except stateful images (databases, search indexes): add a `semver-major` ignore for each, since a major bump migrates the data directory. `compose-check.yml` fails when one is missing.
 
 ## Adding a New Docker Service
 
@@ -177,7 +169,6 @@ Create these 3 files together, then add the Terraform stack:
 
 4. **`terraform/portainer/main.tf`** — add a `module "<service>"` call to `../modules/portainer-stack` (`name`, `compose_path`, `endpoint_id`, `repo_url`, `tz`, `env`, `secret_env`), plus any new variables in `terraform/portainer/variables.tf`. Mark secrets `sensitive = true` and pass them through `secret_env`.
 
-**Image version:** Check the registry for the latest stable tag before committing.  
 **YAML check:** Run `yamllint -c .github/.yamllint docker/<service-name>/docker-compose.yml` before committing.  
 **Commit message:** `feat(docker/<service-name>): add initial <Service Name> stack`
 
