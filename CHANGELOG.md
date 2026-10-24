@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - `docker/traefik` — Inject config via compose configs to avoid stale bind mount (#466).
 
+### Changed
+- `.github` — Add compose-check CI and tighten agent steering (#467).
+
 ## [2026-10-23]
 
 ### Dependencies
