@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-10-24]
+
+### Fixed
+- `docker/traefik` — Inject config via compose configs to avoid stale bind mount (#466).
+
 ## [2026-10-23]
 
 ### Dependencies
