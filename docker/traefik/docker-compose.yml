@@ -10,9 +10,17 @@ services:
       - 443:443
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./config:/etc/traefik:ro
       - /mnt/docker/traefik/cloudns-acme.json:/var/traefik/certs/cloudns-acme.json:rw
       - ${DOCKER_BASE_PATH}/traefik/logs:/logs
+    # Configs are copied at container create time, so a Portainer git re-pull
+    # replacing the checkout directory cannot leave a stale bind mount (404s).
+    configs:
+      - source: traefik-static
+        target: /etc/traefik/traefik.yaml
+      - source: traefik-portainer
+        target: /etc/traefik/dynamic/portainer.yaml
+      - source: traefik-storj-node-1
+        target: /etc/traefik/dynamic/storj-node-1.yaml
     environment:
       CLOUDNS_SUB_AUTH_ID: ${CLOUDNS_SUB_AUTH_ID}
       CLOUDNS_AUTH_PASSWORD: ${CLOUDNS_AUTH_PASSWORD}
@@ -23,6 +31,14 @@ services:
       TZ: ${TZ}
     labels:
       - traefik.enable=false
+
+configs:
+  traefik-static:
+    file: ./config/traefik.yaml
+  traefik-portainer:
+    file: ./config/dynamic/portainer.yaml
+  traefik-storj-node-1:
+    file: ./config/dynamic/storj-node-1.yaml
 
 networks:
   proxynet:

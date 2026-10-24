@@ -56,6 +56,10 @@ The Traefik configuration is split into:
 - **Static Configuration**: `config/traefik.yaml` - Main Traefik settings
 - **Dynamic Configuration**: `config/dynamic/` - Service-specific routing rules
 
+Config files are injected via Compose `configs` (not a bind mount), so a Portainer
+git re-pull cannot leave Traefik with a stale directory and 404s. When adding a file
+under `config/dynamic/`, also add a matching `configs` entry in `docker-compose.yml`.
+
 ### Dynamic Configuration Files
 
 - `dh01.yaml`: Configuration for dh01 service
