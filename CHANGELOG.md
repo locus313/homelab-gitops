@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - `.github` — Add compose-check CI and tighten agent steering (#467).
+- `.github/workflows` — Require dependabot major ignore for stateful images (#470).
 
 ### Dependencies
 - Bump actions/setup-python (#469).
