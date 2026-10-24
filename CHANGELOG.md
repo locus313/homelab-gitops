@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bump actions/setup-python (#469).
+- Bump the docker-images group across 9 directories with 10 updates (#471).
 
 ## [2026-10-23]
 
