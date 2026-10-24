@@ -60,10 +60,7 @@ Config files are injected via Compose `configs` (not a bind mount), so a Portain
 git re-pull cannot leave Traefik with a stale directory and 404s. When adding a file
 under `config/dynamic/`, also add a matching `configs` entry in `docker-compose.yml`.
 
-### Dynamic Configuration Files
-
-- `dh01.yaml`: Configuration for dh01 service
-- `storj-node-1.yaml`: Configuration for Storj node
+Each file in `config/dynamic/` is one routing target; see the directory for the current list.
 
 ## Service Discovery
 

@@ -1,0 +1,43 @@
+name: Compose Check
+
+"on":
+  push:
+    paths:
+      - 'docker/**'
+      - '.github/workflows/compose-check.yml'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Reject ./ bind mounts (Portainer replaces the checkout on redeploy)
+        run: |
+          if grep -nE '^\s+- \./' docker/*/docker-compose.yml; then
+            echo "::error::Use Compose 'configs' instead of ./ bind mounts"
+            exit 1
+          fi
+
+      - name: Validate compose files
+        run: |
+          status=0
+          for f in docker/*/docker-compose.yml; do
+            d=$(dirname "$f")
+            # Substitute placeholders from .env.example so required vars resolve
+            if [ -f "$d/.env.example" ]; then envfile="$d/.env.example"; else envfile=/dev/null; fi
+            docker compose --env-file "$envfile" -f "$f" config -q \
+              || { echo "::error file=$f::invalid compose"; status=1; }
+          done
+          exit $status
