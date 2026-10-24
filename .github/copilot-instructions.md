@@ -14,7 +14,7 @@ Some images use `v1.2.3`, others `1.2.3`. Review release notes for version-speci
 
 - Persistent data: `${DOCKER_BASE_PATH}/service-name`
 - Media services: `${MEDIA_PATH}` for content storage
-- Relative paths only, for Portainer compatibility
+- Portainer replaces the checkout on every redeploy, which leaves `./` bind mounts stale. Inject repo files with Compose `configs` instead
 
 ## Traefik dynamic configuration
 

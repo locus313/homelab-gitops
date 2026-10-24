@@ -8,3 +8,7 @@ Rules the reviewer enforces on a diff. Mechanical rules live in CI (`.github/wor
 - Diagrams and docs describe deployed state, verified against `terraform/` and `docker/`. Mark anything planned as a plan.
 - Keep the README project tree in step with the filesystem: a new or removed directory updates the tree in the same change.
 - Use the terms in `GLOSSARY.md`. Record a hard-to-reverse decision as an ADR in `docs/adr/`.
+
+## Docker stacks
+
+- Repo files reach containers through Compose `configs`, never `./` bind mounts: Portainer replaces the checkout on redeploy and the mount goes stale (Traefik 404s). Enforced by `compose-check.yml`; flag any workaround.

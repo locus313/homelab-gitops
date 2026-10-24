@@ -93,6 +93,8 @@ terraform apply
 
 Agents cannot unlock Bitwarden, so they cannot run `plan` or `apply`. Ask the user to run `direnv exec . terraform plan` and paste the output.
 
+**Runtime access:** Docker hosts hold the live logs and `docker` CLI. Ask the user for the SSH target, then run read-only commands there (`docker logs`, `docker ps`, `docker inspect`). Keep hostnames and usernames out of this public repo.
+
 ## Testing
 
 This is a configuration repo — validation replaces unit tests.
@@ -100,7 +102,7 @@ This is a configuration repo — validation replaces unit tests.
 | Check | Command |
 |-------|---------|
 | YAML lint (all files) | `yamllint -c .github/.yamllint .` |
-| Validate a compose file | `docker compose -f docker/<service>/docker-compose.yml config` |
+| Validate a compose file | `docker compose -f docker/<service>/docker-compose.yml config -q` (CI runs it; the local machine may lack `docker`) |
 | Format Terraform | `terraform fmt -check -recursive terraform` |
 | Validate Terraform | `cd terraform/<workspace> && terraform init -backend=false && terraform validate` |
 | Preview infrastructure | `cd terraform/<workspace> && terraform plan` (user runs it) |
@@ -108,40 +110,13 @@ This is a configuration repo — validation replaces unit tests.
 
 `.pre-commit-config.yaml` runs `yamllint` and `terraform fmt` locally; install with `pre-commit install`.
 
-CI runs `yamllint` on pushes touching `.yml`/`.yaml` files, and `terraform fmt` plus `terraform validate` on pushes touching `.tf` files.
+CI runs `yamllint` on pushes touching `.yml`/`.yaml` files, `docker compose config` on pushes touching `docker/**` (also rejects `./` bind mounts), and `terraform fmt` plus `terraform validate` on pushes touching `.tf` files.
 
 ## Key Patterns and Conventions
 
 ### Standard Docker Service Pattern
 
-Every service follows this template in `docker-compose.yml`:
-
-```yaml
-services:
-  service-name:
-    image: vendor/image:1.2.3       # Always pin — never 'latest'
-    container_name: service-name    # Matches directory name
-    restart: unless-stopped
-    networks:
-      - proxynet
-    volumes:
-      - ${DOCKER_BASE_PATH}/service-name:/config
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-    labels:
-      - traefik.enable=true
-      - traefik.http.services.service-name.loadbalancer.server.port=INTERNAL_PORT
-      - traefik.http.routers.service-name.rule=Host(`service-name.${TRAEFIK_BASE_DOMAIN}`)
-      - traefik.http.routers.service-name.entrypoints=websecure
-      - traefik.http.routers.service-name.tls=true
-      - traefik.http.routers.service-name.tls.certresolver=cloudns
-
-networks:
-  proxynet:
-    external: true
-```
+Copy `docker/it-tools/docker-compose.yml`: pinned image, `container_name` matching the directory, `proxynet`, `${DOCKER_BASE_PATH}` volumes, and the five Traefik labels (`Host(`<name>.${TRAEFIK_BASE_DOMAIN}`)`, `websecure`, `certresolver=cloudns`).
 
 ### Exceptions to the Standard Pattern
 
@@ -184,6 +159,7 @@ Breaking changes: `feat!: drop TLS 1.0 support`
 |----------|---------|--------------|
 | `yaml-lint.yml` | push (`*.yml`, `*.yaml`) | Runs `yamllint` on all YAML files |
 | `terraform-check.yml` | push (`*.tf`) | Runs `terraform fmt -check` and `terraform validate` per workspace |
+| `compose-check.yml` | push (`docker/**`) | Runs `docker compose config -q` per stack; fails on `./` bind mounts |
 | `mermaid-check.yml` | push (`*.md`) | Parses every `mermaid` block with `mermaid@11` |
 | `changelog.yml` | push to `main` | Auto-appends entries to `CHANGELOG.md` and commits |
 
