@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - `.github` — Add compose-check CI and tighten agent steering (#467).
 
+### Dependencies
+- Bump actions/setup-python (#469).
+
 ## [2026-10-23]
 
 ### Dependencies
