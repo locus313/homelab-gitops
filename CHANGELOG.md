@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 - Bump the docker-images group across 10 directories with 11 updates (#476).
 - Bump the terraform-providers group across 2 directories with 2 updates (#475).
 
+### Changed
+- `docker/plex` — Update image to 1.43.7.11114-4b588ea35 (#474).
+
 ## [2026-10-31]
 
 ### Changed
