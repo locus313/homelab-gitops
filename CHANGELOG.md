@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 - Bump the terraform-providers group across 2 directories with 2 updates (#479).
 - Bump peter-evans/create-pull-request (#478).
 
+### Fixed
+- `.github/scripts` — Use Plex public channel for updates (#482).
+
 ## [2026-11-06]
 
 ### Dependencies
