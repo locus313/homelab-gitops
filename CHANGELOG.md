@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Dependencies
 - Bump s1t5/mailarchiver in /docker/mail-archiver (#481).
 - Bump the docker-images group across 12 directories with 16 updates (#480).
+- Bump the terraform-providers group across 2 directories with 2 updates (#479).
 
 ## [2026-11-06]
 
