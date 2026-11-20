@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-11-20]
+
+### Added
+- `docker/hermes-agent` — Add Hermes Agent stack (#483).
+
 ## [2026-11-13]
 
 ### Dependencies
