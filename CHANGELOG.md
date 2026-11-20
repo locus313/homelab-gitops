@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 - Bump portainer/portainer in /terraform/portainer (#484).
+- Bump the docker-images group across 8 directories with 8 updates (#485).
 
 ## [2026-11-13]
 
