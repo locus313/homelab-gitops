@@ -97,6 +97,7 @@ Notable exceptions: **Plex** and **Netdata** use `network_mode: host`; **Code-Se
 | **Media** | [HandBrake](docker/handbrake/) | Video transcoder with optional GPU acceleration |
 | **Media** | [MeTube](docker/metube/) | yt-dlp web interface for video downloading |
 | **AI** | [Open-WebUI](docker/open-webui/) | Interface for local LLMs backed by an Ollama sidecar |
+| **AI** | [Hermes Agent](docker/hermes-agent/) | AI agent with web, CLI, and Discord access |
 | **Dev Tools** | [Code-Server](docker/code-server/) | Browser-based VS Code with Tailscale sidecar |
 | **Dev Tools** | [IT Tools](docker/it-tools/) | 100+ developer utility tools, offline-first |
 | **Dev Tools** | [Stirling PDF](docker/stirling-pdf/) | PDF manipulation toolkit |
@@ -190,6 +191,7 @@ All services use a shared set of core variables:
 | Code-Server | `PASSWORD`, `TS_AUTHKEY` |
 | Gitea | `GITEA_DB_NAME`, `GITEA_DB_USER`, `GITEA_DB_PASSWORD` |
 | Gitea Mirror | `BETTER_AUTH_SECRET` |
+| Hermes Agent | `HERMES_TRUSTED_PROXY`, `HERMES_DASHBOARD_BASIC_AUTH_USERNAME`, `HERMES_DASHBOARD_BASIC_AUTH_PASSWORD`, `DISCORD_BOT_TOKEN`, `DISCORD_ALLOWED_USERS` |
 | Storj Node | `WALLET`, `EMAIL`, `ADDRESS`, `STORAGE`, `STORAGE_PATH` |
 | Kasm | `KASM_PORT`, `DOCKER_HUB_USERNAME`, `DOCKER_HUB_PASSWORD` |
 | Rackula | `RACKULA_API_WRITE_TOKEN`, `RACKULA_AUTH_MODE`, `RACKULA_AUTH_SESSION_SECRET` |
