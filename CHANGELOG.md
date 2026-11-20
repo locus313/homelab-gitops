@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - `docker/plex` — Update image to 1.43.5.11079-b3b13e506 (#477).
 
+### Dependencies
+- Bump portainer/portainer in /terraform/portainer (#484).
+
 ## [2026-11-13]
 
 ### Dependencies
