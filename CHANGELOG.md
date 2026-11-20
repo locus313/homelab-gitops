@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - `docker/hermes-agent` — Add Hermes Agent stack (#483).
 
+### Changed
+- `docker/plex` — Update image to 1.43.5.11079-b3b13e506 (#477).
+
 ## [2026-11-13]
 
 ### Dependencies
