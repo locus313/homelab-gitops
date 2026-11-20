@@ -149,6 +149,18 @@ export TF_VAR_better_auth_secret=$(_bw_password "Homelab - Gitea Mirror")
 export TF_VAR_homarr_secret_encryption_key=$(_bw_password "Homelab - Homarr")
 
 # ---------------------------------------------------------------------------
+# Hermes Agent
+# Bitwarden item: "Homelab - Hermes Dashboard" (username and password)
+# Bitwarden item: "Homelab - Hermes Discord Bot" (password: bot token)
+# Set the Traefik container IP on proxynet; see docker/hermes-agent/README.md.
+# ---------------------------------------------------------------------------
+export TF_VAR_hermes_trusted_proxy="traefik-container-ip"
+export TF_VAR_hermes_dashboard_username=$(_bw_username "Homelab - Hermes Dashboard")
+export TF_VAR_hermes_dashboard_password=$(_bw_password "Homelab - Hermes Dashboard")
+export TF_VAR_hermes_discord_bot_token=$(_bw_password "Homelab - Hermes Discord Bot")
+export TF_VAR_hermes_discord_allowed_users="your-discord-user-id"
+
+# ---------------------------------------------------------------------------
 # Beszel
 # Bitwarden item: "Homelab - Beszel"  (password: <ed25519 public key>)
 # Retrieve from Beszel hub UI after first launch: Settings → Agent → Public key

@@ -1,0 +1,3 @@
+dashboard:
+  trusted_proxies:
+    - '${HERMES_TRUSTED_PROXY}'

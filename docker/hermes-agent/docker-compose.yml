@@ -1,0 +1,41 @@
+services:
+  hermes-agent:
+    image: nousresearch/hermes-agent:v0.23.3
+    container_name: hermes-agent
+    restart: unless-stopped
+    command: ["gateway", "run"]
+    networks:
+      - proxynet
+    volumes:
+      - ${DOCKER_BASE_PATH}/hermes-agent:/opt/data
+    configs:
+      - source: hermes-managed-config
+        target: /etc/hermes/config.yaml
+    environment:
+      TZ: ${TZ}
+      HERMES_UID: ${PUID}
+      HERMES_GID: ${PGID}
+      HERMES_DASHBOARD: "true"
+      HERMES_DASHBOARD_HOST: 0.0.0.0
+      HERMES_DASHBOARD_PUBLIC_URL: https://hermes-agent.${TRAEFIK_BASE_DOMAIN}
+      HERMES_DASHBOARD_BASIC_AUTH_USERNAME: ${HERMES_DASHBOARD_BASIC_AUTH_USERNAME:?Set the dashboard username}
+      HERMES_DASHBOARD_BASIC_AUTH_PASSWORD: ${HERMES_DASHBOARD_BASIC_AUTH_PASSWORD:?Set the dashboard password}
+      HERMES_TRUSTED_PROXY: ${HERMES_TRUSTED_PROXY:?Set the Traefik container IP}
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:?Set the Discord bot token}
+      DISCORD_ALLOWED_USERS: ${DISCORD_ALLOWED_USERS:?Set the allowed Discord user IDs}
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxynet
+      - traefik.http.services.hermes-agent.loadbalancer.server.port=9119
+      - traefik.http.routers.hermes-agent.rule=Host(`hermes-agent.${TRAEFIK_BASE_DOMAIN}`)
+      - traefik.http.routers.hermes-agent.entrypoints=websecure
+      - traefik.http.routers.hermes-agent.tls=true
+      - traefik.http.routers.hermes-agent.tls.certresolver=cloudns
+
+configs:
+  hermes-managed-config:
+    file: ./managed-config.yaml
+
+networks:
+  proxynet:
+    external: true
