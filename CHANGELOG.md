@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-11-20]
+
+### Added
+- `docker/hermes-agent` — Add Hermes Agent stack (#483).
+
+## [2026-11-13]
+
+### Dependencies
+- Bump s1t5/mailarchiver in /docker/mail-archiver (#481).
+- Bump the docker-images group across 12 directories with 16 updates (#480).
+- Bump the terraform-providers group across 2 directories with 2 updates (#479).
+- Bump peter-evans/create-pull-request (#478).
+
+### Fixed
+- `.github/scripts` — Use Plex public channel for updates (#482).
+
 ## [2026-11-06]
 
 ### Dependencies
