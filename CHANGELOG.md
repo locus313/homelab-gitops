@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - `terraform/arcane` — Skip AWS account lookup (#487).
 
+### Changed
+- `docker/arcane-pilot` — Add git sync marker (#488).
+
 ## [2026-11-20]
 
 ### Added
