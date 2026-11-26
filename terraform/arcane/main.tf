@@ -5,6 +5,19 @@ resource "arcane_git_repository" "homelab" {
   enabled   = true
 }
 
+resource "arcane_global_variable" "pilot_secret_canary" {
+  count = var.enable_pilot ? 1 : 0
+
+  key              = "ARCANE_PILOT_SECRET_CANARY"
+  value_wo         = "not-a-secret-test-value"
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "pilot" {
   count = var.enable_pilot ? 1 : 0
 
