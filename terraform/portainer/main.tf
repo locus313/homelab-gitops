@@ -298,30 +298,6 @@ module "stirling_pdf" {
 }
 
 # ---------------------------------------------------------------------------
-# HandBrake — video transcoder with GPU acceleration
-# ---------------------------------------------------------------------------
-
-module "handbrake" {
-  source = "../modules/portainer-stack"
-
-  name         = "handbrake"
-  compose_path = "docker/handbrake/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    DOCKER_BASE_PATH    = var.docker_base_path
-    PUID                = local.puid_str
-    PGID                = local.pgid_str
-    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
-    UMASK               = "0022"
-    MEDIA_PATH          = var.media_path
-    BACKUP_PATH         = var.backup_path
-  }
-}
-
-# ---------------------------------------------------------------------------
 # NetbootXYZ — network boot service
 # ---------------------------------------------------------------------------
 
@@ -594,11 +570,6 @@ moved {
 moved {
   from = portainer_stack.stirling_pdf
   to   = module.stirling_pdf.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.handbrake
-  to   = module.handbrake.portainer_stack.this
 }
 
 moved {

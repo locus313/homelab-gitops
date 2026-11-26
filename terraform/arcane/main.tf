@@ -18,6 +18,32 @@ resource "arcane_global_variable" "pilot_secret_canary" {
   inject_into_containers = false
 }
 
+resource "arcane_gitops_sync" "handbrake" {
+  count = var.enable_handbrake ? 1 : 0
+
+  environment_id = "0"
+  name           = "handbrake"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/handbrake/docker-compose.yml"
+  project_name   = "handbrake"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    BACKUP_PATH         = var.backup_path
+    DOCKER_BASE_PATH    = var.docker_base_path
+    MEDIA_PATH          = var.media_path
+    PGID                = tostring(var.pgid)
+    PUID                = tostring(var.puid)
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    TZ                  = "America/Los_Angeles"
+    UMASK               = "0022"
+  }
+}
+
 resource "arcane_gitops_sync" "pilot" {
   count = var.enable_pilot ? 1 : 0
 

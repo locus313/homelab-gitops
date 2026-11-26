@@ -20,11 +20,12 @@ HandBrake is a powerful video transcoder that can convert video files between di
    ```
 
 2. Edit the `.env` file with your specific values:
-   - `USER_ID` and `GROUP_ID`: User and group IDs for file permissions
-   - `TZ`: Your timezone
+   - `PUID` and `PGID`: User and group IDs for file permissions
    - `DOCKER_BASE_PATH`: Base path for Docker volumes
+   - `MEDIA_PATH` and `BACKUP_PATH`: Host paths for media and backups
    - `TRAEFIK_BASE_DOMAIN`: Your domain for Traefik routing
    - `UMASK`: File creation permissions mask
+   - `TZ`: Your timezone
 
 3. Deploy the service:
    ```bash
@@ -42,9 +43,9 @@ This setup includes Intel GPU hardware acceleration support via `/dev/dri` devic
 ## Storage
 
 The service is configured with the following volume mappings:
-- Input Storage: `/mnt/h-syn-1_media` - Media files for conversion
-- Backup Storage: `/mnt/h-syn-1_backups` - Additional storage
-- Output Directory: `/mnt/h-syn-1_media/Videos/temp/Output` - Converted files destination
+- Input Storage: `${MEDIA_PATH}` mounted at `/storage/Media`
+- Backup Storage: `${BACKUP_PATH}` mounted at `/storage/Backups`
+- Output Directory: `${MEDIA_PATH}/Videos/temp/Output` mounted at `/output`
 
 ## Initial Setup
 
@@ -57,7 +58,7 @@ The service is configured with the following volume mappings:
 ## Volumes
 
 - Config: `${DOCKER_BASE_PATH}/handbrake` - Contains HandBrake configuration and watch folders
-- Media Storage: Various mounted directories for input and output files
+- Media and backup storage: `${MEDIA_PATH}` and `${BACKUP_PATH}`
 
 ## Network
 
@@ -65,7 +66,7 @@ This service is configured to use the `proxynet` external network for Traefik in
 
 ## jlesage Image
 
-This deployment uses the jlesage HandBrake image (`ghcr.io/jlesage/handbrake:v25.07.2`) which provides:
+This deployment uses the jlesage HandBrake image (`ghcr.io/jlesage/handbrake:v26.09.1`) which provides:
 
 - Web-based interface
 - VNC access capabilities

@@ -10,13 +10,25 @@ variable "docker_base_path" {
 }
 
 variable "media_path" {
-  description = "Path on dh02 for MeTube download storage"
+  description = "Path on dh02 for MeTube downloads and HandBrake media"
   type        = string
   default     = "/mnt/media"
 }
 
+variable "backup_path" {
+  description = "Path on dh02 for HandBrake backup storage"
+  type        = string
+  default     = "/mnt/backups"
+}
+
 variable "enable_pilot" {
   description = "Create and start the isolated Arcane pilot on the local Docker host"
+  type        = bool
+  default     = false
+}
+
+variable "enable_handbrake" {
+  description = "Create and start HandBrake on dh02 after removing its Portainer stack"
   type        = bool
   default     = false
 }
@@ -52,7 +64,7 @@ variable "metube_ytdl_options" {
 }
 
 variable "pgid" {
-  description = "Group ID for Ombi and MeTube container file ownership"
+  description = "Group ID for HandBrake, Ombi, and MeTube container file ownership"
   type        = number
   default     = 1000
 }
@@ -64,7 +76,7 @@ variable "pilot_value" {
 }
 
 variable "puid" {
-  description = "User ID for Ombi and MeTube container file ownership"
+  description = "User ID for HandBrake, Ombi, and MeTube container file ownership"
   type        = number
   default     = 1000
 }
