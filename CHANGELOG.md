@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-11-26]
+
+### Added
+- Add Arcane deployment and Terraform pilot (#486).
+
 ## [2026-11-20]
 
 ### Added
