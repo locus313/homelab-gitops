@@ -60,6 +60,33 @@ resource "arcane_gitops_sync" "it_tools" {
   }
 }
 
+resource "arcane_gitops_sync" "metube" {
+  count = var.enable_metube ? 1 : 0
+
+  environment_id = "0"
+  name           = "metube"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/metube/docker-compose.yml"
+  project_name   = "metube"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    MEDIA_PATH          = var.media_path
+    OUTPUT_TEMPLATE     = var.metube_output_template
+    PGID                = tostring(var.pgid)
+    PUID                = tostring(var.puid)
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    TZ                  = "America/Los_Angeles"
+    UMASK               = "002"
+    YTDL_OPTIONS        = var.metube_ytdl_options
+  }
+}
+
 resource "arcane_gitops_sync" "ombi" {
   count = var.enable_ombi ? 1 : 0
 
