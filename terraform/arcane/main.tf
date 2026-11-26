@@ -30,6 +30,7 @@ resource "arcane_gitops_sync" "pilot" {
 
   auto_sync           = true
   sync_interval       = 60
+  sync_directory      = true
   start_project       = true
   fail_if_name_exists = true
   environment_variables = {
