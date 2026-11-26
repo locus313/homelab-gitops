@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Add Arcane deployment and Terraform pilot (#486).
 - `terraform` — Migrate IT Tools to Arcane (#492).
 - `terraform/arcane` — Prepare Ombi migration (#496).
+- `terraform/arcane` — Prepare MeTube migration (#498).
 
 ### Fixed
 - `terraform/arcane` — Skip AWS account lookup (#487).
