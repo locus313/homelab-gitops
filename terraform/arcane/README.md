@@ -22,9 +22,11 @@ requires Terraform 1.11 or later.
 5. Verify the pilot URL and its `ARCANE_PILOT_VALUE` container environment.
    Change `pilot_value`, apply again, and redeploy the pilot in Arcane before
    checking the container: provider 2.0.0 updates the project environment
-   but does not itself redeploy on an environment-only change. Finally, test a
-   Git change through Arcane's hourly sync and confirm the existing IT Tools
-   stack is unchanged.
+   but does not itself redeploy on an environment-only change. The pilot's
+   GitOps sync enables full-directory syncing to test supporting files; follow
+   the verification steps in the [pilot README](../../docker/arcane-pilot/README.md)
+   after applying the Terraform change and syncing from Git. Confirm the
+   existing IT Tools stack is unchanged.
 
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as

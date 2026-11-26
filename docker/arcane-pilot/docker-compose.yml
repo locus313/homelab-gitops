@@ -9,6 +9,13 @@ services:
       ARCANE_PILOT_VALUE: ${ARCANE_PILOT_VALUE}
       ARCANE_PILOT_SECRET_CANARY: ${ARCANE_PILOT_SECRET_CANARY:-canary-not-configured}
       TZ: ${TZ}
+    volumes:
+      - type: bind
+        source: ./supporting-files
+        target: /tmp/arcane-pilot-supporting-files
+        read_only: true
+        bind:
+          create_host_path: true
     labels:
       - homelab.arcane-pilot.git-sync-test=1
       - traefik.enable=true
