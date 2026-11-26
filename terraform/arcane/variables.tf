@@ -33,6 +33,12 @@ variable "enable_handbrake" {
   default     = false
 }
 
+variable "enable_netbootxyz" {
+  description = "Create and start NetbootXYZ on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "enable_it_tools" {
   description = "Create and start IT Tools on dh02 after removing its Portainer stack"
   type        = bool
@@ -64,7 +70,7 @@ variable "metube_ytdl_options" {
 }
 
 variable "pgid" {
-  description = "Group ID for HandBrake, Ombi, and MeTube container file ownership"
+  description = "Group ID for HandBrake, MeTube, NetbootXYZ, and Ombi container file ownership"
   type        = number
   default     = 1000
 }
@@ -76,7 +82,7 @@ variable "pilot_value" {
 }
 
 variable "puid" {
-  description = "User ID for HandBrake, Ombi, and MeTube container file ownership"
+  description = "User ID for HandBrake, MeTube, NetbootXYZ, and Ombi container file ownership"
   type        = number
   default     = 1000
 }

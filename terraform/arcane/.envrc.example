@@ -11,6 +11,9 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 # Enable only after the HandBrake Portainer stack has been removed.
 # export TF_VAR_enable_handbrake="true"
 
+# Enable only after the NetbootXYZ Portainer stack has been removed.
+# export TF_VAR_enable_netbootxyz="true"
+
 # Enable only after the IT Tools Portainer stack has been removed.
 # export TF_VAR_enable_it_tools="true"
 
