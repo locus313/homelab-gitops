@@ -110,27 +110,6 @@ module "plex" {
 }
 
 # ---------------------------------------------------------------------------
-# Ombi — media request management
-# ---------------------------------------------------------------------------
-
-module "ombi" {
-  source = "../modules/portainer-stack"
-
-  name         = "ombi"
-  compose_path = "docker/ombi/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    DOCKER_BASE_PATH    = var.docker_base_path
-    PUID                = local.puid_str
-    PGID                = local.pgid_str
-    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
-  }
-}
-
-# ---------------------------------------------------------------------------
 # Gitea — self-hosted Git service
 # ---------------------------------------------------------------------------
 

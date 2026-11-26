@@ -51,6 +51,38 @@ Rollback: revert this change, apply the Arcane workspace first to remove the
 Arcane sync and project, then apply the Portainer workspace to recreate the
 Portainer stack. IT Tools has no persistent data to migrate.
 
+## Stateful service migration: Ombi
+
+Ombi is prepared for migration on dh02, but remains disabled in Terraform until
+the Portainer stack is removed. Its Compose file has one persistent bind mount
+(`${DOCKER_BASE_PATH}/ombi/config`) and no secret environment variables.
+Before preparing this change, an encrypted Zerobyte/Restic snapshot was
+restored to an isolated directory and compared with the quiesced source. The
+pinned `lscr.io/linuxserver/ombi:4.53.10` image started with the restored copy
+mounted at `/config`, `--network none`, and no published ports. The rehearsal
+used snapshot `0c1aa87f` on 2026-11-26; production Ombi remained running after
+the test.
+
+After this change is merged, cut over in this order to avoid a container-name
+collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.ombi.portainer_stack.this`, then apply
+   that reviewed plan.
+2. Confirm Ombi has stopped and `${DOCKER_BASE_PATH}/ombi/config` remains
+   intact. In
+   `terraform/arcane/.envrc`, set `TF_VAR_enable_ombi=true`, then run
+   `direnv exec . terraform plan`. Confirm it only creates
+   `arcane_gitops_sync.ombi`; apply that reviewed plan.
+3. Verify Ombi is running on dh02, the `ombi` project is Git-managed in
+   Arcane, and `https://ombi.<your-domain>` works with its existing data.
+
+For rollback, disable `enable_ombi` and apply the Arcane workspace first so
+Arcane removes its project and container. Then restore the Portainer module
+configuration and apply the Portainer workspace. The bind-mounted data remains
+at `${DOCKER_BASE_PATH}/ombi/config`; restore it from backup only if it was
+changed or corrupted.
+
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
 write-only, so Terraform does not store it in state or saved plans. The
@@ -65,8 +97,10 @@ considering real credentials.
 
 Never put production secrets into the pilot's `environment_variables` map:
 its values may be stored in Terraform state. This IT Tools migration has no
-secrets; keep secret-bearing and stateful services out of scope until their
-secret handling, rotation, backup, and rollback paths are reviewed separately.
+secrets. Keep secret-bearing services out of scope until their secret handling
+and rotation paths are reviewed. Stateful services require a service-specific
+backup, restore, and rollback rehearsal; the Ombi rehearsal validates only its
+single configuration bind mount.
 
 This change rotates the fake canary from version 1 to version 2. After merging
 it, run these steps from this workspace:
@@ -107,7 +141,8 @@ it, run these steps from this workspace:
 ## Gates before further service migrations
 
 IT Tools has no persistent mounts or secrets, so its successful transfer does
-not validate stateful or secret-bearing migrations.
+not validate stateful or secret-bearing migrations. Ombi's isolated restore
+rehearsal validates its own configuration backup path, not other services.
 
 - **Secrets:** Keep `arcane_gitops_sync.environment_variables` non-secret;
   provider values may be stored in Terraform state. `value_wo` is write-only,
@@ -129,7 +164,7 @@ not validate stateful or secret-bearing migrations.
   corrupted.
 
 Destroying an Arcane GitOps sync removes its project, containers, and networks
-but leaves volumes and files. Disabling `enable_pilot` or `enable_it_tools`
-after creation therefore removes that project. Only apply this to the pilot
-and explicitly migrated services; follow the migration procedure above for
-Portainer ownership transfers.
+but leaves volumes and files. Disabling `enable_pilot`, `enable_it_tools`, or
+`enable_ombi` after creation therefore removes that project. Only apply this to
+the pilot and explicitly migrated services; follow each migration procedure
+above for Portainer ownership transfers.
