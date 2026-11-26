@@ -9,8 +9,8 @@ resource "arcane_global_variable" "pilot_secret_canary" {
   count = var.enable_pilot ? 1 : 0
 
   key              = "ARCANE_PILOT_SECRET_CANARY"
-  value_wo         = "not-a-secret-test-value"
-  value_wo_version = 1
+  value_wo         = "not-a-secret-rotated-test-value"
+  value_wo_version = 2
 
   is_secret              = true
   all_environments       = false

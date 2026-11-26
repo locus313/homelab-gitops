@@ -68,30 +68,65 @@ its values may be stored in Terraform state. This IT Tools migration has no
 secrets; keep secret-bearing and stateful services out of scope until their
 secret handling, rotation, backup, and rollback paths are reviewed separately.
 
-After merging the canary configuration, run these steps from this workspace:
+This change rotates the fake canary from version 1 to version 2. After merging
+it, run these steps from this workspace:
 
-1. Run `direnv exec . terraform plan` and confirm it only creates the canary
-   global variable, with no destroys. Apply that reviewed plan.
+1. Run `direnv exec . terraform plan` and confirm it only updates
+   `arcane_global_variable.pilot_secret_canary[0]`, with no destroys and no
+   canary value in the output. Apply that reviewed plan.
 2. In Arcane, open **Projects → arcane-pilot** and click **Redeploy** so the
-   pilot loads the new global variable. The Compose file uses a harmless
-   fallback until Terraform creates the variable.
+   pilot loads the rotated value.
 3. Verify the fake canary is absent from state:
 
    ```bash
-   direnv exec . terraform state show arcane_global_variable.pilot_secret_canary
+   direnv exec . terraform state show 'arcane_global_variable.pilot_secret_canary[0]'
    ```
 
-   Confirm the output contains no `value_wo` or canary value.
-4. Verify the pilot receives the
-   canary without printing its value:
+   Confirm `value_wo` is shown as write-only, `value_wo_version` is `2`, and
+   the canary value is absent.
+4. Verify the new fake value is present without printing it:
 
    ```bash
    docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' arcane-pilot \
-     | grep -Fqx 'ARCANE_PILOT_SECRET_CANARY=not-a-secret-test-value'
+     | grep -Fqx 'ARCANE_PILOT_SECRET_CANARY=not-a-secret-rotated-test-value'
    ```
 
-   Confirm Arcane displays the global variable as secret and that other
-   containers do not receive it automatically.
+   Confirm the old fake value is absent without printing container variables:
+
+   ```bash
+   if docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' arcane-pilot \
+     | grep -Fqx 'ARCANE_PILOT_SECRET_CANARY=not-a-secret-test-value'; then
+     echo "Old fake canary value is still present" >&2
+     exit 1
+   fi
+   ```
+
+   Also confirm Arcane still marks the variable as secret. Other containers
+   must not receive it automatically.
+
+## Gates before further service migrations
+
+IT Tools has no persistent mounts or secrets, so its successful transfer does
+not validate stateful or secret-bearing migrations.
+
+- **Secrets:** Keep `arcane_gitops_sync.environment_variables` non-secret;
+  provider values may be stored in Terraform state. `value_wo` is write-only,
+  but Arcane global variables are environment-scoped, not project-scoped. Keep
+  `inject_into_containers = false` and reference a secret only in the intended
+  Compose file; any project in that environment could still reference it.
+  `pre_deploy_env_wo` is only for a pre-deploy script, not the deployed
+  Compose project's environment. Do not migrate real secrets until the fake
+  rotation test above passes and this environment-wide scope is accepted.
+- **Data:** Record every bind mount and named volume. Back up application data
+  separately from Arcane's project files and verify a restore before cutover.
+  The provider's GitOps `mode = "backup"` backs up project files to Git; it
+  does not back up bind-mounted data. Never use the public repository to store
+  secret `.env` files.
+- **Cutover and rollback:** Review the Portainer and Arcane plans separately.
+  Remove the Portainer owner before creating the same-named Arcane project.
+  Roll back by removing the Arcane sync first, then restoring the Portainer
+  stack; restore application data from backup only if it was changed or
+  corrupted.
 
 Destroying an Arcane GitOps sync removes its project, containers, and networks
 but leaves volumes and files. Disabling `enable_pilot` or `enable_it_tools`
