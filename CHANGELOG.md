@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - `terraform/arcane` — Prepare Ombi migration (#496).
 - `terraform/arcane` — Prepare MeTube migration (#498).
 - `terraform/arcane` — Prepare HandBrake migration (#499).
+- `terraform/arcane` — Prepare NetbootXYZ migration (#500).
 
 ### Fixed
 - `terraform/arcane` — Skip AWS account lookup (#487).
