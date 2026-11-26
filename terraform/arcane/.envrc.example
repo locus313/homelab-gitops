@@ -10,3 +10,6 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 
 # Enable only after the IT Tools Portainer stack has been removed.
 # export TF_VAR_enable_it_tools="true"
+
+# Enable only after the Ombi Portainer stack has been removed.
+# export TF_VAR_enable_ombi="true"

@@ -59,3 +59,26 @@ resource "arcane_gitops_sync" "it_tools" {
     TZ                  = "America/Los_Angeles"
   }
 }
+
+resource "arcane_gitops_sync" "ombi" {
+  count = var.enable_ombi ? 1 : 0
+
+  environment_id = "0"
+  name           = "ombi"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/ombi/docker-compose.yml"
+  project_name   = "ombi"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    PGID                = tostring(var.pgid)
+    PUID                = tostring(var.puid)
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    TZ                  = "America/Los_Angeles"
+  }
+}
