@@ -298,31 +298,6 @@ module "stirling_pdf" {
 }
 
 # ---------------------------------------------------------------------------
-# MeTube — yt-dlp web interface
-# ---------------------------------------------------------------------------
-
-module "metube" {
-  source = "../modules/portainer-stack"
-
-  name         = "metube"
-  compose_path = "docker/metube/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    OUTPUT_TEMPLATE     = var.metube_output_template
-    PUID                = local.puid_str
-    PGID                = local.pgid_str
-    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
-    UMASK               = "002"
-    YTDL_OPTIONS        = var.metube_ytdl_options
-    MEDIA_PATH          = var.media_path
-    DOCKER_BASE_PATH    = var.docker_base_path
-  }
-}
-
-# ---------------------------------------------------------------------------
 # HandBrake — video transcoder with GPU acceleration
 # ---------------------------------------------------------------------------
 
@@ -619,11 +594,6 @@ moved {
 moved {
   from = portainer_stack.stirling_pdf
   to   = module.stirling_pdf.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.metube
-  to   = module.metube.portainer_stack.this
 }
 
 moved {

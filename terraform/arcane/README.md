@@ -83,6 +83,44 @@ configuration and apply the Portainer workspace. The bind-mounted data remains
 at `${DOCKER_BASE_PATH}/ombi/config`; restore it from backup only if it was
 changed or corrupted.
 
+## Stateful service migration: MeTube
+
+MeTube is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. Its `/state` data is stored at
+`${DOCKER_BASE_PATH}/metube`; downloads are stored separately at
+`${MEDIA_PATH}/Videos/converted` and are outside the `/docker` backup.
+
+Before preparing this change, the MeTube state directory was copied while the
+service was stopped, backed up in Zerobyte snapshot `f6c973d4` on 2026-11-26,
+restored to an isolated directory, and compared with the source. The pinned
+`ghcr.io/alexta69/metube:2026.11.14` image started with the restored state,
+`--network none`, and no published ports. The test container passed its health
+check and returned HTTP 200; production MeTube remained healthy. The download
+directory was not included in the restore rehearsal.
+
+After this change is merged, cut over in this order to avoid a container-name
+collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.metube.portainer_stack.this`, then apply
+   that reviewed plan.
+2. Confirm MeTube has stopped and `${DOCKER_BASE_PATH}/metube` remains intact.
+   Confirm `metube_ytdl_options` contains no credentials or cookies; Arcane
+   stores project environment values in Terraform state.
+   In `terraform/arcane/.envrc`, set `TF_VAR_enable_metube=true`, then run
+   `direnv exec . terraform plan`. Confirm it only creates
+   `arcane_gitops_sync.metube`; apply that reviewed plan.
+3. Verify MeTube is running on dh02, the `metube` project is Git-managed in
+   Arcane, `https://metube.<your-domain>` works with its existing state, and
+   `${MEDIA_PATH}/Videos/converted` is unchanged.
+
+For rollback, disable `enable_metube` and apply the Arcane workspace first so
+Arcane removes its project and container. Then restore the Portainer module
+configuration and apply the Portainer workspace. The state directory remains at
+`${DOCKER_BASE_PATH}/metube`; restore it from backup only if it was changed or
+corrupted. The download directory remains at
+`${MEDIA_PATH}/Videos/converted`.
+
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
 write-only, so Terraform does not store it in state or saved plans. The

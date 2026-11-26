@@ -24,6 +24,7 @@ MeTube is a web-based YouTube downloader that allows you to download videos and 
 2. Edit the `.env` file with your specific values:
    - `PUID` and `PGID`: User and group IDs for file permissions
    - `DOCKER_BASE_PATH`: Base path for Docker volumes
+   - `MEDIA_PATH`: Base path for downloaded media
    - `TRAEFIK_BASE_DOMAIN`: Your domain for Traefik routing
    - `UMASK`: File creation permissions mask
    - `OUTPUT_TEMPLATE`: Custom filename template for downloads
@@ -49,7 +50,7 @@ MeTube is a web-based YouTube downloader that allows you to download videos and 
 ## Download Storage
 
 Downloaded files are stored in:
-- Output Directory: `/mnt/h-syn-1_media/Videos/converted`
+- Output Directory: `${MEDIA_PATH}/Videos/converted`
 
 ## Supported Platforms
 
@@ -77,7 +78,7 @@ Please ensure you comply with the terms of service of the platforms you're downl
 
 ## MeTube Image
 
-This deployment uses the official MeTube image (`ghcr.io/alexta69/metube:2025.08.22`) which provides:
+This deployment uses the official MeTube image (`ghcr.io/alexta69/metube:2026.11.14`) which provides:
 
 - Regular updates with latest yt-dlp
 - Web interface for easy management
