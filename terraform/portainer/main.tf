@@ -285,24 +285,6 @@ module "zerobyte" {
 }
 
 # ---------------------------------------------------------------------------
-# IT Tools — developer utilities
-# ---------------------------------------------------------------------------
-
-module "it_tools" {
-  source = "../modules/portainer-stack"
-
-  name         = "it-tools"
-  compose_path = "docker/it-tools/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
-  }
-}
-
-# ---------------------------------------------------------------------------
 # Stirling PDF — PDF manipulation toolkit
 # ---------------------------------------------------------------------------
 

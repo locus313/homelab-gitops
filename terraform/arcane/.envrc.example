@@ -7,3 +7,6 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 
 # Enable only after the pilot Compose file has been merged to main.
 # export TF_VAR_enable_pilot="true"
+
+# Enable only after the IT Tools Portainer stack has been removed.
+# export TF_VAR_enable_it_tools="true"
