@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - `terraform` — Migrate IT Tools to Arcane (#492).
 - `terraform/arcane` — Prepare Ombi migration (#496).
 - `terraform/arcane` — Prepare MeTube migration (#498).
+- `terraform/arcane` — Prepare HandBrake migration (#499).
 
 ### Fixed
 - `terraform/arcane` — Skip AWS account lookup (#487).
