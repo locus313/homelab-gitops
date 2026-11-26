@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add Arcane deployment and Terraform pilot (#486).
 
+### Fixed
+- `terraform/arcane` — Skip AWS account lookup (#487).
+
 ## [2026-11-20]
 
 ### Added
