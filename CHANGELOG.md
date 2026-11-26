@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - Add Arcane supporting-file sync test (#491).
 - Update architecture for Arcane IT Tools migration (#494).
 - `terraform/arcane` — Verify fake secret rotation (#495).
+- `docs/architecture` — Reflect Ombi Arcane migration (#497).
 
 ## [2026-11-20]
 
