@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - `docker/arcane-pilot` — Add git sync marker (#488).
+- `docker/arcane` — Restrict created file permissions (#490).
 
 ## [2026-11-20]
 
