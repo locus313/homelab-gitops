@@ -32,6 +32,13 @@ The data and project directories are under `${DOCKER_BASE_PATH}/arcane`.
 Back up both and the encryption key. Restrict their host permissions: project
 environment files may contain plaintext secrets.
 
+Arcane's `ARCANE_FILE_PERM` is set to `0600`, so newly created files are
+readable and writable only by the Arcane process owner. This setting applies to
+all files Arcane creates, not only `.env.global`; keep `PUID` and `PGID`
+consistent with the owner of the data and project directories. Arcane preserves
+the current mode when updating `.env.global`, so set the existing
+`${DOCKER_BASE_PATH}/arcane/projects/.env.global` to `0600` once on dh02.
+
 Arcane has access to the Docker socket, equivalent to administrative access
 to the host. Restrict access to its UI and API. Do not enable its automatic
 image updates while Watchtower manages the same containers.
