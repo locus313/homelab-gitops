@@ -46,14 +46,17 @@ After merging the canary configuration, run these steps from this workspace:
 
 1. Run `direnv exec . terraform plan` and confirm it only creates the canary
    global variable, with no destroys. Apply that reviewed plan.
-2. Verify the fake canary is absent from state:
+2. In Arcane, open **Projects → arcane-pilot** and click **Redeploy** so the
+   pilot loads the new global variable. The Compose file uses a harmless
+   fallback until Terraform creates the variable.
+3. Verify the fake canary is absent from state:
 
    ```bash
    direnv exec . terraform state show arcane_global_variable.pilot_secret_canary
    ```
 
    Confirm the output contains no `value_wo` or canary value.
-3. Wait for the next hourly Git sync, then verify the pilot receives the
+4. Verify the pilot receives the
    canary without printing its value:
 
    ```bash
