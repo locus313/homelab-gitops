@@ -26,11 +26,43 @@ requires Terraform 1.11 or later.
    Git change through Arcane's hourly sync and confirm the existing IT Tools
    stack is unchanged.
 
+The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
+`arcane_global_variable.value_wo`. The provider documents `value_wo` as
+write-only, so Terraform does not store it in state or saved plans. The
+variable is scoped to Arcane's local environment (`0`) and is not automatically
+injected into every container; the pilot Compose file explicitly references it.
+This is environment-scoped, not project-scoped: any Compose project on the
+local host could reference the key. Arcane encrypts secret values in its
+database, but writes the decrypted value to `.env.global` in the projects
+directory for Compose interpolation. That host-side file is plaintext, so this
+test uses only a fake value. Review host file access and secret rotation before
+considering real credentials.
+
 Never put production secrets into the pilot's `environment_variables` map:
-it is not documented as write-only and Terraform state may contain its values.
-Arcane project environment files are also plaintext on the host. Test a
-secret strategy and automatic redeployment separately before migrating
-production stacks.
+its values may be stored in Terraform state. Do not migrate production stacks
+until the canary confirms state handling, container delivery, and rotation.
+
+After merging the canary configuration, run these steps from this workspace:
+
+1. Run `direnv exec . terraform plan` and confirm it only creates the canary
+   global variable, with no destroys. Apply that reviewed plan.
+2. Verify the fake canary is absent from state:
+
+   ```bash
+   direnv exec . terraform state show arcane_global_variable.pilot_secret_canary
+   ```
+
+   Confirm the output contains no `value_wo` or canary value.
+3. Wait for the next hourly Git sync, then verify the pilot receives the
+   canary without printing its value:
+
+   ```bash
+   docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' arcane-pilot \
+     | grep -Fqx 'ARCANE_PILOT_SECRET_CANARY=not-a-secret-test-value'
+   ```
+
+   Confirm Arcane displays the global variable as secret and that other
+   containers do not receive it automatically.
 
 The provider deletes the pilot's project, containers and networks when its
 sync resource is destroyed. Disabling the pilot after creation therefore
