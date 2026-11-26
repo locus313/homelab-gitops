@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - `docker/arcane-pilot` — Add git sync marker (#488).
 - `docker/arcane` — Restrict created file permissions (#490).
 - Add Arcane supporting-file sync test (#491).
+- Update architecture for Arcane IT Tools migration (#494).
 
 ## [2026-11-20]
 
