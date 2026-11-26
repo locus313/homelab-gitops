@@ -121,6 +121,44 @@ configuration and apply the Portainer workspace. The state directory remains at
 corrupted. The download directory remains at
 `${MEDIA_PATH}/Videos/converted`.
 
+## Stateful service migration: HandBrake
+
+HandBrake is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. Its `/config` state is stored at
+`${DOCKER_BASE_PATH}/handbrake`; media and backup data remain in the existing
+`${MEDIA_PATH}` and `${BACKUP_PATH}` mounts and are not part of this restore
+rehearsal.
+
+Before preparing this change, the service was stopped briefly with no active
+`HandBrakeCLI` process observed. Its config was copied, included in Zerobyte
+snapshot `18d15177` on 2026-11-26, and restored to an isolated directory. The
+restored tree matched the source except for process-specific `Activity.log.*`
+and `ghb.pid.*` filenames; the other 225 entries, including contents, matched.
+The pinned `ghcr.io/jlesage/handbrake:v26.09.1` image responded from the
+restored config with `--network none`, no published ports, and no media or
+backup mounts. Production HandBrake remained running after the rehearsal.
+
+After this change is merged, cut over in this order to avoid a container-name
+collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.handbrake.portainer_stack.this`, then
+   apply that reviewed plan.
+2. Confirm HandBrake has stopped and `${DOCKER_BASE_PATH}/handbrake` remains
+   intact. In `terraform/arcane/.envrc`, set
+   `TF_VAR_enable_handbrake=true`, then run
+   `direnv exec . terraform plan`. Confirm it only creates
+   `arcane_gitops_sync.handbrake`; apply that reviewed plan.
+3. Verify HandBrake is running on dh02, the `handbrake` project is Git-managed
+   in Arcane, `https://handbrake.<your-domain>` works with its existing config,
+   and the media and backup paths are unchanged.
+
+For rollback, disable `enable_handbrake` and apply the Arcane workspace first
+so Arcane removes its project and container. Then restore the Portainer module
+configuration and apply the Portainer workspace. The config remains at
+`${DOCKER_BASE_PATH}/handbrake`; restore it from backup only if it was changed
+or corrupted.
+
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
 write-only, so Terraform does not store it in state or saved plans. The
