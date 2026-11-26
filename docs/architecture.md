@@ -5,7 +5,7 @@ Diagrams are Mermaid, which renders natively on github.com. Terms are defined in
 ## Hosts and infrastructure
 
 Terraform provisions two Docker VMs. Portainer manages the existing stacks;
-Arcane manages its pilot and the migrated IT Tools stack on dh02.
+Arcane manages its pilot and the migrated IT Tools and Ombi stacks on dh02.
 
 ```mermaid
 graph TB
@@ -21,7 +21,7 @@ graph TB
     end
 
     subgraph SC["ScaleComputing HyperCore cluster"]
-        SCVM["sc_docker_vm<br/>always-on baseline<br/>Traefik, Arcane, IT Tools, Plex,<br/>Home Assistant, Gitea, Portainer, and most stacks"]:::vm
+        SCVM["sc_docker_vm<br/>always-on baseline<br/>Traefik, Arcane, IT Tools, Ombi, Plex,<br/>Home Assistant, Gitea, Portainer, and most stacks"]:::vm
     end
 
     subgraph PVE["pve01 (Proxmox VE, Intel N150)"]
@@ -41,8 +41,8 @@ graph TB
 ## GitOps deploy flow
 
 A commit to `main` reaches running containers through manager polling, with no
-manual deploy step. Arcane currently manages its pilot and IT Tools on dh02;
-Portainer manages the remaining stacks.
+manual deploy step. Arcane currently manages its pilot, IT Tools, and Ombi on
+dh02; Portainer manages the remaining stacks.
 
 ```mermaid
 graph LR
@@ -52,7 +52,7 @@ graph LR
     DEV["Commit and push"]:::step --> MAIN["GitHub main"]:::step
     MAIN --> CI["CI<br/>yamllint, terraform fmt/validate,<br/>changelog"]:::ci
     MAIN -->|polled hourly| PORT["Portainer<br/>(remaining stack Git syncs)"]:::step
-    MAIN -->|polled hourly| ARC["Arcane<br/>(pilot and IT Tools)"]:::step
+    MAIN -->|polled hourly| ARC["Arcane<br/>(pilot, IT Tools, and Ombi)"]:::step
     TFP["terraform/portainer<br/>defines remaining stacks,<br/>env, and secrets"]:::step -->|creates and configures| PORT
     TFA["terraform/arcane<br/>defines pilot and selected<br/>Git syncs and environment"]:::step -->|creates and configures| ARC
     PORT -->|pull and redeploy| COMPOSE["docker compose<br/>docker/service/docker-compose.yml"]:::step
