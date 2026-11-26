@@ -12,6 +12,7 @@ services:
     environment:
       ARCANE_APP_URL: https://arcane.${TRAEFIK_BASE_DOMAIN}
       ARCANE_ENCRYPTION_KEY: ${ARCANE_ENCRYPTION_KEY:?Set an encryption key}
+      ARCANE_FILE_PERM: "0600"
       ARCANE_PROJECTS_DIRECTORY: ${DOCKER_BASE_PATH}/arcane/projects
       ARCANE_TRUSTED_PROXIES: ${ARCANE_TRUSTED_PROXIES:?Set the Traefik proxy CIDR}
       PUID: ${PUID}
