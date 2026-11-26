@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - `terraform/arcane` — Skip AWS account lookup (#487).
+- `terraform/portainer-stack` — Align provider constraint (#493).
 
 ### Changed
 - `docker/arcane-pilot` — Add git sync marker (#488).
