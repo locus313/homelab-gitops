@@ -1,7 +1,7 @@
-# Arcane Terraform pilot
+# Arcane Terraform pilot and migrations
 
-This workspace manages only an isolated pilot on the Arcane manager's local
-Docker host (dh02). It does not configure dh01 or take over Portainer stacks.
+This workspace manages the isolated pilot and explicitly enabled service
+migrations on Arcane's local Docker host (dh02). It does not configure dh01.
 The [community provider](https://registry.terraform.io/providers/HellsCrimson/arcane/2.0.0)
 requires Terraform 1.11 or later.
 
@@ -25,8 +25,31 @@ requires Terraform 1.11 or later.
    but does not itself redeploy on an environment-only change. The pilot's
    GitOps sync enables full-directory syncing to test supporting files; follow
    the verification steps in the [pilot README](../../docker/arcane-pilot/README.md)
-   after applying the Terraform change and syncing from Git. Confirm the
-   existing IT Tools stack is unchanged.
+   after applying the Terraform change and syncing from Git. Confirm other
+   Portainer-managed stacks are unchanged.
+
+## First service migration: IT Tools
+
+IT Tools is a low-risk first migration on dh02: its Compose stack has no
+persistent mounts or secret environment values. The Portainer stack and Arcane
+project use the same container name, so migrate them in order to avoid a
+container-name collision. Expect a brief outage between the two applies.
+
+After this change is merged:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.it_tools.portainer_stack.this`, then apply
+   that reviewed plan. This removes the Portainer-managed container.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_enable_it_tools=true`. From
+   `terraform/arcane`, run `direnv exec . terraform plan`. Confirm it only
+   creates `arcane_gitops_sync.it_tools` and does not replace or change the
+   pilot; then apply.
+3. Verify `https://it-tools.<your-domain>` works, the `it-tools` container is
+   running on dh02, and the project is Git-managed in Arcane.
+
+Rollback: revert this change, apply the Arcane workspace first to remove the
+Arcane sync and project, then apply the Portainer workspace to recreate the
+Portainer stack. IT Tools has no persistent data to migrate.
 
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
@@ -41,8 +64,9 @@ test uses only a fake value. Review host file access and secret rotation before
 considering real credentials.
 
 Never put production secrets into the pilot's `environment_variables` map:
-its values may be stored in Terraform state. Do not migrate production stacks
-until the canary confirms state handling, container delivery, and rotation.
+its values may be stored in Terraform state. This IT Tools migration has no
+secrets; keep secret-bearing and stateful services out of scope until their
+secret handling, rotation, backup, and rollback paths are reviewed separately.
 
 After merging the canary configuration, run these steps from this workspace:
 
@@ -69,7 +93,8 @@ After merging the canary configuration, run these steps from this workspace:
    Confirm Arcane displays the global variable as secret and that other
    containers do not receive it automatically.
 
-The provider deletes the pilot's project, containers and networks when its
-sync resource is destroyed. Disabling the pilot after creation therefore
-removes it. Do not use this destroy behavior for existing Portainer stacks;
-their ownership transfer and rollback require a separate reviewed procedure.
+Destroying an Arcane GitOps sync removes its project, containers, and networks
+but leaves volumes and files. Disabling `enable_pilot` or `enable_it_tools`
+after creation therefore removes that project. Only apply this to the pilot
+and explicitly migrated services; follow the migration procedure above for
+Portainer ownership transfers.

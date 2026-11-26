@@ -39,3 +39,23 @@ resource "arcane_gitops_sync" "pilot" {
     TZ                  = "America/Los_Angeles"
   }
 }
+
+resource "arcane_gitops_sync" "it_tools" {
+  count = var.enable_it_tools ? 1 : 0
+
+  environment_id = "0"
+  name           = "it-tools"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/it-tools/docker-compose.yml"
+  project_name   = "it-tools"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    TZ                  = "America/Los_Angeles"
+  }
+}

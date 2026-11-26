@@ -9,6 +9,12 @@ variable "enable_pilot" {
   default     = false
 }
 
+variable "enable_it_tools" {
+  description = "Create and start IT Tools on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "pilot_value" {
   description = "Non-secret marker used to verify pilot environment propagation"
   type        = string
