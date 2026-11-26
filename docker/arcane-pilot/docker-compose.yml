@@ -9,6 +9,7 @@ services:
       ARCANE_PILOT_VALUE: ${ARCANE_PILOT_VALUE}
       TZ: ${TZ}
     labels:
+      - homelab.arcane-pilot.git-sync-test=1
       - traefik.enable=true
       - traefik.http.services.arcane-pilot.loadbalancer.server.port=80
       - traefik.http.routers.arcane-pilot.rule=Host(`arcane-pilot.${TRAEFIK_BASE_DOMAIN}`)
