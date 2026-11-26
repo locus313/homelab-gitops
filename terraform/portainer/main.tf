@@ -298,30 +298,6 @@ module "stirling_pdf" {
 }
 
 # ---------------------------------------------------------------------------
-# NetbootXYZ — network boot service
-# ---------------------------------------------------------------------------
-
-module "netbootxyz" {
-  source = "../modules/portainer-stack"
-
-  name                  = "netbootxyz"
-  compose_path          = "docker/netbootxyz/docker-compose.yml"
-  endpoint_id           = var.portainer_endpoint_id
-  repo_url              = var.repo_url
-  tz                    = var.tz
-  support_relative_path = true
-
-  env = {
-    DOCKER_BASE_PATH    = var.docker_base_path
-    NGINX_PORT          = "80"
-    PUID                = local.puid_str
-    PGID                = local.pgid_str
-    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
-    WEB_APP_PORT        = "3000"
-  }
-}
-
-# ---------------------------------------------------------------------------
 # iVentoy — ISO network boot server
 # Not currently deployed (conflicts with NetbootXYZ on port 69/udp TFTP).
 # To enable: uncomment and remove the port 69 line from docker/iventoy/docker-compose.yml,
@@ -570,11 +546,6 @@ moved {
 moved {
   from = portainer_stack.stirling_pdf
   to   = module.stirling_pdf.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.netbootxyz
-  to   = module.netbootxyz.portainer_stack.this
 }
 
 moved {

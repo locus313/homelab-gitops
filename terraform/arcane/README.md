@@ -159,6 +159,50 @@ configuration and apply the Portainer workspace. The config remains at
 `${DOCKER_BASE_PATH}/handbrake`; restore it from backup only if it was changed
 or corrupted.
 
+## Stateful service migration: NetbootXYZ
+
+NetbootXYZ is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. Its configuration and boot assets are stored at
+`${DOCKER_BASE_PATH}/netbootxyz/config` and
+`${DOCKER_BASE_PATH}/netbootxyz/assets`; together they occupy about 7.1 GB.
+The host ports for TFTP (`69/udp`) and HTTP (`8080`) remain in the existing
+Compose file.
+
+Before preparing this change, the service was stopped briefly while its config
+and assets were copied, then restarted and confirmed running. Zerobyte snapshot
+`924cf0a0` on 2026-11-26 at 2:25 PM included the copy. Only that copy was
+restored to an isolated target. Checksum-based comparison found no differences
+in either directory. The pinned
+`ghcr.io/netbootxyz/netbootxyz:0.7.6-nbxyz23` image responded from the restored
+config and assets with `--network none` and no published ports. No PXE client
+test was performed.
+
+The custom iPXE files in the repository are not injected by Compose. The
+host-managed copies under the config and assets directories remain in place
+across this migration; Arcane syncs the Compose project, not those files.
+Continue copying any menu changes to the host paths as documented in the
+[NetbootXYZ README](../../docker/netbootxyz/README.md).
+
+After this change is merged, cut over in this order to avoid a container-name
+collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.netbootxyz.portainer_stack.this`, then
+   apply that reviewed plan.
+2. Confirm NetbootXYZ has stopped and both data directories remain intact. In
+   `terraform/arcane/.envrc`, set `TF_VAR_enable_netbootxyz=true`, then run
+   `direnv exec . terraform plan`. Confirm it only creates
+   `arcane_gitops_sync.netbootxyz`; apply that reviewed plan.
+3. Verify NetbootXYZ is running on dh02, the `netbootxyz` project is
+   Git-managed in Arcane, the web interface works through Traefik and port
+   `8080`, and TFTP remains available on UDP port `69`.
+
+For rollback, disable `enable_netbootxyz` and apply the Arcane workspace first
+so Arcane removes its project and container. Then restore the Portainer module
+configuration and apply the Portainer workspace. The config and assets remain
+at their existing paths; restore them from backup only if they were changed
+or corrupted.
+
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
 write-only, so Terraform does not store it in state or saved plans. The

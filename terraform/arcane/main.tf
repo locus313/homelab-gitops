@@ -44,6 +44,31 @@ resource "arcane_gitops_sync" "handbrake" {
   }
 }
 
+resource "arcane_gitops_sync" "netbootxyz" {
+  count = var.enable_netbootxyz ? 1 : 0
+
+  environment_id = "0"
+  name           = "netbootxyz"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/netbootxyz/docker-compose.yml"
+  project_name   = "netbootxyz"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    NGINX_PORT          = "80"
+    PGID                = tostring(var.pgid)
+    PUID                = tostring(var.puid)
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    TZ                  = "America/Los_Angeles"
+    WEB_APP_PORT        = "3000"
+  }
+}
+
 resource "arcane_gitops_sync" "pilot" {
   count = var.enable_pilot ? 1 : 0
 
