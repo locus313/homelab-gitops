@@ -1,0 +1,9 @@
+# Reuse the existing Bitwarden-backed S3 credentials and common variables.
+source_env ../portainer/.envrc
+
+export TF_VAR_arcane_endpoint="https://arcane.your-domain.com/api"
+# Store the Arcane API key as the password of this Bitwarden item first.
+export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
+
+# Enable only after the pilot Compose file has been merged to main.
+# export TF_VAR_enable_pilot="true"
