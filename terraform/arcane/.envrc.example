@@ -1,9 +1,93 @@
-# Reuse the existing Bitwarden-backed S3 credentials and common variables.
-source_env ../portainer/.envrc
+# Keep existing values when migrating from ../portainer/.envrc; in particular,
+# Terraform cannot compare the old values of write-only secrets in a plan.
+if ! bw status 2>/dev/null | grep -q '"status":"unlocked"'; then
+  log_error "Bitwarden vault is locked. Run: export BW_SESSION=\$(bw unlock --raw)"
+  return 1
+fi
+
+_BW_ITEMS=$(bw list items) || { log_error "Could not read the Bitwarden vault."; return 1; }
+_bw_value() {
+  local value
+  value=$(printf '%s' "$_BW_ITEMS" | jq -er --arg name "$1" --arg field "$2" '
+    [.[] | select(.name == $name) |
+      if $field == "username" then .login.username
+      elif $field == "password" then .login.password
+      else .fields[]? | select(.name == $field) | .value end] |
+    map(select(. != null and . != "")) | first // empty
+  ') || { log_error "Missing Bitwarden value: $1 ($2)"; return 1; }
+  printf '%s' "$value"
+}
+
+AWS_ACCESS_KEY_ID=$(_bw_value "Homelab - hetzner s3 creds" username) || return 1
+AWS_SECRET_ACCESS_KEY=$(_bw_value "Homelab - hetzner s3 creds" password) || return 1
+export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
+
+# Copy the existing values and optional overrides from your private configuration.
+export TF_VAR_traefik_base_domain="your-domain.com"
+export TF_VAR_nas_ip="x.x.x.x"
+export TF_VAR_hermes_trusted_proxy="traefik-container-ip"
+export TF_VAR_hermes_discord_allowed_users="your-discord-user-id"
+# export TF_VAR_docker_base_path="/docker"
+# export TF_VAR_media_path="/mnt/media"
+# export TF_VAR_backup_path="/mnt/backups"
+# export TF_VAR_puid="1000"
+# export TF_VAR_pgid="1000"
+# export TF_VAR_cloudns_propagation_timeout="600"
+
+TF_VAR_cloudns_sub_auth_id=$(_bw_value "Homelab - CloudNS" username) || return 1
+TF_VAR_cloudns_auth_password=$(_bw_value "Homelab - CloudNS" password) || return 1
+TF_VAR_gitea_db_password=$(_bw_value "Homelab - Gitea DB" password) || return 1
+TF_VAR_better_auth_secret=$(_bw_value "Homelab - Gitea Mirror" password) || return 1
+TF_VAR_homarr_secret_encryption_key=$(_bw_value "Homelab - Homarr" password) || return 1
+TF_VAR_hermes_dashboard_username=$(_bw_value "Homelab - Hermes Dashboard" username) || return 1
+TF_VAR_hermes_dashboard_password=$(_bw_value "Homelab - Hermes Dashboard" password) || return 1
+TF_VAR_hermes_discord_bot_token=$(_bw_value "Homelab - Hermes Discord Bot" password) || return 1
+TF_VAR_zerobyte_app_secret=$(_bw_value "Homelab - Zerobyte" password) || return 1
+TF_VAR_stirling_security_initiallogin_password=$(_bw_value "Homelab - Stirling PDF" password) || return 1
+TF_VAR_rackula_api_write_token=$(_bw_value "Homelab - Rackula" api_write_token) || return 1
+TF_VAR_rackula_local_password=$(_bw_value "Homelab - Rackula" password) || return 1
+TF_VAR_code_server_password=$(_bw_value "Homelab - Code-Server" password) || return 1
+TF_VAR_code_server_sudo_password=$(_bw_value "Homelab - Code-Server" sudo_password) || return 1
+TF_VAR_code_server_ts_authkey=$(_bw_value "Homelab - Code-Server" ts_authkey) || return 1
+TF_VAR_netdata_claim_token=$(_bw_value "Homelab - Netdata" password) || return 1
+TF_VAR_azerothcore_db_root_password=$(_bw_value "Homelab - AzerothCore DB" password) || return 1
+TF_VAR_azerothcore_discord_token=$(_bw_value "Homelab - AzerothCore Discord Bot" password) || return 1
+TF_VAR_azerothcore_discord_relay_db_password=$(_bw_value "Homelab - AzerothCore Relay DB" password) || return 1
+
+# Replace these placeholders with the existing Mail Archiver Bitwarden item names.
+TF_VAR_mail_archiver_admin_password=$(_bw_value "your-mail-archiver-admin-item" password) || return 1
+TF_VAR_mail_archiver_db_password=$(_bw_value "your-mail-archiver-database-item" password) || return 1
+
+export TF_VAR_cloudns_sub_auth_id TF_VAR_cloudns_auth_password
+export TF_VAR_gitea_db_password TF_VAR_better_auth_secret TF_VAR_homarr_secret_encryption_key
+export TF_VAR_hermes_dashboard_username TF_VAR_hermes_dashboard_password TF_VAR_hermes_discord_bot_token
+export TF_VAR_zerobyte_app_secret TF_VAR_stirling_security_initiallogin_password
+export TF_VAR_rackula_api_write_token TF_VAR_rackula_local_password
+export TF_VAR_code_server_password TF_VAR_code_server_sudo_password TF_VAR_code_server_ts_authkey
+export TF_VAR_netdata_claim_token TF_VAR_azerothcore_db_root_password TF_VAR_azerothcore_discord_token
+export TF_VAR_azerothcore_discord_relay_db_password TF_VAR_mail_archiver_admin_password TF_VAR_mail_archiver_db_password
+
+# Preserve these if they are set in the current environment.
+# TF_VAR_beszel_public_key=$(_bw_value "Homelab - Beszel" password) || return 1
+# export TF_VAR_beszel_public_key
+# TF_VAR_netdata_claim_rooms=$(_bw_value "Homelab - Netdata" rooms) || return 1
+# export TF_VAR_netdata_claim_rooms
+# TF_VAR_plex_claim=$(_bw_value "Homelab - Plex" password) || return 1
+# export TF_VAR_plex_claim
+# TF_VAR_rackula_auth_session_secret=$(_bw_value "Homelab - Rackula" auth_session_secret) || return 1
+# export TF_VAR_rackula_auth_session_secret
+
+unset -f _bw_value
+unset _BW_ITEMS
 
 export TF_VAR_arcane_endpoint="https://arcane.your-domain.com/api"
 # Store the Arcane API key as the password of this Bitwarden item first.
-export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
+ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')" || return 1
+if [ -z "$ARCANE_API_KEY" ]; then
+  log_error "The Arcane API key is empty."
+  return 1
+fi
+export ARCANE_API_KEY
 
 # Enable only after the pilot Compose file has been merged to main.
 # export TF_VAR_enable_pilot="true"
@@ -15,7 +99,6 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 # export TF_VAR_enable_netbootxyz="true"
 
 # Enable only after the Beszel Portainer stack has been removed.
-# The existing TF_VAR_beszel_public_key is sourced from ../portainer/.envrc.
 # export TF_VAR_enable_beszel="true"
 
 # Enable only after the IT Tools Portainer stack has been removed.
@@ -31,7 +114,6 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 # export TF_VAR_enable_home_assistant="true"
 
 # Enable only after the dh02 Netdata Portainer stack has been removed.
-# The existing TF_VAR_netdata_claim_token is sourced from ../portainer/.envrc.
 # export TF_VAR_enable_netdata="true"
 
 # Enable only after the approved dh01 Netdata Portainer handoff.
@@ -44,43 +126,33 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 # export TF_VAR_watchtower_cleanup="true"
 
 # Enable only after the dh02 Stirling PDF Portainer stack has been removed.
-# The existing TF_VAR_stirling_security_initiallogin_password is sourced from ../portainer/.envrc.
 # export TF_VAR_enable_stirling_pdf="true"
 
 # Enable only after the dh02 Gitea Mirror Portainer stack has been removed.
-# The existing TF_VAR_better_auth_secret is sourced from ../portainer/.envrc.
 # export TF_VAR_enable_gitea_mirror="true"
 
 # Enable only after the dh02 Gitea Portainer stack has been removed.
-# The Gitea database settings and password are sourced from ../portainer/.envrc.
 # export TF_VAR_enable_gitea="true"
 
 # Enable only after the dh02 Homarr Portainer stack has been removed.
-# The existing TF_VAR_homarr_secret_encryption_key is sourced from ../portainer/.envrc.
 # export TF_VAR_enable_homarr="true"
 
 # Enable only after the dh02 Rackula Portainer stack has been removed.
-# Rackula secret variables are sourced from ../portainer/.envrc.
 # export TF_VAR_enable_rackula="true"
 
 # Enable only after the dh02 Hermes Agent Portainer stack has been removed.
-# Hermes settings and secrets are sourced from ../portainer/.envrc.
 # export TF_VAR_enable_hermes_agent="true"
 
 # Enable only after the dh02 Mail Archiver Portainer stack has been removed.
-# Mail Archiver settings and secrets are sourced from ../portainer/.envrc.
 # export TF_VAR_enable_mail_archiver="true"
 
 # Enable only after the dh02 Plex Portainer stack has been removed.
-# The existing TF_VAR_plex_claim is sourced from ../portainer/.envrc.
 # export TF_VAR_enable_plex="true"
 
 # Enable only after the dh02 Code Server Portainer stack has been removed.
-# Code Server passwords and the Tailscale auth key are sourced from ../portainer/.envrc.
 # export TF_VAR_enable_code_server="true"
 
 # Enable only after the dh02 AzerothCore Portainer stack has been removed.
-# AzerothCore secrets are sourced from ../portainer/.envrc.
 # export TF_VAR_enable_azerothcore="true"
 
 # Enable only after the dh02 Zerobyte Portainer stack has been removed.
@@ -88,5 +160,4 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 # export TF_VAR_enable_zerobyte="true"
 
 # Enable only after the dh02 Traefik Portainer stack has been removed.
-# Traefik CloudNS credentials are sourced from ../portainer/.envrc.
 # export TF_VAR_enable_traefik="true"

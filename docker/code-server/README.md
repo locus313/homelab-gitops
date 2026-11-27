@@ -91,7 +91,7 @@ next container restart.
 After the Code Server Portainer stack has been removed, enable
 `TF_VAR_enable_code_server` in `terraform/arcane/.envrc` and apply that
 workspace. Terraform supplies the environment settings and secrets; the
-passwords and Tailscale auth key are sourced from `terraform/portainer/.envrc`.
+passwords and Tailscale auth key are supplied through the Arcane Terraform environment.
 
 ### Manual Deployment
 ```bash
