@@ -378,6 +378,58 @@ so Arcane removes its project and container. Then restore the Watchtower
 Portainer module and apply the Portainer workspace. No Watchtower application
 data needs restoring.
 
+## Stateful and secret-bearing migration: Stirling PDF
+
+Stirling PDF is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. Its persistent data is in
+`${DOCKER_BASE_PATH}/stirling-pdf/{data,config,logs}`; `config` contains an H2
+database and an encryption key. The service was briefly stopped for a
+consistent copy, then restarted and verified healthy.
+
+Zerobyte Docker job `0zsNnr7d` created snapshot `93b0e75e` on 2026-11-26.
+Only `stirling-pdf-restore-test-source-20261126` was restored to the isolated
+`/docker/stirling-pdf-restore-test-target-20261126` directory. The agent log
+reported 33 files restored and 0 skipped; a content comparison matched the
+source. Although the UI later displayed a restore-failed dialog, the agent log
+confirmed success. The pinned `ghcr.io/stirling-tools/stirling-pdf:3.4.0`
+image started against the restored mounts with `--network none` and a test-only
+bootstrap password. It logged that it was using the default H2 database,
+completed startup, and returned HTTP 200 from `/login` and `/`, with no SQL
+errors. The test container and temporary directories were removed. Production
+Stirling PDF remained healthy and returned HTTP 200; no Terraform plan or apply
+was run, and dh01 was untouched.
+
+`SECURITY_INITIALLOGIN_PASSWORD` comes from the existing
+`terraform/portainer/.envrc` Bitwarden-backed value and is managed with
+`arcane_global_variable.value_wo`, scoped to Arcane environment `0`, with
+`inject_into_containers = false`. It is not stored in Terraform state, but this
+is **environment-scoped, not project-scoped**: another Compose project in
+environment `0` could reference the key. Arcane writes the decrypted value to
+`.env.global` in its projects directory on dh02 as plaintext. Only the Stirling
+PDF Compose file should reference it. This risk is accepted for this migration;
+do not place the password in `arcane_gitops_sync.environment_variables`. If the
+password changes later, increment `value_wo_version`.
+
+After this change is merged to `main`, cut over in this order to avoid a
+container-name collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.stirling_pdf.portainer_stack.this`, then
+   apply that reviewed plan.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_enable_stirling_pdf=true`. Run
+   `direnv exec . terraform plan` and confirm it only creates
+   `arcane_global_variable.stirling_security_initiallogin_password[0]` and
+   `arcane_gitops_sync.stirling_pdf[0]`, then apply that reviewed plan.
+3. Verify Stirling PDF is running on dh02 as a Git-managed Arcane project,
+   its URL works with the existing account, and its three bind mounts still
+   use `${DOCKER_BASE_PATH}/stirling-pdf/{data,config,logs}`.
+
+For rollback, disable `enable_stirling_pdf` and apply the Arcane workspace
+first so Arcane removes its project and global variable. Then restore the
+Stirling PDF Portainer module and apply the Portainer workspace. Data remains
+at `${DOCKER_BASE_PATH}/stirling-pdf/{data,config,logs}`; restore it from
+backup only if it was changed or corrupted.
+
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
 write-only, so Terraform does not store it in state or saved plans. The
@@ -392,10 +444,11 @@ considering real credentials.
 
 Never put production secrets into the pilot's `environment_variables` map:
 its values may be stored in Terraform state. This IT Tools migration has no
-secrets. Keep secret-bearing services out of scope until their secret handling
-and rotation paths are reviewed. Stateful services require a service-specific
-backup, restore, and rollback rehearsal; the Ombi rehearsal validates only its
-single configuration bind mount.
+secrets. Stirling PDF uses the environment-scoped global-secret pattern
+documented above; keep other secret-bearing services out of scope until their
+secret handling and rotation paths are reviewed. Stateful services require a
+service-specific backup, restore, and rollback rehearsal; the Ombi and Stirling
+PDF rehearsals validate only their own bind mounts.
 
 This change rotates the fake canary from version 1 to version 2. After merging
 it, run these steps from this workspace:

@@ -103,7 +103,7 @@ This service is configured to use the `proxynet` external network for Traefik in
 
 ## Stirling Tools Image
 
-This deployment uses the official Stirling Tools image (`ghcr.io/stirling-tools/stirling-pdf:1.2.0`) which provides:
+This deployment uses the official Stirling Tools image (`ghcr.io/stirling-tools/stirling-pdf:3.4.0`) which provides:
 
 - Comprehensive PDF manipulation tools
 - Privacy-focused local processing

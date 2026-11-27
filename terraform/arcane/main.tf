@@ -31,6 +31,19 @@ resource "arcane_global_variable" "netdata_claim_token" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "stirling_security_initiallogin_password" {
+  count = var.enable_stirling_pdf ? 1 : 0
+
+  key              = "SECURITY_INITIALLOGIN_PASSWORD"
+  value_wo         = var.stirling_security_initiallogin_password
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "handbrake" {
   count = var.enable_handbrake ? 1 : 0
 
@@ -258,5 +271,38 @@ resource "arcane_gitops_sync" "watchtower" {
   environment_variables = {
     TZ                 = "America/Los_Angeles"
     WATCHTOWER_CLEANUP = var.watchtower_cleanup
+  }
+}
+
+resource "arcane_gitops_sync" "stirling_pdf" {
+  depends_on = [arcane_global_variable.stirling_security_initiallogin_password]
+  count      = var.enable_stirling_pdf ? 1 : 0
+
+  environment_id = "0"
+  name           = "stirling-pdf"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/stirling-pdf/docker-compose.yml"
+  project_name   = "stirling-pdf"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DOCKER_BASE_PATH                   = var.docker_base_path
+    DOCKER_ENABLE_SECURITY             = "true"
+    INSTALL_BOOK_AND_ADVANCED_HTML_OPS = "false"
+    METRICS_ENABLED                    = "true"
+    PGID                               = tostring(var.pgid)
+    PUID                               = tostring(var.puid)
+    SECURITY_CSRFDISABLED              = var.stirling_csrf_disabled
+    SECURITY_ENABLELOGIN               = "true"
+    SECURITY_INITIALLOGIN_USERNAME     = var.stirling_security_initiallogin_username
+    SYSTEM_DEFAULTLOCALE               = "en-US"
+    SYSTEM_GOOGLEVISIBILITY            = "false"
+    SYSTEM_MAXFILESIZE                 = "2000"
+    TRAEFIK_BASE_DOMAIN                = var.traefik_base_domain
+    TZ                                 = "America/Los_Angeles"
   }
 }

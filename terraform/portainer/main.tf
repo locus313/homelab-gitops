@@ -223,40 +223,6 @@ module "zerobyte" {
 }
 
 # ---------------------------------------------------------------------------
-# Stirling PDF — PDF manipulation toolkit
-# ---------------------------------------------------------------------------
-
-module "stirling_pdf" {
-  source = "../modules/portainer-stack"
-
-  name         = "stirling-pdf"
-  compose_path = "docker/stirling-pdf/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    DOCKER_BASE_PATH                   = var.docker_base_path
-    DOCKER_ENABLE_SECURITY             = "true"
-    SECURITY_ENABLELOGIN               = "true"
-    SECURITY_INITIALLOGIN_USERNAME     = var.stirling_security_initiallogin_username
-    SECURITY_CSRFDISABLED              = var.stirling_csrf_disabled
-    INSTALL_BOOK_AND_ADVANCED_HTML_OPS = "false"
-    METRICS_ENABLED                    = "true"
-    PUID                               = local.puid_str
-    PGID                               = local.pgid_str
-    SYSTEM_DEFAULTLOCALE               = "en-US"
-    SYSTEM_MAXFILESIZE                 = "2000"
-    SYSTEM_GOOGLEVISIBILITY            = "false"
-    TRAEFIK_BASE_DOMAIN                = var.traefik_base_domain
-  }
-
-  secret_env = {
-    SECURITY_INITIALLOGIN_PASSWORD = var.stirling_security_initiallogin_password
-  }
-}
-
-# ---------------------------------------------------------------------------
 # iVentoy — ISO network boot server
 # Not currently deployed (conflicts with NetbootXYZ on port 69/udp TFTP).
 # To enable: uncomment and remove the port 69 line from docker/iventoy/docker-compose.yml,
@@ -452,11 +418,6 @@ moved {
 moved {
   from = portainer_stack.it_tools
   to   = module.it_tools.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.stirling_pdf
-  to   = module.stirling_pdf.portainer_stack.this
 }
 
 moved {
