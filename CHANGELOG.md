@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - `terraform/arcane` — Migrate Watchtower to Arcane (#504).
 - `terraform/arcane` — Prepare Stirling PDF migration (#505).
 - `terraform/arcane` — Migrate Gitea Mirror to Arcane (#506).
+- `terraform/arcane` — Prepare Homarr migration to Arcane (#507).
 
 ## [2026-11-26]
 
