@@ -81,10 +81,34 @@ variable "enable_watchtower" {
   default     = false
 }
 
+variable "enable_stirling_pdf" {
+  description = "Create and start Stirling PDF on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "watchtower_cleanup" {
   description = "Remove old images after Watchtower container updates"
   type        = string
   default     = "true"
+}
+
+variable "stirling_security_initiallogin_username" {
+  description = "Initial admin username for Stirling PDF"
+  type        = string
+  default     = "admin"
+}
+
+variable "stirling_security_initiallogin_password" {
+  description = "Initial admin password for Stirling PDF"
+  type        = string
+  sensitive   = true
+}
+
+variable "stirling_csrf_disabled" {
+  description = "Disable CSRF protection in Stirling PDF"
+  type        = string
+  default     = "false"
 }
 
 variable "beszel_public_key" {
