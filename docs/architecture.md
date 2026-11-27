@@ -4,8 +4,9 @@ Diagrams are Mermaid, which renders natively on github.com. Terms are defined in
 
 ## Hosts and infrastructure
 
-Terraform provisions two Docker VMs. Portainer manages the existing stacks;
-Arcane manages its pilot and the migrated IT Tools and Ombi stacks on dh02.
+Terraform provisions two Docker VMs. Arcane manages the migrated application
+projects on dh02 and Netdata on dh01 through its remote agent. The Portainer
+manager and dh01 Portainer agent are stopped and retained for rollback.
 
 ```mermaid
 graph TB
@@ -16,33 +17,34 @@ graph TB
 
     subgraph IAC["Terraform workspaces"]
         TFH["terraform/homelab<br/>VM provisioning"]:::tf
-        TFP["terraform/portainer<br/>remaining stack deployment"]:::tf
-        TFA["terraform/arcane<br/>pilot and selected migrations"]:::tf
+        TFP["terraform/portainer<br/>retained state and shared environment"]:::tf
+        TFA["terraform/arcane<br/>Git syncs and environment"]:::tf
     end
 
     subgraph SC["ScaleComputing HyperCore cluster"]
-        SCVM["sc_docker_vm<br/>always-on baseline<br/>Traefik, Arcane, IT Tools, Ombi, Plex,<br/>Home Assistant, Gitea, Portainer, and most stacks"]:::vm
+        SCVM["sc_docker_vm<br/>always-on baseline<br/>Traefik, Arcane, Plex,<br/>Home Assistant, Gitea, and most services"]:::vm
     end
 
     subgraph PVE["pve01 (Proxmox VE, Intel N150)"]
-        DHVM["dh01_docker_vm<br/>Netdata"]:::vm
+        DHVM["dh01_docker_vm<br/>Arcane agent and Netdata"]:::vm
     end
 
     NAS[("NAS<br/>NFS: media, shared, backups")]:::ext
 
     TFH -->|hypercore provider| SCVM
     TFH -->|proxmox provider| DHVM
-    TFP -->|Portainer API| SCVM
-    TFP -->|Portainer API| DHVM
+    TFP -.->|shared environment| TFA
     TFA -->|Arcane API| SCVM
+    DHVM -->|agent connection| SCVM
     SCVM ---|NFS| NAS
 ```
 
 ## GitOps deploy flow
 
 A commit to `main` reaches running containers through manager polling, with no
-manual deploy step. Arcane currently manages its pilot, IT Tools, and Ombi on
-dh02; Portainer manages the remaining stacks.
+manual deploy step. Arcane polls Git and deploys projects locally on dh02 or
+through its dh01 agent. The manager and agent are bootstrapped independently
+of these Git syncs.
 
 ```mermaid
 graph LR
@@ -51,13 +53,11 @@ graph LR
 
     DEV["Commit and push"]:::step --> MAIN["GitHub main"]:::step
     MAIN --> CI["CI<br/>yamllint, terraform fmt/validate,<br/>changelog"]:::ci
-    MAIN -->|polled hourly| PORT["Portainer<br/>(remaining stack Git syncs)"]:::step
-    MAIN -->|polled hourly| ARC["Arcane<br/>(pilot, IT Tools, and Ombi)"]:::step
-    TFP["terraform/portainer<br/>defines remaining stacks,<br/>env, and secrets"]:::step -->|creates and configures| PORT
-    TFA["terraform/arcane<br/>defines pilot and selected<br/>Git syncs and environment"]:::step -->|creates and configures| ARC
-    PORT -->|pull and redeploy| COMPOSE["docker compose<br/>docker/service/docker-compose.yml"]:::step
-    ARC -->|pull and redeploy| COMPOSE
-    COMPOSE --> RUN["Running container<br/>on proxynet"]:::step
+    MAIN -->|polled| ARC["Arcane manager"]:::step
+    TFA["terraform/arcane<br/>Git syncs, env, and secrets"]:::step -->|configures| ARC
+    ARC -->|local deploy| D2["Compose projects on dh02"]:::step
+    ARC -->|remote deploy| AGENT["Arcane agent on dh01"]:::step
+    AGENT --> D1["Netdata project on dh01"]:::step
 ```
 
 ## Request path and TLS

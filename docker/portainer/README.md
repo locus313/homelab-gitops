@@ -2,6 +2,27 @@
 
 Portainer is a lightweight container management UI that provides a web interface for managing Docker environments. This stack supports both Community Edition (CE) and Business Edition (EE/BE).
 
+## Retirement status
+
+The manager and dh01 Portainer agent are stopped with restart disabled after
+the Arcane migration. Their containers, Portainer data, and Terraform state
+are retained for rollback. The Portainer Traefik route remains in place for
+now. Arcane still sources shared variables from `terraform/portainer/.envrc`;
+do not remove that file as part of retirement.
+
+To restore the retained containers for an approved rollback, run the following
+on their respective hosts:
+
+```bash
+# Manager
+docker update --restart=unless-stopped portainer && docker start portainer
+# dh01 agent
+docker update --restart=always portainer_agent && docker start portainer_agent
+```
+
+Review Terraform plans before applying, and do not run Portainer and Arcane
+projects for the same service concurrently.
+
 ## Features
 
 - Web-based Docker container management

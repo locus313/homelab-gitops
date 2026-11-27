@@ -25,9 +25,9 @@ variable "dh01_endpoint_id" {
 }
 
 variable "keep_netdata_dh01" {
-  description = "Keep the dh01 Netdata stack in Portainer until its approved Arcane handoff"
+  description = "Enable the legacy dh01 Netdata Portainer stack for an approved rollback"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "skip_ssl_verify" {

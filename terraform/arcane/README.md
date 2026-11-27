@@ -350,8 +350,12 @@ if it was changed or corrupted.
 
 ## Stateful service migration: Netdata on dh01
 
-The dh01 Portainer stack remains enabled by default. Arcane's dh01 sync is
-disabled by default and uses the manually enrolled [agent](../../docker/arcane-agent/README.md).
+The dh01 migration is complete in this deployment. The legacy Portainer stack
+is now disabled by default; Arcane's dh01 sync is disabled by default and uses
+the manually enrolled [agent](../../docker/arcane-agent/README.md).
+If a Portainer stack still exists in another state, changing this default can
+plan its destruction: review the plan and do not apply an unapproved removal.
+The original cutover instructions below are retained for reference.
 The agent was tested with an isolated Git sync, project environment values,
 supporting files, and a secret-marked canary; the test project and sync were
 removed afterward. Netdata uses the same Compose file and persistent
@@ -370,11 +374,6 @@ The existing Zerobyte jobs observed during preparation back up dh02; they do
 not establish that dh01 is protected. Do not proceed until dh01's backup and
 restore have been verified.
 
-After merging this change, review both workspace plans with the defaults.
-The Portainer plan should show only the state-address move to
-`module.netdata_dh01[0].portainer_stack.this`, not a replacement or deletion;
-the Arcane plan should have no dh01 changes. Apply only reviewed plans.
-
 After the backup and downtime gates are satisfied:
 
 1. In `terraform/portainer/.envrc`, set `TF_VAR_keep_netdata_dh01=false`.
@@ -391,9 +390,10 @@ After the backup and downtime gates are satisfied:
    mounts are intact, the project is Git-managed in Arcane, and the node is
    connected to Netdata Cloud. Confirm dh02 Netdata remains healthy.
 
-For rollback, set `TF_VAR_enable_netdata_dh01=false` and apply the reviewed
-Arcane plan first, removing the dh01 project and its global-variable scope
-while preserving dh02. Confirm the dh01 container is gone. Then set
+For rollback, restart the retained Portainer manager and dh01 Portainer agent.
+Set `TF_VAR_enable_netdata_dh01=false` and apply the reviewed Arcane plan
+first, removing the dh01 project and its global-variable scope while
+preserving dh02. Confirm the dh01 container is gone. Then set
 `TF_VAR_keep_netdata_dh01=true` and apply the reviewed Portainer plan to
 recreate its stack. Preserve the bind directories; restore from the verified
 backup only if needed.
