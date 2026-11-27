@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - `terraform/arcane` — Prepare Stirling PDF migration (#505).
 - `terraform/arcane` — Migrate Gitea Mirror to Arcane (#506).
 - `terraform/arcane` — Prepare Homarr migration to Arcane (#507).
+- `terraform/arcane` — Prepare Rackula migration to Arcane (#508).
 
 ## [2026-11-26]
 
