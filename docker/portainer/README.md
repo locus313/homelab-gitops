@@ -6,8 +6,8 @@ Portainer is a lightweight container management UI that provides a web interface
 
 The manager and dh01 Portainer agent are stopped with restart disabled after
 the Arcane migration. Their containers, Portainer data, and Terraform state
-are retained for rollback. The Portainer Traefik route remains in place for
-now. Arcane still sources shared variables from `terraform/portainer/.envrc`;
+are retained for rollback. The Portainer Traefik route has been removed.
+Arcane still sources shared variables from `terraform/portainer/.envrc`;
 do not remove that file as part of retirement.
 
 To restore the retained containers for an approved rollback, run the following
@@ -21,7 +21,10 @@ docker update --restart=always portainer_agent && docker start portainer_agent
 ```
 
 Review Terraform plans before applying, and do not run Portainer and Arcane
-projects for the same service concurrently.
+projects for the same service concurrently. To use the retained Portainer
+Terraform workspace, override its endpoint to the manager's direct HTTPS port
+`9443` and set `TF_VAR_skip_ssl_verify=true` for its self-signed certificate.
+Limit this bypass to the trusted direct connection.
 
 ## Features
 
@@ -48,7 +51,6 @@ projects for the same service concurrently.
 
 2. Edit `.env` with your values:
    - `DOCKER_BASE_PATH`: Base path for Docker volumes (e.g. `/docker`)
-   - `TRAEFIK_BASE_DOMAIN`: Your domain for Traefik routing
    - `TZ`: Timezone (default: `America/Los_Angeles`)
    - `PORTAINER_LICENSE_KEY`: Business Edition license key *(EE only)*
 
@@ -68,12 +70,8 @@ docker compose -f docker-compose.yml -f docker-compose.ee.yml up -d
 
 ## Access
 
-- Web interface: `https://portainer.${TRAEFIK_BASE_DOMAIN}`
-- Direct fallback (initial setup): `https://<host-ip>:9443`
-
-## Traefik Routing
-
-Portainer uses HTTPS internally on port 9443 (self-signed certificate). Traefik routing is configured via dynamic config in `docker/traefik/config/dynamic/` rather than container labels, since the HTTPS backend requires a custom `serversTransport` configuration. See the existing `dh01.yaml` for the routing pattern.
+- After restarting the manager for rollback: `https://<host-ip>:9443`
+- Portainer uses a self-signed certificate on this direct connection.
 
 ## Volumes
 
