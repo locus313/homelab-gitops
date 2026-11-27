@@ -19,6 +19,9 @@ All notable changes to this project will be documented in this file.
 - `terraform/arcane` — Migrate Plex from Portainer (#512).
 - `terraform/arcane` — Migrate Code Server from Portainer (#513).
 
+### Dependencies
+- Bump bpg/proxmox (#514).
+
 ## [2026-11-26]
 
 ### Added
