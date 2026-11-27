@@ -348,6 +348,36 @@ Portainer module and apply the Portainer workspace. The data remains at
 `${DOCKER_BASE_PATH}/netdata/{config,lib,cache}`; restore it from backup only
 if it was changed or corrupted.
 
+## Stateless service migration: Watchtower
+
+Watchtower is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. It has no persistent data mounts, so no data
+restore rehearsal is needed. Its only mount is the Docker socket, which grants
+container-management access to the host. This is existing access and will be
+preserved without expansion. Watchtower uses `proxynet` but has no Traefik
+router.
+
+Removing the Portainer stack briefly pauses automatic image updates but does
+not stop the other service containers. The `WATCHTOWER_CLEANUP` setting
+defaults to `"true"` in Terraform, matching the existing Portainer workspace.
+
+After this change is merged, cut over in this order to avoid a container-name
+collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.watchtower.portainer_stack.this`, then
+   apply that reviewed plan.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_enable_watchtower=true`. Run
+   `direnv exec . terraform plan` and confirm it only creates
+   `arcane_gitops_sync.watchtower[0]`, then apply that reviewed plan.
+3. Verify Watchtower is running on dh02 as an Arcane GitOps project, with
+   `WATCHTOWER_CLEANUP` set as expected and the existing Docker socket mount.
+
+For rollback, disable `enable_watchtower` and apply the Arcane workspace first
+so Arcane removes its project and container. Then restore the Watchtower
+Portainer module and apply the Portainer workspace. No Watchtower application
+data needs restoring.
+
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
 write-only, so Terraform does not store it in state or saved plans. The
