@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - `terraform/arcane` — Migrate Mail Archiver from Portainer (#511).
 - `terraform/arcane` — Migrate Plex from Portainer (#512).
 - `terraform/arcane` — Migrate Code Server from Portainer (#513).
+- `terraform/arcane` — Migrate AzerothCore stack to Arcane (#516).
 
 ### Dependencies
 - Bump bpg/proxmox (#514).
