@@ -73,6 +73,15 @@ This setup includes Docker socket access for container monitoring and management
 - AppData: `${DOCKER_BASE_PATH}/homarr/appdata` - Contains Homarr configuration and data
 - Docker Socket: `/var/run/docker.sock` - Docker integration (optional)
 
+## Migration Rehearsal
+
+On 2026-11-26, the dh02 appdata was restored from Zerobyte snapshot `22120e09`
+to an isolated directory and matched its source. The pinned v2.13.1 image passed
+its container healthcheck and returned the expected HTTP 307 root redirect with
+networking and Docker socket access disabled. A test-only encryption key was
+used, so the rehearsal did not verify decryption of existing integration
+credentials; preserve the existing `SECRET_ENCRYPTION_KEY`.
+
 ## Network
 
 This service is configured to use the `proxynet` external network for Traefik integration.
@@ -86,7 +95,7 @@ Make sure to:
 
 ## Homarr Labs Image
 
-This deployment uses the official Homarr Labs image (`ghcr.io/homarr-labs/homarr:v2.3.0`) which provides:
+This deployment uses the official Homarr Labs image (`ghcr.io/homarr-labs/homarr:v2.13.1`) which provides:
 
 - Regular feature updates
 - Community support

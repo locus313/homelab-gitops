@@ -116,31 +116,6 @@ module "gitea" {
 }
 
 # ---------------------------------------------------------------------------
-# Homarr — homelab dashboard
-# ---------------------------------------------------------------------------
-
-module "homarr" {
-  source = "../modules/portainer-stack"
-
-  name         = "homarr"
-  compose_path = "docker/homarr/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    DOCKER_BASE_PATH    = var.docker_base_path
-    PUID                = local.puid_str
-    PGID                = local.pgid_str
-    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
-  }
-
-  secret_env = {
-    SECRET_ENCRYPTION_KEY = var.homarr_secret_encryption_key
-  }
-}
-
-# ---------------------------------------------------------------------------
 # Hermes Agent — AI agent with dashboard and Discord gateway
 # ---------------------------------------------------------------------------
 
@@ -373,11 +348,6 @@ moved {
 moved {
   from = portainer_stack.gitea
   to   = module.gitea.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.homarr
-  to   = module.homarr.portainer_stack.this
 }
 
 moved {

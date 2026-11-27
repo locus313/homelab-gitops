@@ -57,6 +57,19 @@ resource "arcane_global_variable" "gitea_mirror_better_auth_secret" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "homarr_secret_encryption_key" {
+  count = var.enable_homarr ? 1 : 0
+
+  key              = "SECRET_ENCRYPTION_KEY"
+  value_wo         = var.homarr_secret_encryption_key
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "handbrake" {
   count = var.enable_handbrake ? 1 : 0
 
@@ -340,5 +353,29 @@ resource "arcane_gitops_sync" "gitea_mirror" {
     PGID                = tostring(var.pgid)
     PUID                = tostring(var.puid)
     TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+  }
+}
+
+resource "arcane_gitops_sync" "homarr" {
+  depends_on = [arcane_global_variable.homarr_secret_encryption_key]
+  count      = var.enable_homarr ? 1 : 0
+
+  environment_id = "0"
+  name           = "homarr"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/homarr/docker-compose.yml"
+  project_name   = "homarr"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    PGID                = tostring(var.pgid)
+    PUID                = tostring(var.puid)
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    TZ                  = "America/Los_Angeles"
   }
 }
