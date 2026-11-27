@@ -330,24 +330,6 @@ module "code_server" {
 }
 
 # ---------------------------------------------------------------------------
-# Watchtower — automated container image updates
-# ---------------------------------------------------------------------------
-
-module "watchtower" {
-  source = "../modules/portainer-stack"
-
-  name         = "watchtower"
-  compose_path = "docker/watchtower/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    WATCHTOWER_CLEANUP = var.watchtower_cleanup
-  }
-}
-
-# ---------------------------------------------------------------------------
 # Netdata — real-time system monitoring (deployed to dh01 and dh02)
 # Uses host networking for deep system and Docker monitoring.
 # Both nodes auto-register to Netdata Cloud using their system hostname.
@@ -485,11 +467,6 @@ moved {
 moved {
   from = portainer_stack.code_server
   to   = module.code_server.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.watchtower
-  to   = module.watchtower.portainer_stack.this
 }
 
 moved {

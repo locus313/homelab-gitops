@@ -213,11 +213,6 @@ export TF_VAR_rackula_local_password=$(_bw_password "Homelab - Rackula")
 # export TF_VAR_backup_path="/mnt/backups"
 
 # ---------------------------------------------------------------------------
-# Watchtower (optional)
-# ---------------------------------------------------------------------------
-# export TF_VAR_watchtower_cleanup="true"
-
-# ---------------------------------------------------------------------------
 # Code-Server
 # Bitwarden item: "Homelab - Code-Server"
 #   password: <code_server_password>  |  custom hidden fields:

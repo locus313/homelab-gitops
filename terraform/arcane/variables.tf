@@ -75,6 +75,18 @@ variable "enable_netdata" {
   default     = false
 }
 
+variable "enable_watchtower" {
+  description = "Create and start Watchtower on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
+variable "watchtower_cleanup" {
+  description = "Remove old images after Watchtower container updates"
+  type        = string
+  default     = "true"
+}
+
 variable "beszel_public_key" {
   description = "Ed25519 public key for Beszel agent authentication; use the existing value from terraform/portainer/.envrc"
   type        = string

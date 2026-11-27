@@ -240,3 +240,23 @@ resource "arcane_gitops_sync" "netdata" {
     NETDATA_CLAIM_URL   = var.netdata_claim_url
   }
 }
+
+resource "arcane_gitops_sync" "watchtower" {
+  count = var.enable_watchtower ? 1 : 0
+
+  environment_id = "0"
+  name           = "watchtower"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/watchtower/docker-compose.yml"
+  project_name   = "watchtower"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    TZ                 = "America/Los_Angeles"
+    WATCHTOWER_CLEANUP = var.watchtower_cleanup
+  }
+}
