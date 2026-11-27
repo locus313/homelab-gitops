@@ -594,6 +594,54 @@ module and apply the Portainer workspace. Data remains at
 `${DOCKER_BASE_PATH}/rackula/data`; restore it from backup only if it was
 changed or corrupted.
 
+## Stateful and secret-bearing migration: Gitea
+
+Gitea is prepared for migration on dh02 and remains disabled until its Portainer
+stack is removed. Gitea and PostgreSQL use separate bind mounts:
+`${DOCKER_BASE_PATH}/gitea/data` and `${DOCKER_BASE_PATH}/gitea/db`.
+The running data directories were 907 MiB and 202 MiB, respectively.
+
+Both containers were briefly stopped for a consistent cold archive. The
+943 MiB archive was extracted to a temporary directory, and `tar` verified the
+restored files against the archive. The restored PostgreSQL 18.6 and Gitea
+28.4.0 images started successfully on an internal-only Docker network, with no
+published ports and a test-only database password; Gitea's root HTTP request
+succeeded. The test containers, network, and temporary files were removed.
+Production PostgreSQL returned healthy and Gitea's root HTTP request succeeded
+after restart. This rehearsal validated the cold archive and restore, not
+Zerobyte recovery. No Terraform plan or apply was run, and dh01 was untouched.
+
+`GITEA_DB_PASSWORD` is sourced from the existing
+`terraform/portainer/.envrc` Bitwarden-backed value and managed with
+`arcane_global_variable.value_wo`, scoped to Arcane environment `0`, with
+`inject_into_containers = false`. It is not stored in Terraform state, but this
+is **environment-scoped, not project-scoped**: another Compose project in
+environment `0` could reference the key. Arcane writes the decrypted value to
+`.env.global` in its projects directory on dh02 as plaintext. Only the Gitea
+Compose file should reference it. This risk is accepted for this migration;
+do not put the password in `arcane_gitops_sync.environment_variables`.
+Increment `value_wo_version` if the password changes.
+
+After this change is merged to `main`, cut over in this order to avoid a
+container-name collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.gitea.portainer_stack.this`, then apply
+   that reviewed plan.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_enable_gitea=true`. Run
+   `direnv exec . terraform plan` and confirm it only creates
+   `arcane_global_variable.gitea_db_password[0]` and
+   `arcane_gitops_sync.gitea[0]`; apply that reviewed plan.
+3. Verify Gitea and PostgreSQL are healthy on dh02, the web UI and SSH clone
+   access work, and both data mounts remain under
+   `${DOCKER_BASE_PATH}/gitea`.
+
+For rollback, disable `enable_gitea` and apply the Arcane workspace first so
+Arcane removes its project and global variable. Restore the Gitea Portainer
+module and apply the Portainer workspace. Data remains under
+`${DOCKER_BASE_PATH}/gitea`; restore it from backup only if it was changed or
+corrupted.
+
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
 write-only, so Terraform does not store it in state or saved plans. The

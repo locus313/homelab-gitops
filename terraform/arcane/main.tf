@@ -57,6 +57,19 @@ resource "arcane_global_variable" "gitea_mirror_better_auth_secret" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "gitea_db_password" {
+  count = var.enable_gitea ? 1 : 0
+
+  key              = "GITEA_DB_PASSWORD"
+  value_wo         = var.gitea_db_password
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_global_variable" "homarr_secret_encryption_key" {
   count = var.enable_homarr ? 1 : 0
 
@@ -392,6 +405,32 @@ resource "arcane_gitops_sync" "gitea_mirror" {
     PGID                = tostring(var.pgid)
     PUID                = tostring(var.puid)
     TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+  }
+}
+
+resource "arcane_gitops_sync" "gitea" {
+  depends_on = [arcane_global_variable.gitea_db_password]
+  count      = var.enable_gitea ? 1 : 0
+
+  environment_id = "0"
+  name           = "gitea"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/gitea/docker-compose.yml"
+  project_name   = "gitea"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    GITEA_DB_NAME       = var.gitea_db_name
+    GITEA_DB_USER       = var.gitea_db_user
+    PGID                = tostring(var.pgid)
+    PUID                = tostring(var.puid)
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    TZ                  = "America/Los_Angeles"
   }
 }
 

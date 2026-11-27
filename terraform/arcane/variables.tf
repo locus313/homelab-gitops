@@ -93,6 +93,12 @@ variable "enable_gitea_mirror" {
   default     = false
 }
 
+variable "enable_gitea" {
+  description = "Create and start Gitea on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "enable_homarr" {
   description = "Create and start Homarr on dh02 after removing its Portainer stack"
   type        = bool
@@ -133,6 +139,24 @@ variable "better_auth_secret" {
   description = "Better Auth secret key for Gitea Mirror session signing and token encryption"
   type        = string
   sensitive   = true
+}
+
+variable "gitea_db_name" {
+  description = "Gitea PostgreSQL database name"
+  type        = string
+  default     = "gitea"
+}
+
+variable "gitea_db_password" {
+  description = "Gitea PostgreSQL database password"
+  type        = string
+  sensitive   = true
+}
+
+variable "gitea_db_user" {
+  description = "Gitea PostgreSQL database user"
+  type        = string
+  default     = "gitea"
 }
 
 variable "homarr_secret_encryption_key" {
@@ -215,7 +239,7 @@ variable "metube_ytdl_options" {
 }
 
 variable "pgid" {
-  description = "Group ID for HandBrake, Home Assistant, MeTube, NetbootXYZ, and Ombi container file ownership"
+  description = "Group ID for Gitea, HandBrake, Home Assistant, MeTube, NetbootXYZ, and Ombi container file ownership"
   type        = number
   default     = 1000
 }
@@ -227,7 +251,7 @@ variable "pilot_value" {
 }
 
 variable "puid" {
-  description = "User ID for HandBrake, Home Assistant, MeTube, NetbootXYZ, and Ombi container file ownership"
+  description = "User ID for Gitea, HandBrake, Home Assistant, MeTube, NetbootXYZ, and Ombi container file ownership"
   type        = number
   default     = 1000
 }
