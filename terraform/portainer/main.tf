@@ -64,27 +64,6 @@ module "traefik" {
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
-# Home Assistant
-# ---------------------------------------------------------------------------
-
-module "home_assistant" {
-  source = "../modules/portainer-stack"
-
-  name         = "home-assistant"
-  compose_path = "docker/home-assistant/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    DOCKER_BASE_PATH    = var.docker_base_path
-    PUID                = local.puid_str
-    PGID                = local.pgid_str
-    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
-  }
-}
-
-# ---------------------------------------------------------------------------
 # Plex — media server (network_mode: host)
 # ---------------------------------------------------------------------------
 
@@ -476,11 +455,6 @@ module "azerothcore" {
 moved {
   from = portainer_stack.traefik
   to   = module.traefik.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.home_assistant
-  to   = module.home_assistant.portainer_stack.this
 }
 
 moved {

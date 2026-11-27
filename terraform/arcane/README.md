@@ -247,6 +247,50 @@ Arcane removes its project and containers. Then restore the Portainer module
 configuration and apply the Portainer workspace. Beszel data remains at its
 existing paths; restore it from backup only if it was changed or corrupted.
 
+## Stateful service migration: Home Assistant
+
+Home Assistant is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. Its persistent state is stored in the single
+`${DOCKER_BASE_PATH}/home-assistant/config` bind mount. The current Compose stack
+has no PostgreSQL sidecar or secret environment values.
+
+Before preparing this change, Home Assistant was stopped briefly while its
+config was copied, then restarted and confirmed running. Zerobyte snapshot
+`5b9c491a` on 2026-11-26 included the copy. The restore UI reported a failure,
+but the isolated target matched the copied config with no differences. The
+pinned `lscr.io/linuxserver/homeassistant:2026.11.2` image started with the
+restored config, `--network none`, no published ports or host mounts, and
+without privileged mode; its loopback endpoint returned HTTP 200. Production
+Home Assistant remained running and returned HTTP 200 after the temporary
+test artifacts were removed.
+
+The public Home Assistant URL currently returns HTTP 400. Home Assistant logs
+identify Traefik at `172.19.0.10` as an untrusted proxy. This was observed
+before and after the restore rehearsal and was not changed as part of this
+migration; resolve the trusted-proxy configuration and verify the public URL
+before considering the service healthy.
+
+After this change is merged, cut over in this order to avoid a container-name
+collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.home_assistant.portainer_stack.this`,
+   then apply that reviewed plan.
+2. Confirm Home Assistant has stopped and
+   `${DOCKER_BASE_PATH}/home-assistant/config` remains intact. In
+   `terraform/arcane/.envrc`, set `TF_VAR_enable_home_assistant=true`, then run
+   `direnv exec . terraform plan`. Confirm it only creates
+   `arcane_gitops_sync.home_assistant`; apply that reviewed plan.
+3. Verify Home Assistant is running on dh02, the `home-assistant` project is
+   Git-managed in Arcane, and its public URL works after fixing the existing
+   trusted-proxy issue.
+
+For rollback, disable `enable_home_assistant` and apply the Arcane workspace
+first so Arcane removes its project and container. Then restore the Portainer
+module configuration and apply the Portainer workspace. The config remains at
+`${DOCKER_BASE_PATH}/home-assistant/config`; restore it from backup only if it
+was changed or corrupted.
+
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
 write-only, so Terraform does not store it in state or saved plans. The
