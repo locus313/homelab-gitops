@@ -96,7 +96,7 @@ terraform apply
 
 Agents cannot unlock Bitwarden, so they cannot run `plan` or `apply`. Ask the user to run `direnv exec . terraform plan` and paste the output.
 
-**Runtime access:** Docker hosts hold the live logs and `docker` CLI. Ask the user for the SSH target, then run read-only commands there (`docker logs`, `docker ps`, `docker inspect`). Keep hostnames and usernames out of this public repo.
+**Runtime access:** Ask the user for the SSH target. Use read-only commands by default (`docker logs`, `docker ps`, `docker inspect`). Run a host-changing command only after the user explicitly approves the specific operation and host; execute only that approved operation. Use `ssh.exe` or `scp.exe` when the user specifies them. Keep hostnames and usernames out of this public repo.
 
 ## Testing
 
