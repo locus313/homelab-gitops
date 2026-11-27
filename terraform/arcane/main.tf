@@ -122,6 +122,32 @@ resource "arcane_global_variable" "rackula_local_password" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "hermes_discord_bot_token" {
+  count = var.enable_hermes_agent ? 1 : 0
+
+  key              = "DISCORD_BOT_TOKEN"
+  value_wo         = var.hermes_discord_bot_token
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
+resource "arcane_global_variable" "hermes_dashboard_password" {
+  count = var.enable_hermes_agent ? 1 : 0
+
+  key              = "HERMES_DASHBOARD_BASIC_AUTH_PASSWORD"
+  value_wo         = var.hermes_dashboard_password
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "handbrake" {
   count = var.enable_handbrake ? 1 : 0
 
@@ -487,5 +513,36 @@ resource "arcane_gitops_sync" "rackula" {
     RACKULA_AUTH_SESSION_COOKIE_SECURE = "true"
     RACKULA_LOCAL_USERNAME             = var.rackula_local_username
     TRAEFIK_BASE_DOMAIN                = var.traefik_base_domain
+  }
+}
+
+resource "arcane_gitops_sync" "hermes_agent" {
+  depends_on = [
+    arcane_global_variable.hermes_discord_bot_token,
+    arcane_global_variable.hermes_dashboard_password,
+  ]
+  count = var.enable_hermes_agent ? 1 : 0
+
+  environment_id = "0"
+  name           = "hermes-agent"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/hermes-agent/docker-compose.yml"
+  project_name   = "hermes-agent"
+
+  auto_sync           = true
+  sync_interval       = 60
+  sync_directory      = true
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DISCORD_ALLOWED_USERS                = var.hermes_discord_allowed_users
+    DOCKER_BASE_PATH                     = var.docker_base_path
+    HERMES_DASHBOARD_BASIC_AUTH_USERNAME = var.hermes_dashboard_username
+    HERMES_TRUSTED_PROXY                 = var.hermes_trusted_proxy
+    PGID                                 = tostring(var.pgid)
+    PUID                                 = tostring(var.puid)
+    TRAEFIK_BASE_DOMAIN                  = var.traefik_base_domain
+    TZ                                   = "America/Los_Angeles"
   }
 }

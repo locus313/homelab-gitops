@@ -14,8 +14,7 @@ locals {
   # Docker can resolve ./relative paths against a stable host path.
   # Must be OUTSIDE the cloud-init clone (/opt/homelab-gitops) to avoid
   # git-repo-within-git-repo conflicts on Portainer's git pull.
-  traefik_fs_path      = "${var.portainer_stack_path}/traefik"
-  hermes_agent_fs_path = "${var.portainer_stack_path}/hermes-agent"
+  traefik_fs_path = "${var.portainer_stack_path}/traefik"
 }
 
 # ---------------------------------------------------------------------------
@@ -85,37 +84,6 @@ module "plex" {
 
   secret_env = {
     PLEX_CLAIM = var.plex_claim
-  }
-}
-
-# ---------------------------------------------------------------------------
-# Hermes Agent — AI agent with dashboard and Discord gateway
-# ---------------------------------------------------------------------------
-
-module "hermes_agent" {
-  source = "../modules/portainer-stack"
-
-  name                  = "hermes-agent"
-  compose_path          = "docker/hermes-agent/docker-compose.yml"
-  endpoint_id           = var.portainer_endpoint_id
-  repo_url              = var.repo_url
-  tz                    = var.tz
-  support_relative_path = true
-  filesystem_path       = local.hermes_agent_fs_path
-
-  env = {
-    DISCORD_ALLOWED_USERS                = var.hermes_discord_allowed_users
-    DOCKER_BASE_PATH                     = var.docker_base_path
-    HERMES_DASHBOARD_BASIC_AUTH_USERNAME = var.hermes_dashboard_username
-    HERMES_TRUSTED_PROXY                 = var.hermes_trusted_proxy
-    PGID                                 = local.pgid_str
-    PUID                                 = local.puid_str
-    TRAEFIK_BASE_DOMAIN                  = var.traefik_base_domain
-  }
-
-  secret_env = {
-    DISCORD_BOT_TOKEN                    = var.hermes_discord_bot_token
-    HERMES_DASHBOARD_BASIC_AUTH_PASSWORD = var.hermes_dashboard_password
   }
 }
 
