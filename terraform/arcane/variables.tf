@@ -147,6 +147,12 @@ variable "enable_zerobyte" {
   default     = false
 }
 
+variable "enable_traefik" {
+  description = "Create and start Traefik on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "watchtower_cleanup" {
   description = "Remove old images after Watchtower container updates"
   type        = string
@@ -436,4 +442,27 @@ variable "repo_url" {
 variable "traefik_base_domain" {
   description = "Base domain used by Traefik for service routing"
   type        = string
+}
+
+variable "nas_ip" {
+  description = "IP address of the NAS used by Traefik dynamic configuration"
+  type        = string
+}
+
+variable "cloudns_propagation_timeout" {
+  description = "Seconds to wait for CloudNS DNS TXT record propagation"
+  type        = string
+  default     = "600"
+}
+
+variable "cloudns_sub_auth_id" {
+  description = "CloudNS sub-auth ID for Traefik DNS-01 challenges"
+  type        = string
+  sensitive   = true
+}
+
+variable "cloudns_auth_password" {
+  description = "CloudNS auth password for Traefik DNS-01 challenges"
+  type        = string
+  sensitive   = true
 }

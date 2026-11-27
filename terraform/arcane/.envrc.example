@@ -82,3 +82,7 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 # Enable only after the dh02 Zerobyte Portainer stack has been removed.
 # Keep the existing APP_SECRET unchanged; it decrypts stored Zerobyte data.
 # export TF_VAR_enable_zerobyte="true"
+
+# Enable only after the dh02 Traefik Portainer stack has been removed.
+# Traefik CloudNS credentials are sourced from ../portainer/.envrc.
+# export TF_VAR_enable_traefik="true"

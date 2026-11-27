@@ -5,7 +5,7 @@
 [![YAML Lint](https://github.com/locus313/homelab-gitops/actions/workflows/yaml-lint.yml/badge.svg)](https://github.com/locus313/homelab-gitops/actions/workflows/yaml-lint.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A collection of production-ready Docker Compose configurations for self-hosted services, wired together through a Traefik reverse proxy with automatic TLS, managed as GitOps stacks via Portainer, and backed by Terraform-provisioned VMs on both a ScaleComputing HCI cluster and a Proxmox host.
+A collection of production-ready Docker Compose configurations for self-hosted services, wired together through a Traefik reverse proxy with automatic TLS, managed as GitOps stacks via Arcane and Portainer, and backed by Terraform-provisioned VMs on both a ScaleComputing HCI cluster and a Proxmox host.
 
 [Architecture](#architecture) • [Services](#services) • [Getting Started](#getting-started) • [Configuration](#configuration) • [Project Structure](#project-structure) • [Infrastructure](#infrastructure)
 
