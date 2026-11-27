@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - `terraform/arcane` — Prepare Beszel migration (#501).
 - `terraform/arcane` — Prepare Home Assistant migration (#502).
 - `terraform/arcane` — Prepare dh02 Netdata migration (#503).
+- `terraform/arcane` — Migrate Watchtower to Arcane (#504).
 
 ## [2026-11-26]
 
