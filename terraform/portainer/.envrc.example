@@ -72,6 +72,9 @@ export TF_VAR_portainer_api_key=$(_bw_password "Homelab - Portainer")
 # Endpoint ID for dh01 (registered Portainer agent — check Portainer UI → Environments)
 export TF_VAR_dh01_endpoint_id="your-dh01-endpoint-id"
 
+# Set to false only during the approved dh01 Netdata handoff to Arcane.
+# export TF_VAR_keep_netdata_dh01="false"
+
 # Set to true only when using a self-signed cert (direct :9443 access)
 # export TF_VAR_skip_ssl_verify="false"
 

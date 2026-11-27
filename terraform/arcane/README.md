@@ -1,7 +1,7 @@
 # Arcane Terraform pilot and migrations
 
 This workspace manages the isolated pilot and explicitly enabled service
-migrations on Arcane's local Docker host (dh02). It does not configure dh01.
+migrations on Arcane's local Docker host (dh02) and the enrolled dh01 agent.
 The [community provider](https://registry.terraform.io/providers/HellsCrimson/arcane/2.0.0)
 requires Terraform 1.11 or later.
 
@@ -291,7 +291,7 @@ module configuration and apply the Portainer workspace. The config remains at
 `${DOCKER_BASE_PATH}/home-assistant/config`; restore it from backup only if it
 was changed or corrupted.
 
-## Stateful service migration: Netdata
+## Stateful service migration: Netdata on dh02
 
 Netdata is prepared for migration on dh02 and remains disabled until its dh02
 Portainer stack is removed. The dh01 Netdata stack remains managed by
@@ -347,6 +347,56 @@ Arcane removes its project and container. Then restore the dh02 Netdata
 Portainer module and apply the Portainer workspace. The data remains at
 `${DOCKER_BASE_PATH}/netdata/{config,lib,cache}`; restore it from backup only
 if it was changed or corrupted.
+
+## Stateful service migration: Netdata on dh01
+
+The dh01 Portainer stack remains enabled by default. Arcane's dh01 sync is
+disabled by default and uses the manually enrolled [agent](../../docker/arcane-agent/README.md).
+The agent was tested with an isolated Git sync, project environment values,
+supporting files, and a secret-marked canary; the test project and sync were
+removed afterward. Netdata uses the same Compose file and persistent
+`${DOCKER_BASE_PATH}/netdata/{config,lib,cache}` directories on both hosts.
+
+The claim token remains one write-only global variable. When dh01 is enabled,
+its scope expands from dh02 to both enabled Netdata environments. Arcane
+materializes the decrypted value in the agent's projects `.env.global` on
+dh01; other projects there can reference it. Restrict host access to that
+file and the agent's data directory. The test file had mode `0600`.
+
+Before any cutover, obtain approval for a Netdata interruption and create a
+fresh, consistent backup of all three **dh01** data directories. Verify an
+isolated restore and recovery procedure without overwriting production data.
+The existing Zerobyte jobs observed during preparation back up dh02; they do
+not establish that dh01 is protected. Do not proceed until dh01's backup and
+restore have been verified.
+
+After merging this change, review both workspace plans with the defaults.
+The Portainer plan should show only the state-address move to
+`module.netdata_dh01[0].portainer_stack.this`, not a replacement or deletion;
+the Arcane plan should have no dh01 changes. Apply only reviewed plans.
+
+After the backup and downtime gates are satisfied:
+
+1. In `terraform/portainer/.envrc`, set `TF_VAR_keep_netdata_dh01=false`.
+   Review the plan: only the dh01 Netdata stack should be destroyed. Apply it,
+   then verify the container has stopped and its three bind directories remain.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_dh01_arcane_environment_id` to
+   the ID shown under **Agents → dh01**, and set
+   `TF_VAR_enable_netdata_dh01=true`. Verify `TF_VAR_docker_base_path` matches
+   the existing dh01 mounts before planning. The reviewed plan should expand
+   `arcane_global_variable.netdata_claim_token[0]` to include dh01 and create
+   `arcane_gitops_sync.netdata_dh01[0]`, without changing the dh02 sync or
+   other services. Apply only that reviewed plan.
+3. Verify dh01 Netdata is healthy, its local API responds, its existing data
+   mounts are intact, the project is Git-managed in Arcane, and the node is
+   connected to Netdata Cloud. Confirm dh02 Netdata remains healthy.
+
+For rollback, set `TF_VAR_enable_netdata_dh01=false` and apply the reviewed
+Arcane plan first, removing the dh01 project and its global-variable scope
+while preserving dh02. Confirm the dh01 container is gone. Then set
+`TF_VAR_keep_netdata_dh01=true` and apply the reviewed Portainer plan to
+recreate its stack. Preserve the bind directories; restore from the verified
+backup only if needed.
 
 ## Stateless service migration: Watchtower
 

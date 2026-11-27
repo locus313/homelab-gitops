@@ -4,7 +4,7 @@ variable "arcane_endpoint" {
 }
 
 variable "docker_base_path" {
-  description = "Base path for persistent service data on dh02"
+  description = "Base path for persistent service data on Docker hosts"
   type        = string
   default     = "/docker"
 }
@@ -73,6 +73,23 @@ variable "enable_netdata" {
   description = "Create and start Netdata on dh02 after removing its Portainer stack"
   type        = bool
   default     = false
+}
+
+variable "enable_netdata_dh01" {
+  description = "Create and start Netdata on dh01 after its approved Portainer handoff"
+  type        = bool
+  default     = false
+}
+
+variable "dh01_arcane_environment_id" {
+  description = "ID of the manually enrolled dh01 Arcane agent"
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = !var.enable_netdata_dh01 || (trimspace(var.dh01_arcane_environment_id) != "" && trimspace(var.dh01_arcane_environment_id) != "0")
+    error_message = "Set dh01_arcane_environment_id to the remote dh01 agent ID before enabling dh01 Netdata."
+  }
 }
 
 variable "enable_watchtower" {
@@ -386,13 +403,13 @@ variable "beszel_public_key" {
 }
 
 variable "netdata_claim_rooms" {
-  description = "Netdata Cloud room ID(s) to add dh02 to"
+  description = "Netdata Cloud room ID(s) to add the Docker hosts to"
   type        = string
   default     = ""
 }
 
 variable "netdata_claim_token" {
-  description = "Netdata Cloud claim token for registering dh02"
+  description = "Netdata Cloud claim token for registering Docker hosts"
   type        = string
   sensitive   = true
 }
