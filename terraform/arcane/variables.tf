@@ -93,6 +93,12 @@ variable "enable_gitea_mirror" {
   default     = false
 }
 
+variable "enable_homarr" {
+  description = "Create and start Homarr on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "watchtower_cleanup" {
   description = "Remove old images after Watchtower container updates"
   type        = string
@@ -119,6 +125,12 @@ variable "stirling_csrf_disabled" {
 
 variable "better_auth_secret" {
   description = "Better Auth secret key for Gitea Mirror session signing and token encryption"
+  type        = string
+  sensitive   = true
+}
+
+variable "homarr_secret_encryption_key" {
+  description = "32-character hex key for Homarr data encryption"
   type        = string
   sensitive   = true
 }
