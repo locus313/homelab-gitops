@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - `terraform/arcane` — Prepare Gitea migration to Arcane (#509).
 - `terraform` — Migrate Hermes Agent to Arcane (#510).
 - `terraform/arcane` — Migrate Mail Archiver from Portainer (#511).
+- `terraform/arcane` — Migrate Plex from Portainer (#512).
 
 ## [2026-11-26]
 
