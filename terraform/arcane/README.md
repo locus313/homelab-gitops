@@ -901,6 +901,61 @@ Portainer module and apply the Portainer workspace. Persistent data remains
 under `/mnt/docker/code-server`; restore it from backup only if it was changed
 or corrupted.
 
+## Local-build state migration: AzerothCore
+
+AzerothCore is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. `sync_directory = true` supplies the repository
+Dockerfile and local build context. The current images for `AC_REF` and
+`MOD_GUILD_DISCORD_REF` are already present on dh02; keep both refs unchanged
+for the initial cutover.
+
+The authserver, worldserver, and MySQL were running before this change. The
+Discord relay was already restarting with exit code `1`; this migration does
+not attempt to fix it. Verify the three core services after cutover and treat
+the relay as a pre-existing degraded component.
+
+An approved cold-copy restore rehearsal was completed on dh02 on 2026-11-27.
+MySQL, authserver, worldserver, and the relay were stopped while the 5.0 GB
+data tree was copied, then production was restarted; MySQL became healthy and
+the authserver and worldserver ran. The copy was tested separately on a
+Docker internal-only network with a generated test-only MySQL root password,
+no published ports or external access, and without the relay. The restored
+auth, world, and character tables were queried, and the authserver and
+worldserver listened on ports `3724` and `8085`. The test containers, network,
+and temporary data copies were removed afterward. Production MySQL, authserver,
+and worldserver remained healthy/running; the relay remained in its existing
+exit-1 restart loop.
+
+Terraform manages `AZEROTHCORE_DB_ROOT_PASSWORD`,
+`AZEROTHCORE_DISCORD_TOKEN`, and
+`AZEROTHCORE_DISCORD_RELAY_DB_PASSWORD` as write-only Arcane global variables
+scoped to environment `0`, with `inject_into_containers = false`. They are not
+stored in Terraform state, but Arcane writes decrypted global values to
+`.env.global` in its projects directory on dh02 as plaintext. Global variables
+are environment-scoped, not project-scoped; only the AzerothCore Compose file
+should reference these keys. Do not put them in
+`arcane_gitops_sync.environment_variables`.
+
+After this change is merged to `main`, cut over in this order to avoid a
+container-name collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.azerothcore.portainer_stack.this`, then
+   apply that reviewed plan.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_enable_azerothcore=true`. Run
+   `direnv exec . terraform plan` and confirm it only creates the three
+   AzerothCore global variables and `arcane_gitops_sync.azerothcore`; apply
+   that reviewed plan.
+3. Verify MySQL is healthy, authserver and worldserver start, and clients can
+   connect on ports `3724` and `8085`. Record the Discord relay status against
+   its known failure baseline.
+
+For rollback, disable `enable_azerothcore` and apply the Arcane workspace first
+so Arcane removes its project and global variables. Restore the AzerothCore
+Portainer module and apply the Portainer workspace. Persistent data remains
+under `${DOCKER_BASE_PATH}/azerothcore`; restore it from backup only if it was
+changed or corrupted.
+
 ## Gates before further service migrations
 
 IT Tools has no persistent mounts or secrets, so its successful transfer does

@@ -1,6 +1,6 @@
 # AzerothCore (test realm)
 
-[AzerothCore](https://github.com/azerothcore/azerothcore-wotlk) WotLK server with [`mod-guild-discord`](https://github.com/locus313/mod-guild-discord) compiled in, used to test the module. This is a **local build stack**: the image is built on the Docker host, never pulled.
+[AzerothCore](https://github.com/azerothcore/azerothcore-wotlk) WotLK server with [`mod-guild-discord`](https://github.com/locus313/mod-guild-discord) compiled in, used to test the module. This is a **local build stack**: images are built on the Docker host, never pulled.
 
 Pinned source: AzerothCore commit `d5e818f28ee80f5a39115c3bbaa695a6f859303e` (`AC_REF`). Upstream publishes no semver tags.
 
@@ -8,7 +8,7 @@ Pinned source: AzerothCore commit `d5e818f28ee80f5a39115c3bbaa695a6f859303e` (`A
 
 | Service | Image | Description |
 |---------|-------|-------------|
-| `ac-database` | `mysql:8.4.6` | MySQL for auth, world, and characters |
+| `ac-database` | `mysql:8.4.13` | MySQL for auth, world, and characters |
 | `ac-client-data-init` | local | One-shot client data download (maps, vmaps, mmaps, DBC) |
 | `ac-db-import` | local | One-shot database create/update, including module SQL |
 | `ac-authserver` | local | Login server, host port `3724` |
@@ -19,7 +19,7 @@ No Traefik: the game protocol is raw TCP.
 
 ## Setup
 
-1. Build the images on the host (20–40 minutes, needs several GB of RAM). Portainer does not rebuild them:
+1. Build the images on the host (20–40 minutes, needs several GB of RAM):
 
    ```bash
    cd docker/azerothcore
@@ -36,7 +36,16 @@ No Traefik: the game protocol is raw TCP.
    sudo chown -R ${PUID}:${PGID} ${DOCKER_BASE_PATH}/azerothcore/{etc,logs,data}
    ```
 
-3. Start the stack (first start downloads about 2 GB of client data): `docker compose up -d`, or let Portainer deploy it.
+3. Start the stack (first start downloads about 2 GB of client data): `docker compose up -d`.
+
+### Deploy via Arcane
+
+After removing the Portainer stack, enable `TF_VAR_enable_azerothcore` in
+`terraform/arcane/.envrc` and apply that workspace. Terraform supplies the
+environment values and secrets. The Arcane sync includes the full repository
+directory so the local Docker build context is available; keep `AC_REF` and
+`MOD_GUILD_DISCORD_REF` unchanged during the initial cutover to reuse the
+images already on dh02.
 
 ## Environment Variables
 

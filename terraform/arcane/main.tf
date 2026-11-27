@@ -226,6 +226,45 @@ resource "arcane_global_variable" "code_server_ts_authkey" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "azerothcore_db_root_password" {
+  count = var.enable_azerothcore ? 1 : 0
+
+  key              = "AZEROTHCORE_DB_ROOT_PASSWORD"
+  value_wo         = var.azerothcore_db_root_password
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
+resource "arcane_global_variable" "azerothcore_discord_token" {
+  count = var.enable_azerothcore ? 1 : 0
+
+  key              = "AZEROTHCORE_DISCORD_TOKEN"
+  value_wo         = var.azerothcore_discord_token
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
+resource "arcane_global_variable" "azerothcore_discord_relay_db_password" {
+  count = var.enable_azerothcore ? 1 : 0
+
+  key              = "AZEROTHCORE_DISCORD_RELAY_DB_PASSWORD"
+  value_wo         = var.azerothcore_discord_relay_db_password
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "handbrake" {
   count = var.enable_handbrake ? 1 : 0
 
@@ -706,5 +745,35 @@ resource "arcane_gitops_sync" "code_server" {
     TS_STATE_DIR      = "/var/lib/tailscale"
     TS_USERSPACE      = "false"
     TZ                = "America/Los_Angeles"
+  }
+}
+
+resource "arcane_gitops_sync" "azerothcore" {
+  depends_on = [
+    arcane_global_variable.azerothcore_db_root_password,
+    arcane_global_variable.azerothcore_discord_token,
+    arcane_global_variable.azerothcore_discord_relay_db_password,
+  ]
+  count = var.enable_azerothcore ? 1 : 0
+
+  environment_id = "0"
+  name           = "azerothcore"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/azerothcore/docker-compose.yml"
+  project_name   = "azerothcore"
+
+  auto_sync           = true
+  sync_interval       = 60
+  sync_directory      = true
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    AC_REF                = var.azerothcore_ref
+    DOCKER_BASE_PATH      = var.docker_base_path
+    MOD_GUILD_DISCORD_REF = var.azerothcore_mod_guild_discord_ref
+    PGID                  = tostring(var.pgid)
+    PUID                  = tostring(var.puid)
+    TZ                    = "America/Los_Angeles"
   }
 }
