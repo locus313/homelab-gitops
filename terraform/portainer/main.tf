@@ -182,38 +182,6 @@ module "zerobyte" {
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
-# Rackula — infrastructure documentation
-# ---------------------------------------------------------------------------
-
-module "rackula" {
-  source = "../modules/portainer-stack"
-
-  name         = "rackula"
-  compose_path = "docker/rackula/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    DOCKER_BASE_PATH                   = var.docker_base_path
-    PUID                               = local.puid_str
-    PGID                               = local.pgid_str
-    TRAEFIK_BASE_DOMAIN                = var.traefik_base_domain
-    RACKULA_API_PORT                   = var.rackula_api_port
-    RACKULA_AUTH_MODE                  = var.rackula_auth_mode
-    RACKULA_LOCAL_USERNAME             = var.rackula_local_username
-    RACKULA_AUTH_SESSION_COOKIE_SECURE = "true"
-    ALLOW_INSECURE_CORS                = "false"
-  }
-
-  secret_env = {
-    RACKULA_API_WRITE_TOKEN     = var.rackula_api_write_token
-    RACKULA_AUTH_SESSION_SECRET = var.rackula_auth_session_secret
-    RACKULA_LOCAL_PASSWORD      = var.rackula_local_password
-  }
-}
-
-# ---------------------------------------------------------------------------
 # Code-Server — browser-based VS Code with Tailscale integration
 # ---------------------------------------------------------------------------
 
@@ -358,11 +326,6 @@ moved {
 moved {
   from = portainer_stack.it_tools
   to   = module.it_tools.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.rackula
-  to   = module.rackula.portainer_stack.this
 }
 
 moved {

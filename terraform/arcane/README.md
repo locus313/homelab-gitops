@@ -535,6 +535,65 @@ module and apply the Portainer workspace. Data remains at
 `${DOCKER_BASE_PATH}/homarr/appdata`; restore it from backup only if it was
 changed or corrupted.
 
+## Stateful and secret-bearing migration: Rackula
+
+Rackula is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. Its frontend and API sidecar share the
+`proxynet` network; only the frontend is routed through Traefik. Persistent
+layout data is stored in `${DOCKER_BASE_PATH}/rackula/data`.
+
+Rackula was briefly stopped for a consistent copy, then restarted and returned
+healthy status from both containers and HTTP 200 from its API health endpoint.
+Zerobyte Docker job `0zsNnr7d` created snapshot `f707e63f` on 2026-11-26 at
+7:25 PM. Only `rackula-restore-test-source-20261126` was restored to
+`/docker/rackula-restore-test-target-20261126`. Zerobyte showed a successful
+restore notification followed by a generic failure alert, but `diff -qr`
+confirmed the restored contents matched the source (12 KiB). The pinned
+`ghcr.io/rackulalives/rackula-api:26.11.1` and
+`ghcr.io/rackulalives/rackula:v26.11.1-persist` images started with the
+restored data on an internal-only Docker network, with no published ports and
+a test-only API token. The API health check returned `ok` and the frontend root
+request succeeded. Test containers, network, and temporary directories were
+removed. Production Rackula remained healthy and its HTTPS route returned
+HTTP 200; no Terraform plan or apply was run, and dh01 was untouched.
+
+`RACKULA_API_WRITE_TOKEN` and `RACKULA_LOCAL_PASSWORD` come from the existing
+`terraform/portainer/.envrc` Bitwarden-backed values;
+`RACKULA_AUTH_SESSION_SECRET` is sourced there when authentication is enabled.
+Arcane manages the configured secrets with write-only
+`arcane_global_variable.value_wo` resources in environment `0`, with container
+auto-injection disabled. The API write token is managed for every Rackula
+sync; the session secret is created only when authentication is enabled, and
+the local password only when `RACKULA_AUTH_MODE` is `local`.
+These values are not stored in Terraform state, but Arcane globals are
+**environment-scoped, not project-scoped**: another Compose project in
+environment `0` could reference them. Arcane writes decrypted values to
+`.env.global` in its projects directory on dh02 as plaintext. Only the Rackula
+Compose file should reference these secrets. This risk is accepted for this
+migration; do not put secrets in `arcane_gitops_sync.environment_variables`.
+Preserve the current values and increment the corresponding
+`value_wo_version` if a secret changes.
+
+After this change is merged to `main`, cut over in this order to avoid
+container-name collisions:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.rackula.portainer_stack.this`, then apply
+   that reviewed plan.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_enable_rackula=true`. Run
+   `direnv exec . terraform plan` and confirm it only creates Rackula
+   resources, including the GitOps sync and secret globals required by the
+   configured authentication mode; apply that reviewed plan.
+3. Verify both Rackula containers are healthy on dh02, the dashboard and
+   existing layouts load, authentication is unchanged, and the data mount
+   remains `${DOCKER_BASE_PATH}/rackula/data`.
+
+For rollback, disable `enable_rackula` and apply the Arcane workspace first so
+Arcane removes its project and global variables. Restore the Rackula Portainer
+module and apply the Portainer workspace. Data remains at
+`${DOCKER_BASE_PATH}/rackula/data`; restore it from backup only if it was
+changed or corrupted.
+
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
 write-only, so Terraform does not store it in state or saved plans. The

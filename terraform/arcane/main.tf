@@ -70,6 +70,45 @@ resource "arcane_global_variable" "homarr_secret_encryption_key" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "rackula_api_write_token" {
+  count = var.enable_rackula ? 1 : 0
+
+  key              = "RACKULA_API_WRITE_TOKEN"
+  value_wo         = var.rackula_api_write_token
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
+resource "arcane_global_variable" "rackula_auth_session_secret" {
+  count = var.enable_rackula && var.rackula_auth_mode != "none" ? 1 : 0
+
+  key              = "RACKULA_AUTH_SESSION_SECRET"
+  value_wo         = var.rackula_auth_session_secret
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
+resource "arcane_global_variable" "rackula_local_password" {
+  count = var.enable_rackula && var.rackula_auth_mode == "local" ? 1 : 0
+
+  key              = "RACKULA_LOCAL_PASSWORD"
+  value_wo         = var.rackula_local_password
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "handbrake" {
   count = var.enable_handbrake ? 1 : 0
 
@@ -377,5 +416,37 @@ resource "arcane_gitops_sync" "homarr" {
     PUID                = tostring(var.puid)
     TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
     TZ                  = "America/Los_Angeles"
+  }
+}
+
+resource "arcane_gitops_sync" "rackula" {
+  depends_on = [
+    arcane_global_variable.rackula_api_write_token,
+    arcane_global_variable.rackula_auth_session_secret,
+    arcane_global_variable.rackula_local_password,
+  ]
+  count = var.enable_rackula ? 1 : 0
+
+  environment_id = "0"
+  name           = "rackula"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/rackula/docker-compose.yml"
+  project_name   = "rackula"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    ALLOW_INSECURE_CORS                = "false"
+    DOCKER_BASE_PATH                   = var.docker_base_path
+    PGID                               = tostring(var.pgid)
+    PUID                               = tostring(var.puid)
+    RACKULA_API_PORT                   = var.rackula_api_port
+    RACKULA_AUTH_MODE                  = var.rackula_auth_mode
+    RACKULA_AUTH_SESSION_COOKIE_SECURE = "true"
+    RACKULA_LOCAL_USERNAME             = var.rackula_local_username
+    TRAEFIK_BASE_DOMAIN                = var.traefik_base_domain
   }
 }

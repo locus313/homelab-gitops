@@ -54,3 +54,12 @@ The frontend proxies API requests internally to `rackula-api` over the `proxynet
 - `RACKULA_API_WRITE_TOKEN` limits which clients can save/delete layouts — always set this in production.
 - `RACKULA_AUTH_SESSION_COOKIE_SECURE` defaults to `true` since Traefik handles HTTPS — do not set to `false` in production.
 - Generate strong secrets with `openssl rand -hex 32`.
+
+## Migration Rehearsal
+
+On 2026-11-26, the Rackula API data was restored from Zerobyte snapshot
+`f707e63f` into an isolated directory and matched its source. The pinned
+frontend and API images ran on an internal-only test network with no published
+ports and a test-only API token. The API health check returned `ok`, and the
+frontend root request succeeded. Zerobyte displayed conflicting restore
+success/failure messages; `diff -qr` confirmed the restored data was identical.

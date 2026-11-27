@@ -99,6 +99,12 @@ variable "enable_homarr" {
   default     = false
 }
 
+variable "enable_rackula" {
+  description = "Create and start Rackula on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "watchtower_cleanup" {
   description = "Remove old images after Watchtower container updates"
   type        = string
@@ -133,6 +139,43 @@ variable "homarr_secret_encryption_key" {
   description = "32-character hex key for Homarr data encryption"
   type        = string
   sensitive   = true
+}
+
+variable "rackula_api_write_token" {
+  description = "Bearer token for Rackula write API access"
+  type        = string
+  sensitive   = true
+}
+
+variable "rackula_auth_session_secret" {
+  description = "Secret for Rackula session signing"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "rackula_local_password" {
+  description = "Password for the Rackula local admin account"
+  type        = string
+  sensitive   = true
+}
+
+variable "rackula_auth_mode" {
+  description = "Rackula authentication mode"
+  type        = string
+  default     = "none"
+}
+
+variable "rackula_local_username" {
+  description = "Username for the Rackula local admin account"
+  type        = string
+  default     = "admin"
+}
+
+variable "rackula_api_port" {
+  description = "Port for the Rackula API server"
+  type        = string
+  default     = "3001"
 }
 
 variable "beszel_public_key" {
