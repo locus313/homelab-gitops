@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - `docker/traefik` — Remove retired Portainer route (#522).
 - `terraform/arcane` — Decouple environment from Portainer (#523).
 - Update guidance for Arcane GitOps (#524).
+- Clarify runtime access and Terraform PR checks (#525).
 
 ## [2026-11-26]
 
