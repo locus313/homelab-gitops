@@ -135,6 +135,12 @@ variable "enable_code_server" {
   default     = false
 }
 
+variable "enable_azerothcore" {
+  description = "Create and start AzerothCore on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "watchtower_cleanup" {
   description = "Remove old images after Watchtower container updates"
   type        = string
@@ -323,6 +329,36 @@ variable "code_server_ts_extra_args" {
   description = "Extra arguments for the Code Server Tailscale sidecar"
   type        = string
   default     = "--advertise-tags=tag:container --reset"
+}
+
+variable "azerothcore_ref" {
+  description = "AzerothCore commit SHA the local image was built from"
+  type        = string
+  default     = "d5e818f28ee80f5a39115c3bbaa695a6f859303e"
+}
+
+variable "azerothcore_mod_guild_discord_ref" {
+  description = "mod-guild-discord branch, tag, or commit to build"
+  type        = string
+  default     = "master"
+}
+
+variable "azerothcore_db_root_password" {
+  description = "AzerothCore MySQL root password"
+  type        = string
+  sensitive   = true
+}
+
+variable "azerothcore_discord_token" {
+  description = "Discord bot token for the AzerothCore discord-relay sidecar"
+  type        = string
+  sensitive   = true
+}
+
+variable "azerothcore_discord_relay_db_password" {
+  description = "Password of the discord_relay MySQL account used by the sidecar"
+  type        = string
+  sensitive   = true
 }
 
 variable "beszel_public_key" {
