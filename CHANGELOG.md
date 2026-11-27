@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - `terraform/arcane` — Prepare Rackula migration to Arcane (#508).
 - `terraform/arcane` — Prepare Gitea migration to Arcane (#509).
 - `terraform` — Migrate Hermes Agent to Arcane (#510).
+- `terraform/arcane` — Migrate Mail Archiver from Portainer (#511).
 
 ## [2026-11-26]
 
