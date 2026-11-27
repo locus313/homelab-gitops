@@ -26,3 +26,6 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 
 # Enable only after the Ombi Portainer stack has been removed.
 # export TF_VAR_enable_ombi="true"
+
+# Enable only after the Home Assistant Portainer stack has been removed.
+# export TF_VAR_enable_home_assistant="true"

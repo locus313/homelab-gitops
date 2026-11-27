@@ -63,6 +63,12 @@ variable "enable_ombi" {
   default     = false
 }
 
+variable "enable_home_assistant" {
+  description = "Create and start Home Assistant on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "beszel_public_key" {
   description = "Ed25519 public key for Beszel agent authentication; use the existing value from terraform/portainer/.envrc"
   type        = string
@@ -82,7 +88,7 @@ variable "metube_ytdl_options" {
 }
 
 variable "pgid" {
-  description = "Group ID for HandBrake, MeTube, NetbootXYZ, and Ombi container file ownership"
+  description = "Group ID for HandBrake, Home Assistant, MeTube, NetbootXYZ, and Ombi container file ownership"
   type        = number
   default     = 1000
 }
@@ -94,7 +100,7 @@ variable "pilot_value" {
 }
 
 variable "puid" {
-  description = "User ID for HandBrake, MeTube, NetbootXYZ, and Ombi container file ownership"
+  description = "User ID for HandBrake, Home Assistant, MeTube, NetbootXYZ, and Ombi container file ownership"
   type        = number
   default     = 1000
 }

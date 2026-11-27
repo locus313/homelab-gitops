@@ -182,3 +182,26 @@ resource "arcane_gitops_sync" "ombi" {
     TZ                  = "America/Los_Angeles"
   }
 }
+
+resource "arcane_gitops_sync" "home_assistant" {
+  count = var.enable_home_assistant ? 1 : 0
+
+  environment_id = "0"
+  name           = "home-assistant"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/home-assistant/docker-compose.yml"
+  project_name   = "home-assistant"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    PGID                = tostring(var.pgid)
+    PUID                = tostring(var.puid)
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    TZ                  = "America/Los_Angeles"
+  }
+}
