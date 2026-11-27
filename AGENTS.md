@@ -131,6 +131,7 @@ Copy `docker/it-tools/docker-compose.yml`: pinned image, `container_name` matchi
 | `azerothcore` | Local build stack (`pull_policy: never`, image built on host); MySQL sidecar; host ports `3724` + `8085`, no Traefik |
 | `storj-node` | Requires host port-forward `28967` (TCP + UDP) |
 | `portainer` | Also exposes `9443:9443` directly as a fallback |
+| `arcane-agent` | Manually bootstrapped remote agent; outbound only, no Traefik or Terraform stack |
 
 ### Common Environment Variables
 
