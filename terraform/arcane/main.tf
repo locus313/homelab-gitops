@@ -18,6 +18,19 @@ resource "arcane_global_variable" "pilot_secret_canary" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "netdata_claim_token" {
+  count = var.enable_netdata ? 1 : 0
+
+  key              = "NETDATA_CLAIM_TOKEN"
+  value_wo         = var.netdata_claim_token
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "handbrake" {
   count = var.enable_handbrake ? 1 : 0
 
@@ -203,5 +216,27 @@ resource "arcane_gitops_sync" "home_assistant" {
     PUID                = tostring(var.puid)
     TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
     TZ                  = "America/Los_Angeles"
+  }
+}
+
+resource "arcane_gitops_sync" "netdata" {
+  depends_on = [arcane_global_variable.netdata_claim_token]
+  count      = var.enable_netdata ? 1 : 0
+
+  environment_id = "0"
+  name           = "netdata"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/netdata/docker-compose.yml"
+  project_name   = "netdata"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    NETDATA_CLAIM_ROOMS = var.netdata_claim_rooms
+    NETDATA_CLAIM_URL   = var.netdata_claim_url
   }
 }

@@ -69,10 +69,34 @@ variable "enable_home_assistant" {
   default     = false
 }
 
+variable "enable_netdata" {
+  description = "Create and start Netdata on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "beszel_public_key" {
   description = "Ed25519 public key for Beszel agent authentication; use the existing value from terraform/portainer/.envrc"
   type        = string
   default     = ""
+}
+
+variable "netdata_claim_rooms" {
+  description = "Netdata Cloud room ID(s) to add dh02 to"
+  type        = string
+  default     = ""
+}
+
+variable "netdata_claim_token" {
+  description = "Netdata Cloud claim token for registering dh02"
+  type        = string
+  sensitive   = true
+}
+
+variable "netdata_claim_url" {
+  description = "Netdata Cloud claim URL"
+  type        = string
+  default     = "https://app.netdata.cloud"
 }
 
 variable "metube_output_template" {

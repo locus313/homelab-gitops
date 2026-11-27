@@ -373,26 +373,6 @@ module "netdata_dh01" {
   }
 }
 
-module "netdata_dh02" {
-  source = "../modules/portainer-stack"
-
-  name         = "netdata"
-  compose_path = "docker/netdata/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    DOCKER_BASE_PATH    = var.docker_base_path
-    NETDATA_CLAIM_URL   = var.netdata_claim_url
-    NETDATA_CLAIM_ROOMS = var.netdata_claim_rooms
-  }
-
-  secret_env = {
-    NETDATA_CLAIM_TOKEN = var.netdata_claim_token
-  }
-}
-
 # ---------------------------------------------------------------------------
 # Mail Archiver — email archiving with IMAP/M365 sync and advanced search
 # ---------------------------------------------------------------------------
@@ -515,11 +495,6 @@ moved {
 moved {
   from = portainer_stack.netdata_dh01
   to   = module.netdata_dh01.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.netdata_dh02
-  to   = module.netdata_dh02.portainer_stack.this
 }
 
 moved {
