@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-11-27]
+
+### Added
+- `terraform/arcane` — Prepare Beszel migration (#501).
+
 ## [2026-11-26]
 
 ### Added
