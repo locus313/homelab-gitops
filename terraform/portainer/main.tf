@@ -98,38 +98,6 @@ module "zerobyte" {
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
-# Code-Server — browser-based VS Code with Tailscale integration
-# ---------------------------------------------------------------------------
-
-module "code_server" {
-  source = "../modules/portainer-stack"
-
-  name                  = "code-server"
-  compose_path          = "docker/code-server/docker-compose.yml"
-  endpoint_id           = var.portainer_endpoint_id
-  repo_url              = var.repo_url
-  tz                    = var.tz
-  support_relative_path = true
-
-  env = {
-    PUID              = local.puid_str
-    PGID              = local.pgid_str
-    DEFAULT_WORKSPACE = var.code_server_default_workspace
-    TS_EXTRA_ARGS     = var.code_server_ts_extra_args
-    TS_SERVE_CONFIG   = "/config/code-server.json"
-    TS_SOCKET         = "/var/run/tailscale/tailscaled.sock"
-    TS_STATE_DIR      = "/var/lib/tailscale"
-    TS_USERSPACE      = "false"
-  }
-
-  secret_env = {
-    PASSWORD      = var.code_server_password
-    SUDO_PASSWORD = var.code_server_sudo_password
-    TS_AUTHKEY    = var.code_server_ts_authkey
-  }
-}
-
-# ---------------------------------------------------------------------------
 # Netdata — real-time system monitoring (deployed to dh01 and dh02)
 # Uses host networking for deep system and Docker monitoring.
 # Both nodes auto-register to Netdata Cloud using their system hostname.
@@ -205,11 +173,6 @@ moved {
 moved {
   from = portainer_stack.it_tools
   to   = module.it_tools.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.code_server
-  to   = module.code_server.portainer_stack.this
 }
 
 moved {
