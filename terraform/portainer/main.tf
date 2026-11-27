@@ -218,26 +218,6 @@ module "hermes_agent" {
 }
 
 # ---------------------------------------------------------------------------
-# Beszel — lightweight server monitoring hub
-# ---------------------------------------------------------------------------
-
-module "beszel" {
-  source = "../modules/portainer-stack"
-
-  name         = "beszel"
-  compose_path = "docker/beszel/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    BESZEL_PUBLIC_KEY   = var.beszel_public_key
-    DOCKER_BASE_PATH    = var.docker_base_path
-    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
-  }
-}
-
-# ---------------------------------------------------------------------------
 # Zerobyte — backup management
 # ---------------------------------------------------------------------------
 
@@ -526,11 +506,6 @@ moved {
 moved {
   from = portainer_stack.homarr
   to   = module.homarr.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.beszel
-  to   = module.beszel.portainer_stack.this
 }
 
 moved {

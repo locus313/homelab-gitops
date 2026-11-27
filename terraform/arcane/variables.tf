@@ -39,6 +39,12 @@ variable "enable_netbootxyz" {
   default     = false
 }
 
+variable "enable_beszel" {
+  description = "Create and start Beszel on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "enable_it_tools" {
   description = "Create and start IT Tools on dh02 after removing its Portainer stack"
   type        = bool
@@ -55,6 +61,12 @@ variable "enable_ombi" {
   description = "Create and start Ombi on dh02 after removing its Portainer stack"
   type        = bool
   default     = false
+}
+
+variable "beszel_public_key" {
+  description = "Ed25519 public key for Beszel agent authentication; use the existing value from terraform/portainer/.envrc"
+  type        = string
+  default     = ""
 }
 
 variable "metube_output_template" {

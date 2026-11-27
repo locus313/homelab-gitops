@@ -69,6 +69,28 @@ resource "arcane_gitops_sync" "netbootxyz" {
   }
 }
 
+resource "arcane_gitops_sync" "beszel" {
+  count = var.enable_beszel ? 1 : 0
+
+  environment_id = "0"
+  name           = "beszel"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/beszel/docker-compose.yml"
+  project_name   = "beszel"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    BESZEL_PUBLIC_KEY   = var.beszel_public_key
+    DOCKER_BASE_PATH    = var.docker_base_path
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    TZ                  = "America/Los_Angeles"
+  }
+}
+
 resource "arcane_gitops_sync" "pilot" {
   count = var.enable_pilot ? 1 : 0
 

@@ -102,4 +102,6 @@ This service is configured to use the `proxynet` external network for Traefik in
 
 ## Security
 
-The agent connects to the hub using a secure socket connection. Make sure to keep your `BESZEL_PUBLIC_KEY` secure and don't share it publicly.
+`BESZEL_PUBLIC_KEY` is a public key, not a secret; configure only the agents
+that should authenticate to this hub with it. Protect the hub's persistent
+data, which contains its private key material.

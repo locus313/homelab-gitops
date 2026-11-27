@@ -203,6 +203,50 @@ configuration and apply the Portainer workspace. The config and assets remain
 at their existing paths; restore them from backup only if they were changed
 or corrupted.
 
+## Stateful service migration: Beszel
+
+Beszel is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. The hub database and key are stored at
+`${DOCKER_BASE_PATH}/beszel/data`; agent state is at
+`${DOCKER_BASE_PATH}/beszel/agent_data`. The shared Unix socket at
+`${DOCKER_BASE_PATH}/beszel/socket` is runtime IPC and is not part of the
+restore.
+
+Before preparing this change, the Beszel agent and hub were stopped briefly
+while their persisted data directories were copied, then restarted and
+confirmed running. Zerobyte snapshot `3846484c` on 2026-11-26 included the
+copy. Both directories restored to an isolated target and matched the copy.
+The pinned `ghcr.io/henrygd/beszel/beszel:0.21.2` hub started with the restored
+database using `--network none`, no published ports, and returned HTTP 200 on
+loopback. The agent was not started in isolation because its existing host
+network, device, and Docker socket access are not needed to validate the hub
+restore. Production Beszel remained running after the rehearsal.
+
+The existing `BESZEL_PUBLIC_KEY` is a public agent-authentication key, not a
+secret. Ensure `TF_VAR_beszel_public_key` is available through
+`../portainer/.envrc`, which the Arcane workspace sources. This migration
+preserves the agent's existing host networking, capabilities, AppArmor setting,
+device access, and read-only Docker socket mount; it does not expand them.
+
+After this change is merged, cut over in this order to avoid a container-name
+collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.beszel.portainer_stack.this`, then apply
+   that reviewed plan.
+2. Confirm Beszel has stopped and its data directories remain intact. In
+   `terraform/arcane/.envrc`, set `TF_VAR_enable_beszel=true`, then run
+   `direnv exec . terraform plan`. Confirm it only creates
+   `arcane_gitops_sync.beszel`; apply that reviewed plan.
+3. Verify both Beszel containers are running on dh02, the `beszel` project is
+   Git-managed in Arcane, the agent is connected, and
+   `https://beszel.<your-domain>` works with its existing data.
+
+For rollback, disable `enable_beszel` and apply the Arcane workspace first so
+Arcane removes its project and containers. Then restore the Portainer module
+configuration and apply the Portainer workspace. Beszel data remains at its
+existing paths; restore it from backup only if it was changed or corrupted.
+
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
 write-only, so Terraform does not store it in state or saved plans. The
