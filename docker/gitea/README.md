@@ -1,13 +1,13 @@
 # Gitea
 
-Self-hosted Git service with a PostgreSQL backend. Version: **1.26.1**
+Self-hosted Git service with a PostgreSQL backend. Gitea image tag: **28.4.0**.
 
 ## Services
 
 | Service | Image | Description |
 |---------|-------|-------------|
-| `gitea` | `gitea/gitea:1.26.1` | Git service web UI and API |
-| `gitea-db` | `postgres:17.5` | PostgreSQL database |
+| `gitea` | `gitea/gitea:28.4.0` | Git service web UI and API |
+| `gitea-db` | `postgres:18.6` | PostgreSQL database |
 
 ## Setup
 

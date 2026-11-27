@@ -89,33 +89,6 @@ module "plex" {
 }
 
 # ---------------------------------------------------------------------------
-# Gitea — self-hosted Git service
-# ---------------------------------------------------------------------------
-
-module "gitea" {
-  source = "../modules/portainer-stack"
-
-  name         = "gitea"
-  compose_path = "docker/gitea/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    DOCKER_BASE_PATH    = var.docker_base_path
-    PUID                = local.puid_str
-    PGID                = local.pgid_str
-    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
-    GITEA_DB_NAME       = var.gitea_db_name
-    GITEA_DB_USER       = var.gitea_db_user
-  }
-
-  secret_env = {
-    GITEA_DB_PASSWORD = var.gitea_db_password
-  }
-}
-
-# ---------------------------------------------------------------------------
 # Hermes Agent — AI agent with dashboard and Discord gateway
 # ---------------------------------------------------------------------------
 
@@ -311,11 +284,6 @@ moved {
 moved {
   from = portainer_stack.ombi
   to   = module.ombi.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.gitea
-  to   = module.gitea.portainer_stack.this
 }
 
 moved {
