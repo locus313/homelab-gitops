@@ -17,7 +17,7 @@ graph TB
 
     subgraph IAC["Terraform workspaces"]
         TFH["terraform/homelab<br/>VM provisioning"]:::tf
-        TFP["terraform/portainer<br/>retained state and shared environment"]:::tf
+        TFP["terraform/portainer<br/>retained rollback state"]:::tf
         TFA["terraform/arcane<br/>Git syncs and environment"]:::tf
     end
 
@@ -33,7 +33,6 @@ graph TB
 
     TFH -->|hypercore provider| SCVM
     TFH -->|proxmox provider| DHVM
-    TFP -.->|shared environment| TFA
     TFA -->|Arcane API| SCVM
     DHVM -->|agent connection| SCVM
     SCVM ---|NFS| NAS
@@ -41,10 +40,9 @@ graph TB
 
 ## GitOps deploy flow
 
-A commit to `main` reaches running containers through manager polling, with no
-manual deploy step. Arcane polls Git and deploys projects locally on dh02 or
-through its dh01 agent. The manager and agent are bootstrapped independently
-of these Git syncs.
+Enabled Arcane Git syncs poll `main` and deploy projects locally on dh02 or
+through the dh01 agent. Enabling or changing a sync requires a reviewed Terraform
+apply; the manager and agent are bootstrapped independently of these Git syncs.
 
 ```mermaid
 graph LR

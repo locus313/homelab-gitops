@@ -1,7 +1,8 @@
 # Arcane
 
-Arcane is a Docker management UI. This initial setup runs alongside Portainer
-on dh02; it does not migrate or manage existing Portainer stacks.
+Arcane is the active Docker and GitOps manager on dh02. It manages enabled
+projects locally and on dh01 through the remote agent. Portainer is stopped
+and retained for rollback.
 
 The manager image is pinned to `ghcr.io/getarcaneapp/manager:v3.1.1`.
 The community Terraform provider is tested against Arcane 3.0.1, so validate
@@ -26,7 +27,7 @@ outside both managers to avoid a dependency on either one:
    Retrieve the generated password from `/app/data/initial-admin-password`
    inside the container and change it at first login.
 5. Create an API key and store it in Bitwarden. Continue with the
-   [Terraform pilot](../../terraform/arcane/README.md).
+   [Terraform workspace](../../terraform/arcane/README.md).
 
 The data and project directories are under `${DOCKER_BASE_PATH}/arcane`.
 Back up both and the encryption key. Restrict their host permissions: project
