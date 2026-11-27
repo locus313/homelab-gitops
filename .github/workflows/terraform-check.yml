@@ -1,6 +1,11 @@
 name: Terraform Check
 
 "on":
+  pull_request:
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform-check.yml'
+
   push:
     paths:
       - 'terraform/**'
