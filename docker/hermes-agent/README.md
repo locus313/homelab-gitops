@@ -21,8 +21,11 @@ through a web dashboard, CLI, and Discord gateway.
    Traefik's HTTPS forwarding headers and set secure login cookies. Do not use
    a whole network: other containers on it could spoof forwarded headers.
 4. For a standalone deployment, copy `.env.example` to `.env`, fill in all
-   values, and run `docker compose up -d`. For Portainer, configure the
-   corresponding `terraform/portainer` variables and secrets before applying.
+   values, and run `docker compose up -d`. On dh02, Terraform supplies the
+   environment values. Portainer remains the current stack owner until its
+   stack is removed; only then enable `TF_VAR_enable_hermes_agent` in
+   `terraform/arcane/.envrc`. Do not enable both stack owners at once. See the
+   [Arcane migration notes](../../terraform/arcane/README.md) for cutover steps.
 5. Sign in at the web UI with the dashboard username and password. Configure
    a model provider and credentials through the dashboard or `hermes setup`
    before chatting.
@@ -43,8 +46,12 @@ docker exec -it hermes-agent hermes setup
 
 The container persists configuration, credentials, sessions, and agent data in
 `${DOCKER_BASE_PATH}/hermes-agent`. Protect and back up this directory. The
-dashboard password and Discord token are also present in container environment
-variables and Portainer/Terraform state; restrict access to those systems.
+dashboard password and Discord token are present in container environment
+variables. Portainer-managed values are stored in Portainer/Terraform state.
+After cutover, Arcane will provide them through write-only global variables,
+avoiding Terraform state storage. Arcane still writes decrypted values to
+`.env.global` in its projects directory on dh02 as plaintext. Restrict access
+to those systems.
 
 Hermes can run commands inside its container. This stack does not mount the
 Docker socket or host workspaces; review agent tools, permissions, and

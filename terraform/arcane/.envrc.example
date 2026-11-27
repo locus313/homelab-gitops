@@ -58,3 +58,7 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 # Enable only after the dh02 Rackula Portainer stack has been removed.
 # Rackula secret variables are sourced from ../portainer/.envrc.
 # export TF_VAR_enable_rackula="true"
+
+# Enable only after the dh02 Hermes Agent Portainer stack has been removed.
+# Hermes settings and secrets are sourced from ../portainer/.envrc.
+# export TF_VAR_enable_hermes_agent="true"

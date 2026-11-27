@@ -698,6 +698,60 @@ it, run these steps from this workspace:
    Also confirm Arcane still marks the variable as secret. Other containers
    must not receive it automatically.
 
+## Stateful and secret-bearing migration: Hermes Agent
+
+Hermes Agent is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. It uses one persistent bind mount at
+`${DOCKER_BASE_PATH}/hermes-agent`. Its tracked `managed-config.yaml` is
+provided through a Compose `config`, so the Arcane GitOps sync enables
+`sync_directory = true` to include it.
+
+Before preparing this change, Hermes was stopped briefly for a consistent copy
+and restarted. Zerobyte Docker job `0zsNnr7d` created snapshot `1f173c68` on
+2026-11-26 at 8:17 PM. Only
+`hermes-agent-restore-test-source-20261126` was restored to
+`${DOCKER_BASE_PATH}/hermes-agent-restore-test-target-20261126`. The restore
+matched all 2,164 regular files, 674 directories, and 9 symlinks; the cold
+source also contained 9 Unix sockets, which were not present in the restore.
+Zerobyte's Activity recorded success despite a generic failure alert. The
+pinned `nousresearch/hermes-agent:v0.23.3` image started with the restored
+state and read-only managed config on `--network none`, with no published
+ports and test-only Discord credentials. The dashboard returned HTTP 200.
+The test container and temporary directories were removed, and production
+Hermes remained running. No Terraform plan or apply was run, and dh01 was
+untouched.
+
+`DISCORD_BOT_TOKEN` and `HERMES_DASHBOARD_BASIC_AUTH_PASSWORD` are sourced from
+the existing `terraform/portainer/.envrc` values and managed with
+`arcane_global_variable.value_wo`, scoped to Arcane environment `0`, with
+`inject_into_containers = false`. They are not stored in Terraform state, but
+Arcane global variables are **environment-scoped, not project-scoped**:
+another Compose project in environment `0` could reference them. Arcane writes
+the decrypted values to `.env.global` in its projects directory on dh02 as
+plaintext. Only the Hermes Compose file should reference these keys. Do not put
+the secrets in `arcane_gitops_sync.environment_variables`; preserve the current
+values and increment `value_wo_version` if either secret changes.
+
+After this change is merged to `main`, cut over in this order to avoid a
+container-name collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.hermes_agent.portainer_stack.this`, then
+   apply that reviewed plan.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_enable_hermes_agent=true`. Run
+   `direnv exec . terraform plan` and confirm it only creates the two Hermes
+   secret globals and `arcane_gitops_sync.hermes_agent`; apply that reviewed
+   plan.
+3. Verify Hermes is healthy on dh02, the dashboard and Discord gateway work,
+   authentication is unchanged, and the managed config and persistent state
+   are present.
+
+For rollback, disable `enable_hermes_agent` and apply the Arcane workspace first
+so Arcane removes its project and global variables. Restore the Hermes Agent
+Portainer module and `hermes_agent_fs_path` local, then apply the Portainer
+workspace. Data remains at `${DOCKER_BASE_PATH}/hermes-agent`; restore it from
+backup only if it was changed or corrupted.
+
 ## Gates before further service migrations
 
 IT Tools has no persistent mounts or secrets, so its successful transfer does

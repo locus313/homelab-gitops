@@ -111,6 +111,12 @@ variable "enable_rackula" {
   default     = false
 }
 
+variable "enable_hermes_agent" {
+  description = "Create and start Hermes Agent on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "watchtower_cleanup" {
   description = "Remove old images after Watchtower container updates"
   type        = string
@@ -200,6 +206,38 @@ variable "rackula_api_port" {
   description = "Port for the Rackula API server"
   type        = string
   default     = "3001"
+}
+
+variable "hermes_trusted_proxy" {
+  description = "Traefik container IPv4 address on proxynet; update after it changes"
+  type        = string
+
+  validation {
+    condition     = length(split(".", var.hermes_trusted_proxy)) == 4 && can(cidrhost("${var.hermes_trusted_proxy}/32", 0))
+    error_message = "Set hermes_trusted_proxy to a single IPv4 address."
+  }
+}
+
+variable "hermes_dashboard_username" {
+  description = "Hermes dashboard login username"
+  type        = string
+}
+
+variable "hermes_dashboard_password" {
+  description = "Hermes dashboard login password"
+  type        = string
+  sensitive   = true
+}
+
+variable "hermes_discord_bot_token" {
+  description = "Hermes Discord bot token"
+  type        = string
+  sensitive   = true
+}
+
+variable "hermes_discord_allowed_users" {
+  description = "Comma-separated Discord user IDs authorized to use Hermes"
+  type        = string
 }
 
 variable "beszel_public_key" {
