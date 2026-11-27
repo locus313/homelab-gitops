@@ -14,7 +14,7 @@ Some images use `v1.2.3`, others `1.2.3`. Review release notes for version-speci
 
 - Persistent data: `${DOCKER_BASE_PATH}/service-name`
 - Media services: `${MEDIA_PATH}` for content storage
-- Portainer replaces the checkout on every redeploy, which leaves `./` bind mounts stale. Inject repo files with Compose `configs` instead
+- GitOps checkout replacement can leave `./` bind mounts stale. Inject repo files with Compose `configs` instead
 
 ## Traefik dynamic configuration
 
@@ -42,7 +42,7 @@ http:
 
 - Service logs: `docker logs service-name`
 - Traefik log: `${DOCKER_BASE_PATH}/traefik/logs/traefik.log`
-- Service discovery: Traefik dashboard at `traefik.${TRAEFIK_BASE_DOMAIN}`
+- Service discovery: check Traefik logs and container labels; the Traefik dashboard is disabled
 - Network membership: `docker network inspect proxynet`
 
 ## Terraform

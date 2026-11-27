@@ -13,5 +13,5 @@ Run an always-on Docker VM (`sc_docker_vm`) on ScaleComputing as the primary hos
 ## Consequences
 
 - Losing `dh01` no longer takes down the main services.
-- Rebuilding a host is a Terraform apply plus a Portainer redeploy from Git.
+- Rebuilding a host requires Terraform provisioning, Arcane manager or agent bootstrap, and redeployment from Git.
 - The failover and data-replication design in [resilience-planning.md](../resilience-planning.md) is a plan, not a record of what is deployed. Syncthing is described there but is not part of this repo's deployment.

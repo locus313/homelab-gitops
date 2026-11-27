@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-`homelab-gitops` manages self-hosted services as code — Docker Compose stacks deployed via Portainer GitOps, and VMs provisioned by Terraform on a ScaleComputing HyperCore cluster and a Proxmox host.
+`homelab-gitops` manages self-hosted services as code — Docker Compose stacks deployed via Arcane GitOps, and VMs provisioned by Terraform on a ScaleComputing HyperCore cluster and a Proxmox host.
 
 **Hard rules:**
 - Never use `latest` image tag — always pin to a specific semver tag
@@ -22,7 +22,8 @@ homelab-gitops/
 │       └── README.md        # Setup instructions, access URL, notes
 ├── terraform/               # Infrastructure as Code
 │   ├── homelab/             # ScaleComputing HyperCore VM workspace
-│   ├── portainer/           # Portainer stack deployment via API
+│   ├── arcane/              # Arcane Git syncs and environment variables
+│   ├── portainer/           # Retained Portainer configuration and state for rollback
 │   ├── modules/             # Reusable Terraform modules
 │   │   ├── cloud-images/    # Ubuntu LTS cloud image management
 │   │   ├── portainer-stack/ # Portainer GitOps stack module (used by terraform/portainer)
@@ -53,7 +54,7 @@ Deployed state lives in `terraform/` and `docker/`. Treat `docs/resilience-plann
 
 | Layer | Technology |
 |-------|-----------|
-| Container orchestration | Docker Compose, Portainer GitOps |
+| Container orchestration | Docker Compose, Arcane GitOps |
 | Reverse proxy / TLS | Traefik + Let's Encrypt (CloudNS DNS-01 challenge) |
 | Container network | `proxynet` external Docker bridge network |
 | Infrastructure (IaC) | Terraform — `ScaleComputing/hypercore` + `bpg/proxmox` providers |
@@ -68,7 +69,8 @@ Deployed state lives in `terraform/` and `docker/`. Treat `docs/resilience-plann
 docker network create proxynet
 ```
 
-**Deploy a service:**
+**Run a service manually for bootstrap or isolated testing:** Do not start a
+second copy of an Arcane-managed project.
 ```bash
 cd docker/<service-name>
 cp .env.example .env
@@ -81,10 +83,11 @@ docker compose up -d
 yamllint -c .github/.yamllint .
 ```
 
-**Terraform workspace:**
+**Terraform workspace:** For first-time setup only, copy the example without
+overwriting an existing `.envrc`.
 ```bash
-cd terraform/homelab        # or terraform/portainer
-cp .envrc.example .envrc    # fill in values
+cd terraform/homelab        # or terraform/arcane
+cp .envrc.example .envrc    # only if .envrc does not already exist
 direnv allow                # secrets come from Bitwarden: export BW_SESSION first
 terraform init
 terraform plan
@@ -130,7 +133,8 @@ Copy `docker/it-tools/docker-compose.yml`: pinned image, `container_name` matchi
 | `gitea` | Adds `postgres:18` sidecar; SSH on `222:22` |
 | `azerothcore` | Local build stack (`pull_policy: never`, image built on host); MySQL sidecar; host ports `3724` + `8085`, no Traefik |
 | `storj-node` | Requires host port-forward `28967` (TCP + UDP) |
-| `portainer` | Also exposes `9443:9443` directly as a fallback |
+| `arcane` | Manually bootstrapped manager; its availability must not depend on its own Git sync |
+| `portainer` | Stopped and retained for rollback; exposes `9443:9443` directly when restarted |
 | `arcane-agent` | Manually bootstrapped remote agent; outbound only, no Traefik or Terraform stack |
 
 ### Common Environment Variables
@@ -156,19 +160,23 @@ Breaking changes: `feat!: drop TLS 1.0 support`
 
 Workflows in `.github/workflows/` validate pushes; `changelog.yml` appends to `CHANGELOG.md` on `main`.
 
-**Portainer GitOps:** Each `docker/<service>` directory is a Portainer stack. Portainer polls the repo and redeploys automatically on commit.
+**Arcane GitOps:** Terraform configures enabled Git syncs and their environment variables in `terraform/arcane`. Arcane polls Git and deploys projects locally on dh02 or through its dh01 agent. The manager and agent are bootstrapped independently of Git syncs. See `terraform/arcane/README.md` for deployment, secret handling, and recovery.
+
+**Portainer rollback:** The manager and dh01 agent are stopped with restart disabled. Their containers, data, and `terraform/portainer` state and configuration are retained; do not remove them without an explicit decision.
 
 **Dependabot:** Manually maintained in `.github/dependabot.yml`. Docker compose directories are matched by the `/docker/*` glob, so new services need no entry, except stateful images (databases, search indexes): add a `semver-major` ignore for each, since a major bump migrates the data directory. `compose-check.yml` fails when one is missing.
 
 ## Adding a New Docker Service
 
-Create these 3 files together, then add the Terraform stack:
+Create these 3 files together, then configure the Arcane Git sync:
 
 1. **`docker/<service-name>/docker-compose.yml`** — use the standard pattern above
 2. **`docker/<service-name>/.env.example`** — list every `${VAR}` referenced in the compose file with a descriptive placeholder value
 3. **`docker/<service-name>/README.md`** — document: purpose, access URL (`https://<service>.<domain>`), prerequisites, notes
 
-4. **`terraform/portainer/main.tf`** — add a `module "<service>"` call to `../modules/portainer-stack` (`name`, `compose_path`, `endpoint_id`, `repo_url`, `tz`, `env`, `secret_env`), plus any new variables in `terraform/portainer/variables.tf`. Mark secrets `sensitive = true` and pass them through `secret_env`.
+4. **`terraform/arcane/main.tf` and `variables.tf`** — follow an existing `arcane_gitops_sync` example. Add a default-off enable flag, target the intended environment (`"0"` for dh02 or the enrolled dh01 environment ID), and configure the repository, Compose path, project name, sync settings, and non-secret environment variables. Add any required inputs to `variables.tf` and `.envrc.example`.
+5. **Secrets** — mark Terraform inputs sensitive and follow the existing environment-scoped `arcane_global_variable` examples: use `value_wo`, `value_wo_version`, `is_secret = true`, and `inject_into_containers = false`, and make the Git sync depend on its secrets. Never put secrets in `arcane_gitops_sync.environment_variables`, which is stored in Terraform state. Global variables are scoped to environments, not projects, and Arcane writes decrypted values to project files; restrict host access. Increment `value_wo_version` on secret changes.
+6. **Deployment** — have the user review a Terraform plan before enabling and applying the sync; verify the project and service afterwards. Environment-only changes require a project redeploy. A no-change plan does not verify write-only secret values. Follow the service's migration instructions before transferring ownership of an existing project.
 
 **YAML check:** Run `yamllint -c .github/.yamllint docker/<service-name>/docker-compose.yml` before committing.  
 **Commit message:** `feat(docker/<service-name>): add initial <Service Name> stack`
@@ -180,14 +188,14 @@ Create these 3 files together, then add the Terraform stack:
 | `docker-compose.yml` environment vars | `.env.example` (add/remove vars) |
 | Service internal port | Traefik `loadbalancer.server.port` label |
 | Service name / container_name | Volume paths, Traefik labels, README access URL |
-| `.env.example` variable added/renamed | `docker-compose.yml`, `README.md`, and the stack's `env`/`secret_env` in `terraform/portainer/main.tf` |
+| `.env.example` variable added/renamed | `docker-compose.yml`, `README.md`, Arcane sync variables or scoped secrets, and related Terraform inputs and `.envrc.example` |
 | Terraform module interface | All workspaces that call the module (`homelab/`, `portainer/`, `test/`) |
 
 ## Common Pitfalls
 
 - **`proxynet` network missing** — `docker network create proxynet` must run before first deploy
 - **`latest` image tag** — always pin; Dependabot can't track `latest`
-- **Missing `.env.example`** — Portainer GitOps users need this to configure the stack
+- **Missing `.env.example`** — users need this to configure the stack
 - **Hardcoded domain in Traefik label** — must be `` Host(`<name>.${TRAEFIK_BASE_DOMAIN}`) ``
 - **GPU services without `/dev/dri`** — HandBrake, Webtop, Kasm, Ollama all need device mount
 - **Port conflicts** — use Traefik routing; only add host ports for services that genuinely need them (PXE, P2P, etc.)

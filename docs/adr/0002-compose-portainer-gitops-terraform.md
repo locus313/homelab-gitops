@@ -1,6 +1,8 @@
 # 2. Docker Compose deployed by Portainer GitOps, defined in Terraform
 
-Status: accepted
+Status: deprecated — Portainer has been retired in favor of Arcane. See the
+current [architecture](../architecture.md); this record preserves the original
+decision.
 
 ## Context
 

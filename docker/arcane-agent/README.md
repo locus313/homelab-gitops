@@ -5,7 +5,7 @@ The Arcane agent connects dh01 to the Arcane manager on dh02. The pinned
 connects outbound over HTTPS and does not publish a host port.
 
 The agent is bootstrapped manually, outside both managers, so it remains
-available when the dh01 Portainer stack is removed. Its Docker socket access
+available during management migrations and rollbacks. Its Docker socket access
 grants administrative control of dh01: restrict access to the Arcane manager.
 
 ## Bootstrap
@@ -31,8 +31,7 @@ grants administrative control of dh01: restrict access to the Arcane manager.
    ```
 
 4. Confirm the agent shows **Online** in Arcane and that dh01 Netdata remains
-   healthy. Do not remove the Portainer stack yet; the Netdata migration is a
-   separate step after the agent and remote GitOps are verified.
+   healthy. The retired dh01 Portainer agent remains stopped for rollback.
 
 The agent stores its enrolled credentials in
 `${DOCKER_BASE_PATH}/arcane-agent/data`. Keep that directory persistent and

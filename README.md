@@ -5,7 +5,7 @@
 [![YAML Lint](https://github.com/locus313/homelab-gitops/actions/workflows/yaml-lint.yml/badge.svg)](https://github.com/locus313/homelab-gitops/actions/workflows/yaml-lint.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A collection of production-ready Docker Compose configurations for self-hosted services, wired together through a Traefik reverse proxy with automatic TLS, managed as GitOps stacks via Arcane and Portainer, and backed by Terraform-provisioned VMs on both a ScaleComputing HCI cluster and a Proxmox host.
+A collection of Docker Compose configurations for self-hosted services, routed through Traefik with automatic TLS and managed through Arcane GitOps and Terraform-provisioned VMs on a ScaleComputing HCI cluster and a Proxmox host. Portainer is stopped and retained for rollback.
 
 [Architecture](#architecture) • [Services](#services) • [Getting Started](#getting-started) • [Configuration](#configuration) • [Project Structure](#project-structure) • [Infrastructure](#infrastructure)
 
@@ -13,7 +13,7 @@ A collection of production-ready Docker Compose configurations for self-hosted s
 
 ## Architecture
 
-All services share the `proxynet` external Docker network. Traefik is the single ingress point — no service exposes a host port directly (with a small number of necessary exceptions). SSL certificates are issued automatically via Let's Encrypt with a CloudNS DNS-01 challenge.
+Services routed through Traefik share the `proxynet` external Docker network. Traefik is the primary HTTP(S) ingress, with documented host-network and direct-port exceptions. SSL certificates are issued automatically via Let's Encrypt with a CloudNS DNS-01 challenge.
 
 ```mermaid
 graph LR
@@ -27,7 +27,7 @@ graph LR
     TRAEFIK["Traefik<br/>:80 redirect, :443 HTTPS"]:::traefik
 
     subgraph PROXY["proxynet (Docker bridge)"]
-        MGMT["Management<br/>Portainer, Homarr, Rackula"]:::group
+        MGMT["Management<br/>Arcane, Homarr, Rackula"]:::group
         MEDIA["Media<br/>Ombi, MeTube, HandBrake"]:::group
         TOOLS["Dev tools<br/>IT-Tools, Stirling-PDF,<br/>Networking Toolbox, Code-Server"]:::group
         VCS["Version control<br/>Gitea, Gitea Mirror"]:::group
@@ -49,7 +49,7 @@ graph LR
 
 ### Standard service pattern
 
-Every service in this repo follows the same Docker Compose structure:
+Most services follow this Docker Compose structure:
 
 ```yaml
 services:
@@ -87,7 +87,8 @@ Notable exceptions: **Plex** and **Netdata** use `network_mode: host`; **Code-Se
 | Category | Service | Description |
 |----------|---------|-------------|
 | **Ingress** | [Traefik](docker/traefik/) | Reverse proxy, TLS termination, automatic Let's Encrypt |
-| **Management** | [Portainer](docker/portainer/) | Container management UI and GitOps stack deployment |
+| **Management** | [Arcane](docker/arcane/) | GitOps management on dh02, with an [agent](docker/arcane-agent/) on dh01 |
+| **Management** | [Portainer](docker/portainer/) | Stopped; configuration and data retained for rollback |
 | **Dashboard** | [Homarr](docker/homarr/) | Homelab dashboard with Docker widget integration |
 | **Monitoring** | [Beszel](docker/beszel/) | Lightweight server and container monitoring with agent architecture |
 | **Monitoring** | [Netdata](docker/netdata/) | Real-time system and container performance metrics |
@@ -125,14 +126,14 @@ Notable exceptions: **Plex** and **Netdata** use `network_mode: host`; **Code-Se
 
 ### 1. Create the shared network
 
-All services communicate through the `proxynet` network. Create it once before deploying anything:
+Traefik and its routed services use the `proxynet` network. Create it once before deploying them:
 
 ```bash
 docker network create proxynet
 ```
 
 > [!IMPORTANT]
-> Without this network, every service will fail to start.
+> Services that require this network cannot start without it.
 
 ### 2. Clone and configure Traefik
 
@@ -146,11 +147,19 @@ cp .env.example .env
 docker compose up -d
 ```
 
-Verify Traefik is healthy and can reach the dashboard at `https://traefik.<your-domain>`.
+Verify Traefik is healthy and check its logs for routing and certificate errors. The dashboard is disabled.
 
 ### 3. Deploy other services
 
-Each service follows the same workflow:
+For the managed environment, bootstrap [Arcane](docker/arcane/) and the
+[dh01 agent](docker/arcane-agent/) independently, then configure Git syncs and
+environment variables through [terraform/arcane](terraform/arcane/README.md).
+Review the plan before enabling a sync and verify the project after applying.
+Portainer's stopped containers, data, and Terraform state remain available for
+rollback; see its [retirement instructions](docker/portainer/README.md).
+
+For isolated local testing or manual bootstrap, a service can instead be started
+with Compose. Do not start a second copy of an Arcane-managed project:
 
 ```bash
 cd docker/<service-name>
@@ -159,16 +168,13 @@ cp .env.example .env
 docker compose up -d
 ```
 
-> [!TIP]
-> Use **Portainer stacks** with Git repository integration for a centralized UI and automated redeployment on push. Set the compose path to `docker/<service-name>` for each stack.
-
 ---
 
 ## Configuration
 
 ### Common environment variables
 
-All services use a shared set of core variables:
+Common variables used by services include:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
@@ -237,7 +243,8 @@ homelab-gitops/
 │       └── README.md
 ├── terraform/
 │   ├── homelab/                # VMs: ScaleComputing + Proxmox
-│   ├── portainer/              # Portainer GitOps stacks (one module per service)
+│   ├── arcane/                 # Arcane Git syncs and environment variables
+│   ├── portainer/              # Retained Portainer configuration for rollback
 │   ├── modules/
 │   │   ├── cloud-images/       # Ubuntu LTS cloud image references
 │   │   ├── portainer-stack/    # Portainer GitOps stack module
@@ -284,7 +291,7 @@ Commit messages pushed to `main` are automatically harvested by `.github/scripts
 
 ### Dependabot configuration
 
-`.github/dependabot.yml` is manually maintained — add an entry when a new `docker-compose.yml` is added. Docker Compose updates run daily; GitHub Actions pin updates run weekly (Saturdays).
+`.github/dependabot.yml` is manually maintained. The `/docker/*` glob covers new Compose directories; add a `semver-major` ignore for each new stateful image. Docker Compose updates run daily; GitHub Actions pin updates run weekly (Saturdays).
 
 ### YAML validation
 
@@ -298,8 +305,8 @@ yamllint -c .github/.yamllint .
 
 ## Contributing
 
-1. Fork the repo and create a branch: `feat(docker/<name>): add <Service> stack`
-2. Follow the [standard service pattern](#getting-started) — every new service needs `docker-compose.yml`, `.env.example`, and `README.md`
+1. Fork the repo and create a branch, e.g. `feature/add-service`
+2. Follow the [standard service pattern](#standard-service-pattern) and [new-service instructions](AGENTS.md#adding-a-new-docker-service), including the Arcane Terraform configuration
 3. Always pin image versions — never use `latest`
 4. Run `yamllint -c .github/.yamllint .` before committing
 5. Open a PR — the checklist in the PR template walks through all required steps
