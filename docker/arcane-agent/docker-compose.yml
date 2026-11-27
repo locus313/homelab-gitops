@@ -1,0 +1,17 @@
+services:
+  arcane-agent:
+    image: ghcr.io/getarcaneapp/agent:v3.1.1
+    container_name: arcane-agent
+    restart: unless-stopped
+    stop_grace_period: 15s
+    cgroup: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKER_BASE_PATH:?Set the Docker data path}/arcane-agent/data:/app/data
+    environment:
+      ARCANE_AGENT: "true"
+      ARCANE_AGENT_TOKEN: ${ARCANE_AGENT_TOKEN:?Set the enrollment token}
+      ARCANE_AGENT_TRANSPORT: auto
+      ARCANE_FILE_PERM: "0600"
+      ARCANE_MANAGER_API_URL: https://arcane.${TRAEFIK_BASE_DOMAIN:?Set the Traefik base domain}
+      TZ: America/Los_Angeles
