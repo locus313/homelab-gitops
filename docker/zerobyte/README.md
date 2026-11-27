@@ -47,6 +47,15 @@ Powerful backup automation for your remote storage. Built on top of Restic, Zero
    - Navigate to `https://zerobyte.YOUR_DOMAIN`
    - Complete initial setup through the web interface
 
+### Deploy via Arcane
+
+After removing the dh02 Portainer stack, enable `TF_VAR_enable_zerobyte` in
+`terraform/arcane/.envrc` and apply that workspace. Terraform supplies
+`APP_SECRET` and `BASE_URL`; keep the existing `APP_SECRET` unchanged so
+Zerobyte can decrypt its stored credentials. Arcane uses the existing
+`${DOCKER_BASE_PATH}/zerobyte` state and host mounts; backup repositories are
+not moved.
+
 ## Configuration
 
 ### Environment Variables
@@ -204,7 +213,7 @@ Always use local storage for the Zerobyte data directory.
 
 ## Version Information
 
-- **Current Image**: `ghcr.io/nicotsx/zerobyte:v0.21.1`
+- **Current Image**: `ghcr.io/nicotsx/zerobyte:v0.44.2`
 - **Latest Release**: Check [GitHub Releases](https://github.com/nicotsx/zerobyte/releases)
 
 ## License

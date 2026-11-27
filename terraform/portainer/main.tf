@@ -7,8 +7,6 @@ locals {
   puid_str = tostring(var.puid)
   pgid_str = tostring(var.pgid)
 
-  # Fully-qualified URLs derived from base domain
-  zerobyte_base_url = "https://zerobyte.${var.traefik_base_domain}"
   # Portainer-managed filesystem paths for stacks that use relative bind mounts.
   # Portainer clones/syncs the stack directory here on each GitOps update so
   # Docker can resolve ./relative paths against a stable host path.
@@ -61,32 +59,6 @@ module "traefik" {
 #
 # resource "portainer_stack" "portainer" { ... }
 # ---------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------
-# Zerobyte — backup management
-# ---------------------------------------------------------------------------
-
-module "zerobyte" {
-  source = "../modules/portainer-stack"
-
-  name         = "zerobyte"
-  compose_path = "docker/zerobyte/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    DOCKER_BASE_PATH    = var.docker_base_path
-    PUID                = local.puid_str
-    PGID                = local.pgid_str
-    BASE_URL            = local.zerobyte_base_url
-    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
-  }
-
-  secret_env = {
-    APP_SECRET = var.zerobyte_app_secret
-  }
-}
 
 # ---------------------------------------------------------------------------
 # iVentoy — ISO network boot server

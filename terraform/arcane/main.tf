@@ -265,6 +265,19 @@ resource "arcane_global_variable" "azerothcore_discord_relay_db_password" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "zerobyte_app_secret" {
+  count = var.enable_zerobyte ? 1 : 0
+
+  key              = "APP_SECRET"
+  value_wo         = var.zerobyte_app_secret
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "handbrake" {
   count = var.enable_handbrake ? 1 : 0
 
@@ -775,5 +788,32 @@ resource "arcane_gitops_sync" "azerothcore" {
     PGID                  = tostring(var.pgid)
     PUID                  = tostring(var.puid)
     TZ                    = "America/Los_Angeles"
+  }
+}
+
+resource "arcane_gitops_sync" "zerobyte" {
+  depends_on = [
+    arcane_global_variable.zerobyte_app_secret,
+  ]
+  count = var.enable_zerobyte ? 1 : 0
+
+  environment_id = "0"
+  name           = "zerobyte"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/zerobyte/docker-compose.yml"
+  project_name   = "zerobyte"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    BASE_URL            = "https://zerobyte.${var.traefik_base_domain}"
+    DOCKER_BASE_PATH    = var.docker_base_path
+    PGID                = tostring(var.pgid)
+    PUID                = tostring(var.puid)
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
+    TZ                  = "America/Los_Angeles"
   }
 }
