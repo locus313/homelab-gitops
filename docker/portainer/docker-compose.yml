@@ -3,9 +3,7 @@ services:
     image: portainer/portainer-ce:2.45.4
     container_name: portainer
     restart: unless-stopped
-    # Traefik routing is handled via dynamic config (traefik/config/dynamic/)
-    # because the Portainer backend uses HTTPS (self-signed) on port 9443.
-    # Port 9443 is also exposed directly as a fallback for initial setup.
+    # Direct access for an approved rollback; Portainer uses a self-signed certificate.
     networks:
       - proxynet
     ports:

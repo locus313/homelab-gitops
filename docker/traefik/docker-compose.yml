@@ -12,13 +12,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /mnt/docker/traefik/cloudns-acme.json:/var/traefik/certs/cloudns-acme.json:rw
       - ${DOCKER_BASE_PATH}/traefik/logs:/logs
-    # Configs are copied at container create time, so a Portainer git re-pull
-    # replacing the checkout directory cannot leave a stale bind mount (404s).
+    # Inject individual files so replacing a Git checkout cannot leave a stale
+    # directory bind mount.
     configs:
       - source: traefik-static
         target: /etc/traefik/traefik.yaml
-      - source: traefik-portainer
-        target: /etc/traefik/dynamic/portainer.yaml
       - source: traefik-storj-node-1
         target: /etc/traefik/dynamic/storj-node-1.yaml
     environment:
@@ -35,8 +33,6 @@ services:
 configs:
   traefik-static:
     file: ./config/traefik.yaml
-  traefik-portainer:
-    file: ./config/dynamic/portainer.yaml
   traefik-storj-node-1:
     file: ./config/dynamic/storj-node-1.yaml
 

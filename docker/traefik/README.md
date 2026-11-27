@@ -38,6 +38,42 @@ Traefik directory so the Compose `configs` files are available. The special
 SSH-tunnel cutover and rollback procedure is documented in the
 [Arcane migration guide](../../terraform/arcane/README.md).
 
+### Removing the retired Portainer route
+
+The Traefik Git sync runs automatically against `main`. Merging the route
+removal can recreate Traefik and briefly interrupt HTTPS for all services,
+including Arcane. Before merging, agree on the interruption window and keep a
+tested SSH tunnel to Arcane's private port `3552` available:
+
+1. On dh02, find Arcane's current `proxynet` IP:
+   ```bash
+   docker inspect --format '{{with index .NetworkSettings.Networks "proxynet"}}{{.IPAddress}}{{end}}' arcane
+   ```
+2. From the Terraform workstation, keep a tunnel open:
+   ```bash
+   ssh -N -L 13552:<ARCANE_PROXNET_IP>:3552 <dh02-ssh-target>
+   ```
+   With Windows `ssh.exe` from WSL2, Windows loopback may not be reachable
+   from WSL. Bind to the Windows WSL interface instead:
+   ```bash
+   ssh.exe -N -L <WINDOWS_WSL_IP>:13552:<ARCANE_PROXNET_IP>:3552 <dh02-ssh-target>
+   ```
+   Use that reachable address instead of `127.0.0.1` below. Restrict access to
+   the tunnel; it forwards the Arcane API without TLS.
+3. Before merging, verify the tunnel with a user-run plan:
+   ```bash
+   cd terraform/arcane
+   direnv exec . env TF_VAR_arcane_endpoint=http://127.0.0.1:13552/api terraform plan
+   ```
+   Do not apply unexpected changes. Keep the tunnel open through deployment.
+4. After the sync, check Traefik logs, Arcane and other HTTPS routes, and both
+   Netdata nodes. The retired Portainer route should no longer work.
+
+If Traefik fails, use the direct Arcane connection for diagnosis. Revert the
+route-removal change and sync or redeploy Traefik from Arcane to restore the
+previous configuration. Do not remove Portainer data or the shared
+`terraform/portainer/.envrc`.
+
 ## Access
 
 > [!NOTE]
@@ -64,9 +100,10 @@ The Traefik configuration is split into:
 - **Static Configuration**: `config/traefik.yaml` - Main Traefik settings
 - **Dynamic Configuration**: `config/dynamic/` - Service-specific routing rules
 
-Config files are injected via Compose `configs` (not a bind mount), so a Portainer
-git re-pull cannot leave Traefik with a stale directory and 404s. When adding a file
-under `config/dynamic/`, also add a matching `configs` entry in `docker-compose.yml`.
+Config files are injected individually via Compose `configs`, so replacing a
+Git checkout cannot leave Traefik with a stale directory bind mount. When
+adding a file under `config/dynamic/`, also add a matching `configs` entry in
+`docker-compose.yml`.
 
 Each file in `config/dynamic/` is one routing target; see the directory for the current list.
 
