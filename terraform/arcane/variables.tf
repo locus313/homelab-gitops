@@ -129,6 +129,12 @@ variable "enable_plex" {
   default     = false
 }
 
+variable "enable_code_server" {
+  description = "Create and start Code Server on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "watchtower_cleanup" {
   description = "Remove old images after Watchtower container updates"
   type        = string
@@ -287,6 +293,36 @@ variable "plex_claim" {
   type        = string
   default     = ""
   sensitive   = true
+}
+
+variable "code_server_password" {
+  description = "Password for the Code Server web interface"
+  type        = string
+  sensitive   = true
+}
+
+variable "code_server_sudo_password" {
+  description = "Sudo password for terminal access within Code Server"
+  type        = string
+  sensitive   = true
+}
+
+variable "code_server_default_workspace" {
+  description = "Default workspace directory inside Code Server"
+  type        = string
+  default     = "/config/workspace"
+}
+
+variable "code_server_ts_authkey" {
+  description = "Tailscale auth key for the Code Server sidecar"
+  type        = string
+  sensitive   = true
+}
+
+variable "code_server_ts_extra_args" {
+  description = "Extra arguments for the Code Server Tailscale sidecar"
+  type        = string
+  default     = "--advertise-tags=tag:container --reset"
 }
 
 variable "beszel_public_key" {

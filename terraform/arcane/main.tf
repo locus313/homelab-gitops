@@ -187,6 +187,45 @@ resource "arcane_global_variable" "plex_claim" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "code_server_password" {
+  count = var.enable_code_server ? 1 : 0
+
+  key              = "PASSWORD"
+  value_wo         = var.code_server_password
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
+resource "arcane_global_variable" "code_server_sudo_password" {
+  count = var.enable_code_server ? 1 : 0
+
+  key              = "SUDO_PASSWORD"
+  value_wo         = var.code_server_sudo_password
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
+resource "arcane_global_variable" "code_server_ts_authkey" {
+  count = var.enable_code_server ? 1 : 0
+
+  key              = "TS_AUTHKEY"
+  value_wo         = var.code_server_ts_authkey
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "handbrake" {
   count = var.enable_handbrake ? 1 : 0
 
@@ -635,5 +674,37 @@ resource "arcane_gitops_sync" "plex" {
     PGID             = tostring(var.pgid)
     PUID             = tostring(var.puid)
     TZ               = "America/Los_Angeles"
+  }
+}
+
+resource "arcane_gitops_sync" "code_server" {
+  depends_on = [
+    arcane_global_variable.code_server_password,
+    arcane_global_variable.code_server_sudo_password,
+    arcane_global_variable.code_server_ts_authkey,
+  ]
+  count = var.enable_code_server ? 1 : 0
+
+  environment_id = "0"
+  name           = "code-server"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/code-server/docker-compose.yml"
+  project_name   = "code-server"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DEFAULT_WORKSPACE = var.code_server_default_workspace
+    PGID              = tostring(var.pgid)
+    PUID              = tostring(var.puid)
+    TS_EXTRA_ARGS     = var.code_server_ts_extra_args
+    TS_SERVE_CONFIG   = "/config/code-server.json"
+    TS_SOCKET         = "/var/run/tailscale/tailscaled.sock"
+    TS_STATE_DIR      = "/var/lib/tailscale"
+    TS_USERSPACE      = "false"
+    TZ                = "America/Los_Angeles"
   }
 }

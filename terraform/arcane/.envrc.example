@@ -70,3 +70,7 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 # Enable only after the dh02 Plex Portainer stack has been removed.
 # The existing TF_VAR_plex_claim is sourced from ../portainer/.envrc.
 # export TF_VAR_enable_plex="true"
+
+# Enable only after the dh02 Code Server Portainer stack has been removed.
+# Code Server passwords and the Tailscale auth key are sourced from ../portainer/.envrc.
+# export TF_VAR_enable_code_server="true"

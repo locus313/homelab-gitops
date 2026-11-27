@@ -856,6 +856,51 @@ module and apply the Portainer workspace. Data remains under
 `${DOCKER_BASE_PATH}/plex`; restore it from backup only if it was changed or
 corrupted.
 
+## Sidecar network migration: Code Server
+
+Code Server is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. It consists of the `code-server-ts` Tailscale
+sidecar and `code-server`, which shares the sidecar's network namespace. The
+Arcane sync supplies the existing workspace, ownership, and Tailscale settings.
+
+On 2026-11-26, both production containers were stopped for a cold rsync copy of
+the 27.16 GB data tree. They were unavailable for about 14 minutes, then
+restarted with zero restarts; the local `/healthz` endpoint returned HTTP 200
+after a brief startup delay. The copy was restored to a separate directory,
+and an isolated Code Server container returned HTTP 200 from `/healthz`. The
+restore test used `--network none` and omitted the Docker socket, custom init
+scripts, and docker-mods, so it verifies restored Code Server configuration and
+startup, not Tailscale access or Docker integration. An rsync dry run reported
+no remaining file transfers. The test containers and temporary copies were
+removed. No Terraform plan or apply was run, and dh01 was untouched.
+
+Terraform manages `PASSWORD`, `SUDO_PASSWORD`, and `TS_AUTHKEY` as
+`arcane_global_variable.value_wo` secrets scoped to environment `0`, with
+`inject_into_containers = false`. These values are not stored in Terraform
+state, but Arcane writes decrypted global values to `.env.global` in its
+projects directory on dh02 as plaintext. Global variables are environment-
+scoped, not project-scoped; only the Code Server Compose file should reference
+these keys. Do not put them in `arcane_gitops_sync.environment_variables`.
+
+After this change is merged to `main`, cut over in this order to avoid a
+container-name collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.code_server.portainer_stack.this`, then
+   apply that reviewed plan.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_enable_code_server=true`. Run
+   `direnv exec . terraform plan` and confirm it only creates the three
+   Code Server global variables and `arcane_gitops_sync.code_server`; apply
+   that reviewed plan.
+3. Verify both containers are running on dh02, Tailscale access works, and the
+   editor loads its existing configuration and workspace.
+
+For rollback, disable `enable_code_server` and apply the Arcane workspace first
+so Arcane removes its project and global variables. Restore the Code Server
+Portainer module and apply the Portainer workspace. Persistent data remains
+under `/mnt/docker/code-server`; restore it from backup only if it was changed
+or corrupted.
+
 ## Gates before further service migrations
 
 IT Tools has no persistent mounts or secrets, so its successful transfer does

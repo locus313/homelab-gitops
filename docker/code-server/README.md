@@ -83,8 +83,15 @@ next container restart.
 
 ### Deploy via Portainer
 ```bash
-# Portainer will automatically deploy from your GitOps repository
+# The Portainer GitOps stack is being migrated to Arcane.
 ```
+
+### Deploy via Arcane
+
+After the Code Server Portainer stack has been removed, enable
+`TF_VAR_enable_code_server` in `terraform/arcane/.envrc` and apply that
+workspace. Terraform supplies the environment settings and secrets; the
+passwords and Tailscale auth key are sourced from `terraform/portainer/.envrc`.
 
 ### Manual Deployment
 ```bash
