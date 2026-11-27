@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - `terraform/portainer` — Document retirement and disable fallback (#521).
+- `docker/traefik` — Remove retired Portainer route (#522).
 
 ## [2026-11-26]
 
