@@ -397,7 +397,7 @@ variable "zerobyte_app_secret" {
 }
 
 variable "beszel_public_key" {
-  description = "Ed25519 public key for Beszel agent authentication; use the existing value from terraform/portainer/.envrc"
+  description = "Ed25519 public key for Beszel agent authentication; preserve the existing value"
   type        = string
   default     = ""
 }

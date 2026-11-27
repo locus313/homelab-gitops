@@ -15,8 +15,8 @@
 #   Inline (one-off):
 #     env TF_VAR_portainer_api_key="ptr_..." terraform apply
 #
-# Portainer is stopped after the Arcane migration. This file remains the source
-# of shared credentials and variables for terraform/arcane/.envrc.
+# Portainer is stopped after the Arcane migration. Existing Arcane environments
+# may still source shared credentials and variables from this file.
 # The Portainer workspace and state are retained for rollback; a rollback
 # requires restarting Portainer and reviewing the plan before applying.
 #

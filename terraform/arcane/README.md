@@ -10,9 +10,9 @@ requires Terraform 1.11 or later.
 1. Bootstrap [Arcane on dh02](../../docker/arcane/README.md), and store its
    API key in Bitwarden. Make sure this change is merged to `main` before
    enabling the pilot: Arcane pulls its Compose file from that branch.
-2. Copy `.envrc.example` to `.envrc`, set the Arcane API URL, and run
-   `direnv allow`. It reuses `../portainer/.envrc` for the S3 backend
-   credentials and base domain; update the Bitwarden item name if needed.
+2. Copy `.envrc.example` to `.envrc`, set the Arcane API URL and the existing
+   service values, and update the Bitwarden item names as needed. Run
+   `direnv allow`.
 3. Run `direnv exec . terraform init` and
    `direnv exec . terraform plan`. Initially, only the Git repository is
    created. Review and apply the plan.
@@ -27,6 +27,27 @@ requires Terraform 1.11 or later.
    the verification steps in the [pilot README](../../docker/arcane-pilot/README.md)
    after applying the Terraform change and syncing from Git. Confirm other
    Portainer-managed stacks are unchanged.
+
+### Migrating an existing environment
+
+The standalone example no longer sources `../portainer/.envrc`. Do not
+overwrite an existing Arcane `.envrc`: it contains the enabled-sync flags and
+the dh01 agent ID. First make private backups outside the repository. Then
+replace its Portainer `source_env` line with the existing backend credentials,
+common settings, and Bitwarden lookups from the private Portainer `.envrc`.
+Keep all Arcane-specific values and any custom overrides unchanged; use the
+example as a checklist, not as a replacement for existing values. Check any
+relative paths or sourced files after moving them to the Arcane workspace.
+
+Remove Portainer-only API and endpoint settings from the Arcane environment.
+Run `direnv allow`, then `direnv exec . terraform plan`; do not apply unexpected
+changes. A no-change plan does **not** verify write-only secret values: confirm
+their Bitwarden item and field lookups still match the original configuration
+before any future apply. Keep the Portainer file and state for rollback until
+the migration is verified.
+
+The service migration procedures below describe the original handoffs. Their
+references to Portainer ownership and cutover ordering are historical.
 
 ## First service migration: IT Tools
 
@@ -223,8 +244,8 @@ network, device, and Docker socket access are not needed to validate the hub
 restore. Production Beszel remained running after the rehearsal.
 
 The existing `BESZEL_PUBLIC_KEY` is a public agent-authentication key, not a
-secret. Ensure `TF_VAR_beszel_public_key` is available through
-`../portainer/.envrc`, which the Arcane workspace sources. This migration
+secret. Ensure the existing `TF_VAR_beszel_public_key` is available in the
+Arcane environment. This migration
 preserves the agent's existing host networking, capabilities, AppArmor setting,
 device access, and read-only Docker socket mount; it does not expand them.
 
@@ -334,7 +355,7 @@ collision:
    Apply that reviewed plan.
 2. Confirm dh02 Netdata has stopped and its three data directories remain
    intact. In `terraform/arcane/.envrc`, set `TF_VAR_enable_netdata=true`;
-   the existing claim token is sourced from `../portainer/.envrc`. Run
+   preserve the existing claim token in the Arcane environment. Run
    `direnv exec . terraform plan` and confirm it only creates
    `arcane_global_variable.netdata_claim_token[0]` and
    `arcane_gitops_sync.netdata[0]`, then apply that reviewed plan.
@@ -450,7 +471,7 @@ Stirling PDF remained healthy and returned HTTP 200; no Terraform plan or apply
 was run, and dh01 was untouched.
 
 `SECURITY_INITIALLOGIN_PASSWORD` comes from the existing
-`terraform/portainer/.envrc` Bitwarden-backed value and is managed with
+Bitwarden-backed value in the Arcane environment and is managed with
 `arcane_global_variable.value_wo`, scoped to Arcane environment `0`, with
 `inject_into_containers = false`. It is not stored in Terraform state, but this
 is **environment-scoped, not project-scoped**: another Compose project in
@@ -499,8 +520,8 @@ test container and temporary directories were removed. Production Gitea Mirror
 remained healthy and returned HTTP 200; no Terraform plan or apply was run, and
 dh01 was untouched.
 
-`BETTER_AUTH_SECRET` comes from the existing `terraform/portainer/.envrc`
-Bitwarden-backed value and is managed with
+`BETTER_AUTH_SECRET` comes from the existing Bitwarden-backed value in the
+Arcane environment and is managed with
 `arcane_global_variable.value_wo`, scoped to Arcane environment `0`, with
 `inject_into_containers = false`. It is not stored in Terraform state, but this
 is **environment-scoped, not project-scoped**: another Compose project in
@@ -554,7 +575,7 @@ temporary directories were removed. Production Homarr remained running and
 returned HTTP 307; no Terraform plan or apply was run, and dh01 was untouched.
 
 `SECRET_ENCRYPTION_KEY` comes from the existing
-`terraform/portainer/.envrc` Bitwarden-backed value and is managed with
+Bitwarden-backed value in the Arcane environment and is managed with
 `arcane_global_variable.value_wo`, scoped to Arcane environment `0`, with
 `inject_into_containers = false`. It is not stored in Terraform state, but this
 is **environment-scoped, not project-scoped**: another Compose project in
@@ -608,8 +629,8 @@ removed. Production Rackula remained healthy and its HTTPS route returned
 HTTP 200; no Terraform plan or apply was run, and dh01 was untouched.
 
 `RACKULA_API_WRITE_TOKEN` and `RACKULA_LOCAL_PASSWORD` come from the existing
-`terraform/portainer/.envrc` Bitwarden-backed values;
-`RACKULA_AUTH_SESSION_SECRET` is sourced there when authentication is enabled.
+Bitwarden-backed values in the Arcane environment;
+`RACKULA_AUTH_SESSION_SECRET` is provided there when authentication is enabled.
 Arcane manages the configured secrets with write-only
 `arcane_global_variable.value_wo` resources in environment `0`, with container
 auto-injection disabled. The API write token is managed for every Rackula
@@ -662,7 +683,7 @@ after restart. This rehearsal validated the cold archive and restore, not
 Zerobyte recovery. No Terraform plan or apply was run, and dh01 was untouched.
 
 `GITEA_DB_PASSWORD` is sourced from the existing
-`terraform/portainer/.envrc` Bitwarden-backed value and managed with
+Bitwarden-backed value in the Arcane environment and managed with
 `arcane_global_variable.value_wo`, scoped to Arcane environment `0`, with
 `inject_into_containers = false`. It is not stored in Terraform state, but this
 is **environment-scoped, not project-scoped**: another Compose project in
@@ -772,7 +793,7 @@ Hermes remained running. No Terraform plan or apply was run, and dh01 was
 untouched.
 
 `DISCORD_BOT_TOKEN` and `HERMES_DASHBOARD_BASIC_AUTH_PASSWORD` are sourced from
-the existing `terraform/portainer/.envrc` values and managed with
+the existing Arcane environment values and managed with
 `arcane_global_variable.value_wo`, scoped to Arcane environment `0`, with
 `inject_into_containers = false`. They are not stored in Terraform state, but
 Arcane global variables are **environment-scoped, not project-scoped**:
@@ -827,7 +848,7 @@ route returned HTTP 200. No Terraform plan or apply was run, and dh01 was
 untouched.
 
 `MAIL_ARCHIVER_ADMIN_PASSWORD` and `MAIL_ARCHIVER_DB_PASSWORD` are sourced from
-the existing `terraform/portainer/.envrc` values and managed with
+the existing Arcane environment values and managed with
 `arcane_global_variable.value_wo`, scoped to Arcane environment `0`, with
 `inject_into_containers = false`. They are not stored in Terraform state, but
 Arcane global variables are **environment-scoped, not project-scoped**: another
@@ -879,7 +900,7 @@ no published ports. Its health check passed and `/identity` returned HTTP 200.
 The test container and temporary directories were removed. Production Plex
 remained healthy. No Terraform plan or apply was run, and dh01 was untouched.
 
-`PLEX_CLAIM` is sourced from the existing `terraform/portainer/.envrc` value
+`PLEX_CLAIM` is sourced from the existing Arcane environment value
 and managed with `arcane_global_variable.value_wo`, scoped to Arcane
 environment `0`, with `inject_into_containers = false`. It is not stored in
 Terraform state, but Arcane global variables are **environment-scoped, not

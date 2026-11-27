@@ -7,8 +7,9 @@ Portainer is a lightweight container management UI that provides a web interface
 The manager and dh01 Portainer agent are stopped with restart disabled after
 the Arcane migration. Their containers, Portainer data, and Terraform state
 are retained for rollback. The Portainer Traefik route has been removed.
-Arcane still sources shared variables from `terraform/portainer/.envrc`;
-do not remove that file as part of retirement.
+Existing Arcane installations may still source shared variables from
+`terraform/portainer/.envrc`; do not remove that file until the Arcane
+environment has been migrated and verified.
 
 To restore the retained containers for an approved rollback, run the following
 on their respective hosts:
