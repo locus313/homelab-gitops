@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - `terraform/arcane` — Prepare dh02 Netdata migration (#503).
 - `terraform/arcane` — Migrate Watchtower to Arcane (#504).
 - `terraform/arcane` — Prepare Stirling PDF migration (#505).
+- `terraform/arcane` — Migrate Gitea Mirror to Arcane (#506).
 
 ## [2026-11-26]
 
