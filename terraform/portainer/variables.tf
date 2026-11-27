@@ -24,6 +24,12 @@ variable "dh01_endpoint_id" {
   type        = number
 }
 
+variable "keep_netdata_dh01" {
+  description = "Keep the dh01 Netdata stack in Portainer until its approved Arcane handoff"
+  type        = bool
+  default     = true
+}
+
 variable "skip_ssl_verify" {
   description = "Skip TLS certificate verification for Portainer connection"
   type        = bool

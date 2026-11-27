@@ -30,12 +30,13 @@ locals {
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
-# Netdata — real-time system monitoring (deployed to dh01 and dh02)
+# Netdata — real-time system monitoring on dh01
 # Uses host networking for deep system and Docker monitoring.
 # Both nodes auto-register to Netdata Cloud using their system hostname.
 # ---------------------------------------------------------------------------
 
 module "netdata_dh01" {
+  count  = var.keep_netdata_dh01 ? 1 : 0
   source = "../modules/portainer-stack"
 
   name         = "netdata"
@@ -82,4 +83,9 @@ moved {
 moved {
   from = portainer_stack.netdata_dh01
   to   = module.netdata_dh01.portainer_stack.this
+}
+
+moved {
+  from = module.netdata_dh01
+  to   = module.netdata_dh01[0]
 }

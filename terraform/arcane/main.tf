@@ -19,7 +19,7 @@ resource "arcane_global_variable" "pilot_secret_canary" {
 }
 
 resource "arcane_global_variable" "netdata_claim_token" {
-  count = var.enable_netdata ? 1 : 0
+  count = var.enable_netdata || var.enable_netdata_dh01 ? 1 : 0
 
   key              = "NETDATA_CLAIM_TOKEN"
   value_wo         = var.netdata_claim_token
@@ -27,7 +27,7 @@ resource "arcane_global_variable" "netdata_claim_token" {
 
   is_secret              = true
   all_environments       = false
-  environment_ids        = ["0"]
+  environment_ids        = concat(var.enable_netdata ? ["0"] : [], var.enable_netdata_dh01 ? [var.dh01_arcane_environment_id] : [])
   inject_into_containers = false
 }
 
@@ -498,6 +498,28 @@ resource "arcane_gitops_sync" "netdata" {
 
   environment_id = "0"
   name           = "netdata"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/netdata/docker-compose.yml"
+  project_name   = "netdata"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    NETDATA_CLAIM_ROOMS = var.netdata_claim_rooms
+    NETDATA_CLAIM_URL   = var.netdata_claim_url
+  }
+}
+
+resource "arcane_gitops_sync" "netdata_dh01" {
+  depends_on = [arcane_global_variable.netdata_claim_token]
+  count      = var.enable_netdata_dh01 ? 1 : 0
+
+  environment_id = var.dh01_arcane_environment_id
+  name           = "netdata-dh01"
   repository_id  = arcane_git_repository.homelab.id
   branch         = "main"
   compose_path   = "docker/netdata/docker-compose.yml"

@@ -34,6 +34,10 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 # The existing TF_VAR_netdata_claim_token is sourced from ../portainer/.envrc.
 # export TF_VAR_enable_netdata="true"
 
+# Enable only after the approved dh01 Netdata Portainer handoff.
+# export TF_VAR_dh01_arcane_environment_id="your-dh01-agent-id"
+# export TF_VAR_enable_netdata_dh01="true"
+
 # Enable only after the dh02 Watchtower Portainer stack has been removed.
 # export TF_VAR_enable_watchtower="true"
 # The cleanup setting defaults to "true".
