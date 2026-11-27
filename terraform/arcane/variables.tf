@@ -87,6 +87,12 @@ variable "enable_stirling_pdf" {
   default     = false
 }
 
+variable "enable_gitea_mirror" {
+  description = "Create and start Gitea Mirror on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "watchtower_cleanup" {
   description = "Remove old images after Watchtower container updates"
   type        = string
@@ -109,6 +115,12 @@ variable "stirling_csrf_disabled" {
   description = "Disable CSRF protection in Stirling PDF"
   type        = string
   default     = "false"
+}
+
+variable "better_auth_secret" {
+  description = "Better Auth secret key for Gitea Mirror session signing and token encryption"
+  type        = string
+  sensitive   = true
 }
 
 variable "beszel_public_key" {

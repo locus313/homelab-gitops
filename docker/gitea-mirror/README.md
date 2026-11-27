@@ -2,7 +2,7 @@
 
 Automatically mirrors GitHub repositories to your self-hosted Gitea/Forgejo instance, with a web UI and scheduled sync support.
 
-- **Image**: `ghcr.io/raylabshq/gitea-mirror:v3.17.1`
+- **Image**: `ghcr.io/raylabshq/gitea-mirror:v3.54.0`
 - **Web UI**: `https://gitea-mirror.<TRAEFIK_BASE_DOMAIN>`
 - **Upstream**: [RayLabsHQ/gitea-mirror](https://github.com/RayLabsHQ/gitea-mirror)
 
@@ -40,3 +40,4 @@ Persistent data (SQLite database, config) is stored at `${DOCKER_BASE_PATH}/gite
 - All GitHub and Gitea credentials can be configured via the web UI after first login
 - Tokens are encrypted at rest using AES-256-GCM
 - Set `SCHEDULE_ENABLED=true` and `GITEA_MIRROR_INTERVAL` in `.env` for fully automated mirroring without web UI interaction
+- The dh02 migration was rehearsed from Zerobyte snapshot `72d6a6d4` on 2026-11-26. The restored data matched its source, and the pinned image reported a healthy SQLite connection using a test-only secret with networking disabled.

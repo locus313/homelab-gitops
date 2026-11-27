@@ -44,6 +44,19 @@ resource "arcane_global_variable" "stirling_security_initiallogin_password" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "gitea_mirror_better_auth_secret" {
+  count = var.enable_gitea_mirror ? 1 : 0
+
+  key              = "BETTER_AUTH_SECRET"
+  value_wo         = var.better_auth_secret
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "handbrake" {
   count = var.enable_handbrake ? 1 : 0
 
@@ -304,5 +317,28 @@ resource "arcane_gitops_sync" "stirling_pdf" {
     SYSTEM_MAXFILESIZE                 = "2000"
     TRAEFIK_BASE_DOMAIN                = var.traefik_base_domain
     TZ                                 = "America/Los_Angeles"
+  }
+}
+
+resource "arcane_gitops_sync" "gitea_mirror" {
+  depends_on = [arcane_global_variable.gitea_mirror_better_auth_secret]
+  count      = var.enable_gitea_mirror ? 1 : 0
+
+  environment_id = "0"
+  name           = "gitea-mirror"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/gitea-mirror/docker-compose.yml"
+  project_name   = "gitea-mirror"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DOCKER_BASE_PATH    = var.docker_base_path
+    PGID                = tostring(var.pgid)
+    PUID                = tostring(var.puid)
+    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
   }
 }

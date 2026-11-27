@@ -42,3 +42,7 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 # Enable only after the dh02 Stirling PDF Portainer stack has been removed.
 # The existing TF_VAR_stirling_security_initiallogin_password is sourced from ../portainer/.envrc.
 # export TF_VAR_enable_stirling_pdf="true"
+
+# Enable only after the dh02 Gitea Mirror Portainer stack has been removed.
+# The existing TF_VAR_better_auth_secret is sourced from ../portainer/.envrc.
+# export TF_VAR_enable_gitea_mirror="true"

@@ -116,31 +116,6 @@ module "gitea" {
 }
 
 # ---------------------------------------------------------------------------
-# Gitea Mirror — repository mirroring service
-# ---------------------------------------------------------------------------
-
-module "gitea_mirror" {
-  source = "../modules/portainer-stack"
-
-  name         = "gitea-mirror"
-  compose_path = "docker/gitea-mirror/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    DOCKER_BASE_PATH    = var.docker_base_path
-    PUID                = local.puid_str
-    PGID                = local.pgid_str
-    TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
-  }
-
-  secret_env = {
-    BETTER_AUTH_SECRET = var.better_auth_secret
-  }
-}
-
-# ---------------------------------------------------------------------------
 # Homarr — homelab dashboard
 # ---------------------------------------------------------------------------
 
@@ -398,11 +373,6 @@ moved {
 moved {
   from = portainer_stack.gitea
   to   = module.gitea.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.gitea_mirror
-  to   = module.gitea_mirror.portainer_stack.this
 }
 
 moved {
