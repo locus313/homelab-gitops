@@ -6,7 +6,6 @@ Plex is a media server that organizes your personal media collection and streams
 
 - Media server with automatic organization
 - Multi-platform client support
-- Hardware-accelerated transcoding
 - Remote access capabilities
 - Subtitle support
 - Live TV and DVR (with Plex Pass)
@@ -38,7 +37,7 @@ Plex is a media server that organizes your personal media collection and streams
 
 ## Hardware Acceleration
 
-This setup includes Intel GPU hardware acceleration support via `/dev/dri` device mapping for efficient video transcoding.
+This Compose file does not map `/dev/dri`; hardware transcoding is not configured.
 
 ## Initial Setup
 
@@ -76,9 +75,9 @@ Videos/
 
 ## Volumes
 
-- Config: `/docker/PlexMediaServer` - Plex configuration and metadata
-- Transcode: `/docker/PlexMediaServer/transcode` - Temporary transcoding files
-- Media: Various mounted directories for your media collection
+- Config: `${DOCKER_BASE_PATH}/plex/config` - Plex configuration and metadata
+- Transcode: `${DOCKER_BASE_PATH}/plex/transcode` - Temporary transcoding files
+- Media: `${MEDIA_PATH}` and its Videos, Music, and Pictures subdirectories
 - Time Sync: `/etc/localtime` - System time synchronization
 
 ## Network
@@ -102,7 +101,7 @@ Consider a Plex Pass subscription for:
 
 ## Official Plex Image
 
-This deployment uses the official Plex image (`plexinc/pms-docker:1.43.0.10492-121068a07`) which provides:
+This deployment uses the official Plex image (`plexinc/pms-docker:1.43.5.11079-b3b13e506`) which provides:
 
 - Official support from Plex Inc.
 - Regular updates and security patches

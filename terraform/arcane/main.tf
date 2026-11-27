@@ -174,6 +174,19 @@ resource "arcane_global_variable" "mail_archiver_db_password" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "plex_claim" {
+  count = var.enable_plex ? 1 : 0
+
+  key              = "PLEX_CLAIM"
+  value_wo         = var.plex_claim
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "handbrake" {
   count = var.enable_handbrake ? 1 : 0
 
@@ -598,5 +611,29 @@ resource "arcane_gitops_sync" "mail_archiver" {
     MAIL_ARCHIVER_DB_USER    = var.mail_archiver_db_user
     TRAEFIK_BASE_DOMAIN      = var.traefik_base_domain
     TZ                       = "America/Los_Angeles"
+  }
+}
+
+resource "arcane_gitops_sync" "plex" {
+  depends_on = [arcane_global_variable.plex_claim]
+  count      = var.enable_plex ? 1 : 0
+
+  environment_id = "0"
+  name           = "plex"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/plex/docker-compose.yml"
+  project_name   = "plex"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DOCKER_BASE_PATH = var.docker_base_path
+    MEDIA_PATH       = var.media_path
+    PGID             = tostring(var.pgid)
+    PUID             = tostring(var.puid)
+    TZ               = "America/Los_Angeles"
   }
 }

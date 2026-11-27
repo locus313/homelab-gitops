@@ -10,7 +10,7 @@ variable "docker_base_path" {
 }
 
 variable "media_path" {
-  description = "Path on dh02 for MeTube downloads and HandBrake media"
+  description = "Path on dh02 for Plex, MeTube, and HandBrake media"
   type        = string
   default     = "/mnt/media"
 }
@@ -119,6 +119,12 @@ variable "enable_hermes_agent" {
 
 variable "enable_mail_archiver" {
   description = "Create and start Mail Archiver on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
+variable "enable_plex" {
+  description = "Create and start Plex on dh02 after removing its Portainer stack"
   type        = bool
   default     = false
 }
@@ -276,6 +282,13 @@ variable "mail_archiver_db_password" {
   sensitive   = true
 }
 
+variable "plex_claim" {
+  description = "Plex claim token for server registration"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
 variable "beszel_public_key" {
   description = "Ed25519 public key for Beszel agent authentication; use the existing value from terraform/portainer/.envrc"
   type        = string
@@ -313,7 +326,7 @@ variable "metube_ytdl_options" {
 }
 
 variable "pgid" {
-  description = "Group ID for Gitea, HandBrake, Home Assistant, MeTube, NetbootXYZ, and Ombi container file ownership"
+  description = "Group ID for Gitea, HandBrake, Home Assistant, MeTube, NetbootXYZ, Ombi, and Plex container file ownership"
   type        = number
   default     = 1000
 }
@@ -325,7 +338,7 @@ variable "pilot_value" {
 }
 
 variable "puid" {
-  description = "User ID for Gitea, HandBrake, Home Assistant, MeTube, NetbootXYZ, and Ombi container file ownership"
+  description = "User ID for Gitea, HandBrake, Home Assistant, MeTube, NetbootXYZ, Ombi, and Plex container file ownership"
   type        = number
   default     = 1000
 }

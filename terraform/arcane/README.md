@@ -807,6 +807,55 @@ Mail Archiver Portainer module and apply the Portainer workspace. Data remains
 under `${DOCKER_BASE_PATH}/mail-archiver`; restore it from backup only if it was
 changed or corrupted.
 
+## Host-network media migration: Plex
+
+Plex is prepared for migration on dh02 and remains disabled until its Portainer
+stack is removed. It uses host networking and stores configuration under
+`${DOCKER_BASE_PATH}/plex/config` (48 GiB); transcode data is separate and
+disposable. Terraform supplies the persistent paths, media path, and ownership
+IDs. The existing Plex configuration is reused.
+
+On 2026-11-26, Plex was stopped briefly for a cold config copy to
+`/mnt/backups/plex-restore-rehearsal-20261126/source`, then restarted healthy.
+This was a file-copy rehearsal, not a Zerobyte snapshot: the available
+Zerobyte browser session redirected to login. A restore copy was made at
+`/mnt/backups/plex-restore-rehearsal-20261126/restored`; both copies measured
+48 GiB. Recursive comparison reported a pre-existing dangling codec-cache
+symlink (`iHD_drv_video.so`); its link target matched in both copies and is
+also absent in the original config. The restored test copy was normalized to
+the original config's `1000:1000` ownership. It started with the pinned
+`plexinc/pms-docker:1.43.5.11079-b3b13e506` image under `--network none`, with
+no published ports. Its health check passed and `/identity` returned HTTP 200.
+The test container and temporary directories were removed. Production Plex
+remained healthy. No Terraform plan or apply was run, and dh01 was untouched.
+
+`PLEX_CLAIM` is sourced from the existing `terraform/portainer/.envrc` value
+and managed with `arcane_global_variable.value_wo`, scoped to Arcane
+environment `0`, with `inject_into_containers = false`. It is not stored in
+Terraform state, but Arcane global variables are **environment-scoped, not
+project-scoped**: another Compose project in environment `0` could reference
+this key. Arcane writes the decrypted value to `.env.global` in its projects
+directory on dh02 as plaintext. Only the Plex Compose file should reference
+this key. Do not put it in `arcane_gitops_sync.environment_variables`.
+
+After this change is merged to `main`, cut over in this order to avoid a
+container-name collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.plex.portainer_stack.this`, then apply
+   that reviewed plan.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_enable_plex=true`. Run
+   `direnv exec . terraform plan` and confirm it only creates the Plex claim
+   global and `arcane_gitops_sync.plex`; apply that reviewed plan.
+3. Verify Plex is healthy on dh02, clients can reach it over the existing
+   host-network address, and configuration and media libraries are present.
+
+For rollback, disable `enable_plex` and apply the Arcane workspace first so
+Arcane removes its project and global variable. Restore the Plex Portainer
+module and apply the Portainer workspace. Data remains under
+`${DOCKER_BASE_PATH}/plex`; restore it from backup only if it was changed or
+corrupted.
+
 ## Gates before further service migrations
 
 IT Tools has no persistent mounts or secrets, so its successful transfer does
