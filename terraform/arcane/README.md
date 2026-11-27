@@ -291,6 +291,63 @@ module configuration and apply the Portainer workspace. The config remains at
 `${DOCKER_BASE_PATH}/home-assistant/config`; restore it from backup only if it
 was changed or corrupted.
 
+## Stateful service migration: Netdata
+
+Netdata is prepared for migration on dh02 and remains disabled until its dh02
+Portainer stack is removed. The dh01 Netdata stack remains managed by
+Portainer. Persistent data is stored in
+`${DOCKER_BASE_PATH}/netdata/{config,lib,cache}`.
+
+Before preparing this change, dh02 Netdata was stopped briefly while its
+`config`, `lib`, and `cache` directories were copied, then restarted and
+confirmed running with HTTP 200. Fresh Zerobyte snapshot `852e5405` on
+2026-11-26 at 5:28 PM included the copy. Only that copy was restored to an
+isolated target. Zerobyte first confirmed the restore, then showed a generic
+failure alert; an independent tree comparison confirmed that paths,
+permissions, regular-file contents, symlink targets, and special-file types
+matched. The pinned `netdata/netdata:v2.12.3` image returned HTTP 200 from the
+restored state with `--network none`, no claim token, no host mounts or host
+PID, and no added capabilities. The test container and temporary directories
+were removed, and production Netdata remained running with HTTP 200.
+
+The existing Compose file uses host networking, host PID, `SYS_PTRACE` and
+`SYS_ADMIN`, an unconfined AppArmor profile, and read-only host and Docker
+socket mounts for monitoring. Arcane will preserve these existing settings;
+the isolated restore test deliberately did not use them.
+
+`NETDATA_CLAIM_TOKEN` is supplied through the secret-marked
+`arcane_global_variable.value_wo` resource in environment `0` with
+`inject_into_containers = false`; only Netdata's Compose file references it.
+The write-only value is not stored in Terraform state. Arcane global variables
+are environment-scoped rather than project-scoped, and Arcane writes the
+decrypted `.env.global` file on dh02 for Compose interpolation. Any project in
+that environment could reference the token. This exposure was accepted for
+this migration; restrict host-side file access and rotate the token if that
+access changes.
+
+After this change is merged, cut over in this order to avoid a container-name
+collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying
+   `module.netdata_dh02.portainer_stack.this`, and that dh01 is unchanged.
+   Apply that reviewed plan.
+2. Confirm dh02 Netdata has stopped and its three data directories remain
+   intact. In `terraform/arcane/.envrc`, set `TF_VAR_enable_netdata=true`;
+   the existing claim token is sourced from `../portainer/.envrc`. Run
+   `direnv exec . terraform plan` and confirm it only creates
+   `arcane_global_variable.netdata_claim_token[0]` and
+   `arcane_gitops_sync.netdata[0]`, then apply that reviewed plan.
+3. Verify Netdata is running on dh02, the `netdata` project is Git-managed in
+   Arcane, and the node is connected to Netdata Cloud. Confirm dh01 remains
+   unchanged.
+
+For rollback, disable `enable_netdata` and apply the Arcane workspace first so
+Arcane removes its project and container. Then restore the dh02 Netdata
+Portainer module and apply the Portainer workspace. The data remains at
+`${DOCKER_BASE_PATH}/netdata/{config,lib,cache}`; restore it from backup only
+if it was changed or corrupted.
+
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
 write-only, so Terraform does not store it in state or saved plans. The
