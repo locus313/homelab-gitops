@@ -430,6 +430,57 @@ Stirling PDF Portainer module and apply the Portainer workspace. Data remains
 at `${DOCKER_BASE_PATH}/stirling-pdf/{data,config,logs}`; restore it from
 backup only if it was changed or corrupted.
 
+## Stateful and secret-bearing migration: Gitea Mirror
+
+Gitea Mirror is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. Its SQLite database and application state are stored
+in the single `${DOCKER_BASE_PATH}/gitea-mirror` bind mount.
+
+The service was stopped briefly for a consistent data copy, then restarted and
+confirmed healthy. Zerobyte Docker job `0zsNnr7d` created snapshot `72d6a6d4`
+on 2026-11-26 at 6:41 PM. Only
+`gitea-mirror-restore-test-source-20261126` was restored to the isolated
+`/docker/gitea-mirror-restore-test-target-20261126` directory; a content
+comparison found the restored data identical to the source. The pinned
+`ghcr.io/raylabshq/gitea-mirror:v3.54.0` image started with the restored data,
+`--network none`, no published ports, and a test-only Better Auth secret. Its
+health endpoint reported a connected database and healthy recovery state. The
+test container and temporary directories were removed. Production Gitea Mirror
+remained healthy and returned HTTP 200; no Terraform plan or apply was run, and
+dh01 was untouched.
+
+`BETTER_AUTH_SECRET` comes from the existing `terraform/portainer/.envrc`
+Bitwarden-backed value and is managed with
+`arcane_global_variable.value_wo`, scoped to Arcane environment `0`, with
+`inject_into_containers = false`. It is not stored in Terraform state, but this
+is **environment-scoped, not project-scoped**: another Compose project in
+environment `0` could reference the key. Arcane writes the decrypted value to
+`.env.global` in its projects directory on dh02 as plaintext. Only the Gitea
+Mirror Compose file should reference it. This risk is accepted for this
+migration; do not put the secret in
+`arcane_gitops_sync.environment_variables`. Increment `value_wo_version` if
+the secret changes.
+
+After this change is merged to `main`, cut over in this order to avoid a
+container-name collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.gitea_mirror.portainer_stack.this`, then
+   apply that reviewed plan.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_enable_gitea_mirror=true`. Run
+   `direnv exec . terraform plan` and confirm it only creates
+   `arcane_global_variable.gitea_mirror_better_auth_secret[0]` and
+   `arcane_gitops_sync.gitea_mirror[0]`; apply that reviewed plan.
+3. Verify Gitea Mirror is running on dh02 as an Arcane Git-managed project,
+   the existing account works at `https://gitea-mirror.<your-domain>`, and its
+   data mount remains `${DOCKER_BASE_PATH}/gitea-mirror`.
+
+For rollback, disable `enable_gitea_mirror` and apply the Arcane workspace first
+so Arcane removes its project and global variable. Restore the Gitea Mirror
+Portainer module and apply the Portainer workspace. Data remains at
+`${DOCKER_BASE_PATH}/gitea-mirror`; restore it from backup only if it was
+changed or corrupted.
+
 The pilot also tests a fake `ARCANE_PILOT_SECRET_CANARY` through
 `arcane_global_variable.value_wo`. The provider documents `value_wo` as
 write-only, so Terraform does not store it in state or saved plans. The
