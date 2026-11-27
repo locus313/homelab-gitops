@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - `terraform/arcane` — Migrate AzerothCore stack to Arcane (#516).
 - `terraform/arcane` — Migrate Zerobyte stack to Arcane (#517).
 - `terraform/arcane` — Migrate Traefik from Portainer (#518).
+- `docker/arcane-agent` — Add dh01 agent bootstrap (#519).
 
 ### Dependencies
 - Bump bpg/proxmox (#514).
