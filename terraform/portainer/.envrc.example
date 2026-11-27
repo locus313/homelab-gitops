@@ -15,14 +15,10 @@
 #   Inline (one-off):
 #     env TF_VAR_portainer_api_key="ptr_..." terraform apply
 #
-# WORKFLOW:
-#   1. Apply terraform/homelab/ to provision the VM
-#   2. Wait for cloud-init to complete and Portainer to start
-#   3. Log in to Portainer UI → Account (top-right) → Access tokens → Add token
-#   4. Set TF_VAR_portainer_api_key below and run: terraform init && terraform apply
-#
-# NOTE: Portainer itself is bootstrapped manually and not managed here.
-# This workspace requires Portainer to be running before `terraform apply`.
+# Portainer is stopped after the Arcane migration. This file remains the source
+# of shared credentials and variables for terraform/arcane/.envrc.
+# The Portainer workspace and state are retained for rollback; a rollback
+# requires restarting Portainer and reviewing the plan before applying.
 #
 # Secrets are pulled from Bitwarden. Unlock the vault before entering this directory:
 #   export BW_SESSION=$(bw unlock --raw)
@@ -72,8 +68,9 @@ export TF_VAR_portainer_api_key=$(_bw_password "Homelab - Portainer")
 # Endpoint ID for dh01 (registered Portainer agent — check Portainer UI → Environments)
 export TF_VAR_dh01_endpoint_id="your-dh01-endpoint-id"
 
-# Set to false only during the approved dh01 Netdata handoff to Arcane.
-# export TF_VAR_keep_netdata_dh01="false"
+# Defaults to false after the dh01 Netdata handoff. Set to true only for an
+# approved rollback, after removing the Arcane project and reviewing the plan.
+# export TF_VAR_keep_netdata_dh01="true"
 
 # Set to true only when using a self-signed cert (direct :9443 access)
 # export TF_VAR_skip_ssl_verify="false"
