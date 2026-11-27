@@ -63,31 +63,6 @@ module "traefik" {
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
-# Plex — media server (network_mode: host)
-# ---------------------------------------------------------------------------
-
-module "plex" {
-  source = "../modules/portainer-stack"
-
-  name         = "plex"
-  compose_path = "docker/plex/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    PUID             = local.puid_str
-    PGID             = local.pgid_str
-    DOCKER_BASE_PATH = var.docker_base_path
-    MEDIA_PATH       = var.media_path
-  }
-
-  secret_env = {
-    PLEX_CLAIM = var.plex_claim
-  }
-}
-
-# ---------------------------------------------------------------------------
 # Zerobyte — backup management
 # ---------------------------------------------------------------------------
 
@@ -215,11 +190,6 @@ module "azerothcore" {
 moved {
   from = portainer_stack.traefik
   to   = module.traefik.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.plex
-  to   = module.plex.portainer_stack.this
 }
 
 moved {
