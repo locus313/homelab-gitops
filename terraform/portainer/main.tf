@@ -6,46 +6,6 @@ locals {
   # String-typed user/group IDs for env blocks (Portainer env values are strings)
   puid_str = tostring(var.puid)
   pgid_str = tostring(var.pgid)
-
-  # Portainer-managed filesystem paths for stacks that use relative bind mounts.
-  # Portainer clones/syncs the stack directory here on each GitOps update so
-  # Docker can resolve ./relative paths against a stable host path.
-  # Must be OUTSIDE the cloud-init clone (/opt/homelab-gitops) to avoid
-  # git-repo-within-git-repo conflicts on Portainer's git pull.
-  traefik_fs_path = "${var.portainer_stack_path}/traefik"
-}
-
-# ---------------------------------------------------------------------------
-# Traefik — reverse proxy and SSL termination (deploy first)
-#
-# support_relative_path = true lets Portainer keep docker/traefik/* synced to
-# filesystem_path on the Docker host. On each 1-hour GitOps poll Portainer
-# pulls the latest commits and refreshes that directory, so ./config always
-# reflects the current repo state when the container restarts.
-# ---------------------------------------------------------------------------
-
-module "traefik" {
-  source = "../modules/portainer-stack"
-
-  name                  = "traefik"
-  compose_path          = "docker/traefik/docker-compose.yml"
-  endpoint_id           = var.portainer_endpoint_id
-  repo_url              = var.repo_url
-  tz                    = var.tz
-  support_relative_path = true
-  filesystem_path       = local.traefik_fs_path
-
-  env = {
-    CLOUDNS_PROPAGATION_TIMEOUT = var.cloudns_propagation_timeout
-    DOCKER_BASE_PATH            = var.docker_base_path
-    NAS_IP                      = var.nas_ip
-    TRAEFIK_BASE_DOMAIN         = var.traefik_base_domain
-  }
-
-  secret_env = {
-    CLOUDNS_SUB_AUTH_ID   = var.cloudns_sub_auth_id
-    CLOUDNS_AUTH_PASSWORD = var.cloudns_auth_password
-  }
 }
 
 # ---------------------------------------------------------------------------

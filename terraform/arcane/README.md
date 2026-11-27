@@ -1003,6 +1003,52 @@ module and apply the Portainer workspace. Its state remains under
 `${DOCKER_BASE_PATH}/zerobyte`; backup repositories remain at their existing
 mounted paths.
 
+## Core ingress migration: Traefik
+
+Traefik is the remaining dh02 Portainer stack; dh01 Netdata remains out of
+scope. The Arcane sync is disabled by default and uses `sync_directory = true`
+to provide the Compose `configs` files. CloudNS credentials use write-only
+Arcane global variables scoped to environment `0`, with
+`inject_into_containers = false`. They are not stored in Terraform state, but
+Arcane writes decrypted global values to `.env.global` in its projects
+directory on dh02 as plaintext. Only the Traefik Compose file should reference
+these keys.
+
+The Terraform Arcane provider normally reaches Arcane through Traefik, so the
+standard remove-then-create sequence would cut off the API needed for the
+second apply. Arcane's port `3552` is not published on the host. A read-only
+request from dh02 to Arcane's private Docker-network address confirmed the
+service is reachable directly. Use an SSH tunnel for the cutover instead; this
+does not add a host-published port.
+
+After this change is merged, cut over in this order:
+
+1. On dh02, get Arcane's current `proxynet` IP with
+   `docker inspect --format '{{with index .NetworkSettings.Networks "proxynet"}}{{.IPAddress}}{{end}}' arcane`.
+   From the Terraform workstation, open and keep running
+   `ssh -N -L 13552:<ARCANE_PROXNET_IP>:3552 <dh02-ssh-target>`.
+2. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.traefik.portainer_stack.this`, then apply
+   that reviewed plan. HTTPS routing on ports `80` and `443` will be briefly
+   unavailable during the handoff.
+3. Keep the tunnel open. In `terraform/arcane`, run
+   `direnv exec . env TF_VAR_arcane_endpoint=http://127.0.0.1:13552/api terraform plan`.
+   Confirm it only creates
+   `arcane_global_variable.cloudns_sub_auth_id[0]`,
+   `arcane_global_variable.cloudns_auth_password[0]`, and
+   `arcane_gitops_sync.traefik[0]`; apply using the same endpoint override.
+4. Verify Traefik is running, its public routes and TLS work, and Arcane is
+   reachable through its normal URL. Close the tunnel; future Terraform
+   operations can use the normal Arcane endpoint.
+
+For rollback, restore the Traefik Portainer module. While Traefik is down, run
+from `terraform/portainer`:
+`direnv exec . env TF_VAR_portainer_endpoint=https://<DH02_IP>:9443 TF_VAR_skip_ssl_verify=true terraform plan`.
+Confirm the plan recreates only Traefik, then apply with the same overrides.
+This uses Portainer's direct host port `9443` and skips verification only for
+its self-signed certificate. Persistent certificates and logs remain at their
+existing paths.
+
 ## Gates before further service migrations
 
 IT Tools has no persistent mounts or secrets, so its successful transfer does

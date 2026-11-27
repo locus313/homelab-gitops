@@ -278,6 +278,32 @@ resource "arcane_global_variable" "zerobyte_app_secret" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "cloudns_sub_auth_id" {
+  count = var.enable_traefik ? 1 : 0
+
+  key              = "CLOUDNS_SUB_AUTH_ID"
+  value_wo         = var.cloudns_sub_auth_id
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
+resource "arcane_global_variable" "cloudns_auth_password" {
+  count = var.enable_traefik ? 1 : 0
+
+  key              = "CLOUDNS_AUTH_PASSWORD"
+  value_wo         = var.cloudns_auth_password
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "handbrake" {
   count = var.enable_handbrake ? 1 : 0
 
@@ -815,5 +841,33 @@ resource "arcane_gitops_sync" "zerobyte" {
     PUID                = tostring(var.puid)
     TRAEFIK_BASE_DOMAIN = var.traefik_base_domain
     TZ                  = "America/Los_Angeles"
+  }
+}
+
+resource "arcane_gitops_sync" "traefik" {
+  depends_on = [
+    arcane_global_variable.cloudns_sub_auth_id,
+    arcane_global_variable.cloudns_auth_password,
+  ]
+  count = var.enable_traefik ? 1 : 0
+
+  environment_id = "0"
+  name           = "traefik"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/traefik/docker-compose.yml"
+  project_name   = "traefik"
+
+  auto_sync           = true
+  sync_interval       = 60
+  sync_directory      = true
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    CLOUDNS_PROPAGATION_TIMEOUT = var.cloudns_propagation_timeout
+    DOCKER_BASE_PATH            = var.docker_base_path
+    NAS_IP                      = var.nas_ip
+    TRAEFIK_BASE_DOMAIN         = var.traefik_base_domain
+    TZ                          = "America/Los_Angeles"
   }
 }

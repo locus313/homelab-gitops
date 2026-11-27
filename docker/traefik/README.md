@@ -30,6 +30,14 @@ Traefik is a modern reverse proxy and load balancer that makes deploying microse
    docker compose up -d
    ```
 
+### Deploy via Arcane
+
+After removing the dh02 Portainer stack, enable `TF_VAR_enable_traefik` in
+`terraform/arcane/.envrc` and apply that workspace. Arcane syncs the complete
+Traefik directory so the Compose `configs` files are available. The special
+SSH-tunnel cutover and rollback procedure is documented in the
+[Arcane migration guide](../../terraform/arcane/README.md).
+
 ## Access
 
 > [!NOTE]
