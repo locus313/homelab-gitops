@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - `terraform/arcane` — Prepare Beszel migration (#501).
 - `terraform/arcane` — Prepare Home Assistant migration (#502).
+- `terraform/arcane` — Prepare dh02 Netdata migration (#503).
 
 ## [2026-11-26]
 
