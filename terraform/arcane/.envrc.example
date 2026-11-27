@@ -62,3 +62,7 @@ export ARCANE_API_KEY="$(bw get password 'Homelab - Arcane API')"
 # Enable only after the dh02 Hermes Agent Portainer stack has been removed.
 # Hermes settings and secrets are sourced from ../portainer/.envrc.
 # export TF_VAR_enable_hermes_agent="true"
+
+# Enable only after the dh02 Mail Archiver Portainer stack has been removed.
+# Mail Archiver settings and secrets are sourced from ../portainer/.envrc.
+# export TF_VAR_enable_mail_archiver="true"

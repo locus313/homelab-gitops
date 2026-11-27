@@ -148,6 +148,32 @@ resource "arcane_global_variable" "hermes_dashboard_password" {
   inject_into_containers = false
 }
 
+resource "arcane_global_variable" "mail_archiver_admin_password" {
+  count = var.enable_mail_archiver ? 1 : 0
+
+  key              = "MAIL_ARCHIVER_ADMIN_PASSWORD"
+  value_wo         = var.mail_archiver_admin_password
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
+resource "arcane_global_variable" "mail_archiver_db_password" {
+  count = var.enable_mail_archiver ? 1 : 0
+
+  key              = "MAIL_ARCHIVER_DB_PASSWORD"
+  value_wo         = var.mail_archiver_db_password
+  value_wo_version = 1
+
+  is_secret              = true
+  all_environments       = false
+  environment_ids        = ["0"]
+  inject_into_containers = false
+}
+
 resource "arcane_gitops_sync" "handbrake" {
   count = var.enable_handbrake ? 1 : 0
 
@@ -544,5 +570,33 @@ resource "arcane_gitops_sync" "hermes_agent" {
     PUID                                 = tostring(var.puid)
     TRAEFIK_BASE_DOMAIN                  = var.traefik_base_domain
     TZ                                   = "America/Los_Angeles"
+  }
+}
+
+resource "arcane_gitops_sync" "mail_archiver" {
+  depends_on = [
+    arcane_global_variable.mail_archiver_admin_password,
+    arcane_global_variable.mail_archiver_db_password,
+  ]
+  count = var.enable_mail_archiver ? 1 : 0
+
+  environment_id = "0"
+  name           = "mail-archiver"
+  repository_id  = arcane_git_repository.homelab.id
+  branch         = "main"
+  compose_path   = "docker/mail-archiver/docker-compose.yml"
+  project_name   = "mail-archiver"
+
+  auto_sync           = true
+  sync_interval       = 60
+  start_project       = true
+  fail_if_name_exists = true
+  environment_variables = {
+    DOCKER_BASE_PATH         = var.docker_base_path
+    MAIL_ARCHIVER_ADMIN_USER = var.mail_archiver_admin_user
+    MAIL_ARCHIVER_DB_NAME    = var.mail_archiver_db_name
+    MAIL_ARCHIVER_DB_USER    = var.mail_archiver_db_user
+    TRAEFIK_BASE_DOMAIN      = var.traefik_base_domain
+    TZ                       = "America/Los_Angeles"
   }
 }
