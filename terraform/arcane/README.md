@@ -956,6 +956,53 @@ Portainer module and apply the Portainer workspace. Persistent data remains
 under `${DOCKER_BASE_PATH}/azerothcore`; restore it from backup only if it was
 changed or corrupted.
 
+## Backup service migration: Zerobyte
+
+Zerobyte is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. It is the backup service itself, so schedule the
+cutover during a quiet window and confirm no backup or restore job is active
+before applying the Portainer plan. The Compose stack retains its existing
+`/docker`, `/mnt`, and Docker-volume mounts; migration does not copy or relocate
+backup repositories.
+
+An approved cold-copy rehearsal was completed on dh02 on 2026-11-27 after
+confirming no backup or restore job was active. Zerobyte was stopped while its
+141 MB state directory was copied, then production restarted and remained
+running. The copied SQLite database passed `PRAGMA integrity_check`. The pinned
+image started from the copy with a generated test-only `APP_SECRET`, no network,
+published ports, FUSE, or host-wide mounts; its root route returned HTTP `307`.
+This verifies database integrity and startup/redirect behavior, not decryption
+of stored credentials or access to the actual backup repositories. Production
+also returned HTTP `307`, and the temporary test container and copies were
+removed.
+
+Keep the existing `APP_SECRET` unchanged. Zerobyte uses it to decrypt sensitive
+database values. Terraform passes it to Arcane as a write-only global variable
+scoped to environment `0`, with `inject_into_containers = false`. It is not
+stored in Terraform state, but Arcane writes decrypted global values to
+`.env.global` in its projects directory on dh02 as plaintext. Only the Zerobyte
+Compose file should reference this environment-scoped key.
+
+After this change is merged, cut over in this order to avoid a container-name
+collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.zerobyte.portainer_stack.this`, then apply
+   that reviewed plan.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_enable_zerobyte=true`. Run
+   `direnv exec . terraform plan` and confirm it only creates the Zerobyte
+   global variable and `arcane_gitops_sync.zerobyte`; apply that reviewed
+   plan.
+3. Verify the Zerobyte container and project are healthy in Arcane, its
+   existing repositories and scheduled jobs are visible, the web interface is
+   accessible, and the next scheduled backup completes successfully.
+
+For rollback, disable `enable_zerobyte` and apply the Arcane workspace first so
+Arcane removes its project and global variable. Restore the Zerobyte Portainer
+module and apply the Portainer workspace. Its state remains under
+`${DOCKER_BASE_PATH}/zerobyte`; backup repositories remain at their existing
+mounted paths.
+
 ## Gates before further service migrations
 
 IT Tools has no persistent mounts or secrets, so its successful transfer does

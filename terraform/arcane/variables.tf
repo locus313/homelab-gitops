@@ -141,6 +141,12 @@ variable "enable_azerothcore" {
   default     = false
 }
 
+variable "enable_zerobyte" {
+  description = "Create and start Zerobyte on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "watchtower_cleanup" {
   description = "Remove old images after Watchtower container updates"
   type        = string
@@ -357,6 +363,12 @@ variable "azerothcore_discord_token" {
 
 variable "azerothcore_discord_relay_db_password" {
   description = "Password of the discord_relay MySQL account used by the sidecar"
+  type        = string
+  sensitive   = true
+}
+
+variable "zerobyte_app_secret" {
+  description = "Existing secret for decrypting Zerobyte database data"
   type        = string
   sensitive   = true
 }
