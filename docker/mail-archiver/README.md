@@ -1,13 +1,13 @@
 # Mail Archiver
 
-Email archiving system with automated IMAP/M365 sync, advanced search, and export capabilities. Version: **2606.3**
+Email archiving system with automated IMAP/M365 sync, advanced search, and export capabilities. Version: **2611.2**
 
 ## Services
 
 | Service | Image | Description |
 |---------|-------|-------------|
-| `mail-archiver` | `s1t5/mailarchiver:2606.3` | Mail Archiver web UI and sync engine |
-| `mail-archiver-db` | `postgres:18.4` | PostgreSQL database |
+| `mail-archiver` | `s1t5/mailarchiver:2611.2` | Mail Archiver web UI and sync engine |
+| `mail-archiver-db` | `postgres:18.6` | PostgreSQL database |
 
 ## Setup
 

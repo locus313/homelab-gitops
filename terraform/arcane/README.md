@@ -752,6 +752,61 @@ Portainer module and `hermes_agent_fs_path` local, then apply the Portainer
 workspace. Data remains at `${DOCKER_BASE_PATH}/hermes-agent`; restore it from
 backup only if it was changed or corrupted.
 
+## Stateful and secret-bearing migration: Mail Archiver
+
+Mail Archiver is prepared for migration on dh02 and remains disabled until its
+Portainer stack is removed. The app and PostgreSQL sidecar use persistent bind
+mounts under `${DOCKER_BASE_PATH}/mail-archiver`; the database is approximately
+8.9 GiB. The pinned images are `s1t5/mailarchiver:2611.2` and `postgres:18.6`.
+
+Before preparing this change, both containers were stopped briefly for a
+consistent copy and then restarted. PostgreSQL returned healthy and the Mail
+Archiver login route returned HTTP 200. Zerobyte Docker job `0zsNnr7d` created
+snapshot `108d076d` on 2026-11-26 at 8:42 PM. Only
+`mail-archiver-restore-test-source-20261126` was selected for restore to
+`/docker/mail-archiver-restore-test-target-20261126`. Zerobyte showed conflicting
+completion and failure alerts, but a full recursive comparison found no
+differences between the stopped-source copy and restored data (8.9 GiB).
+
+The pinned `postgres:18.6` and `s1t5/mailarchiver:2611.2` images started against
+the restored database on an internal-only network, with no published ports and
+test-only credentials. PostgreSQL accepted the app connection and the login
+route returned HTTP 200. The test containers, network, and temporary
+directories were removed. Production PostgreSQL remained healthy and its login
+route returned HTTP 200. No Terraform plan or apply was run, and dh01 was
+untouched.
+
+`MAIL_ARCHIVER_ADMIN_PASSWORD` and `MAIL_ARCHIVER_DB_PASSWORD` are sourced from
+the existing `terraform/portainer/.envrc` values and managed with
+`arcane_global_variable.value_wo`, scoped to Arcane environment `0`, with
+`inject_into_containers = false`. They are not stored in Terraform state, but
+Arcane global variables are **environment-scoped, not project-scoped**: another
+Compose project in environment `0` could reference them. Arcane writes the
+decrypted values to `.env.global` in its projects directory on dh02 as
+plaintext. Only the Mail Archiver Compose file should reference these keys. Do
+not put the secrets in `arcane_gitops_sync.environment_variables`; preserve the
+current values and increment `value_wo_version` if either secret changes.
+
+After this change is merged to `main`, cut over in this order to avoid a
+container-name collision:
+
+1. In `terraform/portainer`, run `direnv exec . terraform plan`. Confirm the
+   only change is destroying `module.mail_archiver.portainer_stack.this`, then
+   apply that reviewed plan.
+2. In `terraform/arcane/.envrc`, set `TF_VAR_enable_mail_archiver=true`. Run
+   `direnv exec . terraform plan` and confirm it only creates the two Mail
+   Archiver secret globals and `arcane_gitops_sync.mail_archiver`; apply that
+   reviewed plan.
+3. Verify both containers are healthy on dh02, the login route works, existing
+   accounts and archived messages are present, and both data mounts remain
+   under `${DOCKER_BASE_PATH}/mail-archiver`.
+
+For rollback, disable `enable_mail_archiver` and apply the Arcane workspace
+first so Arcane removes its project and global variables. Restore the
+Mail Archiver Portainer module and apply the Portainer workspace. Data remains
+under `${DOCKER_BASE_PATH}/mail-archiver`; restore it from backup only if it was
+changed or corrupted.
+
 ## Gates before further service migrations
 
 IT Tools has no persistent mounts or secrets, so its successful transfer does

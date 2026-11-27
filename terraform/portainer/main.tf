@@ -181,33 +181,6 @@ module "netdata_dh01" {
 }
 
 # ---------------------------------------------------------------------------
-# Mail Archiver — email archiving with IMAP/M365 sync and advanced search
-# ---------------------------------------------------------------------------
-
-module "mail_archiver" {
-  source = "../modules/portainer-stack"
-
-  name         = "mail-archiver"
-  compose_path = "docker/mail-archiver/docker-compose.yml"
-  endpoint_id  = var.portainer_endpoint_id
-  repo_url     = var.repo_url
-  tz           = var.tz
-
-  env = {
-    DOCKER_BASE_PATH         = var.docker_base_path
-    TRAEFIK_BASE_DOMAIN      = var.traefik_base_domain
-    MAIL_ARCHIVER_ADMIN_USER = var.mail_archiver_admin_user
-    MAIL_ARCHIVER_DB_NAME    = var.mail_archiver_db_name
-    MAIL_ARCHIVER_DB_USER    = var.mail_archiver_db_user
-  }
-
-  secret_env = {
-    MAIL_ARCHIVER_ADMIN_PASSWORD = var.mail_archiver_admin_password
-    MAIL_ARCHIVER_DB_PASSWORD    = var.mail_archiver_db_password
-  }
-}
-
-# ---------------------------------------------------------------------------
 # AzerothCore — WotLK test realm (local build stack; image built on the host)
 # ---------------------------------------------------------------------------
 
@@ -272,9 +245,4 @@ moved {
 moved {
   from = portainer_stack.netdata_dh01
   to   = module.netdata_dh01.portainer_stack.this
-}
-
-moved {
-  from = portainer_stack.mail_archiver
-  to   = module.mail_archiver.portainer_stack.this
 }

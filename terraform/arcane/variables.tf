@@ -117,6 +117,12 @@ variable "enable_hermes_agent" {
   default     = false
 }
 
+variable "enable_mail_archiver" {
+  description = "Create and start Mail Archiver on dh02 after removing its Portainer stack"
+  type        = bool
+  default     = false
+}
+
 variable "watchtower_cleanup" {
   description = "Remove old images after Watchtower container updates"
   type        = string
@@ -238,6 +244,36 @@ variable "hermes_discord_bot_token" {
 variable "hermes_discord_allowed_users" {
   description = "Comma-separated Discord user IDs authorized to use Hermes"
   type        = string
+}
+
+variable "mail_archiver_admin_user" {
+  description = "Mail Archiver initial admin username"
+  type        = string
+  default     = "admin"
+}
+
+variable "mail_archiver_admin_password" {
+  description = "Mail Archiver initial admin password"
+  type        = string
+  sensitive   = true
+}
+
+variable "mail_archiver_db_name" {
+  description = "Mail Archiver PostgreSQL database name"
+  type        = string
+  default     = "mailarchiver"
+}
+
+variable "mail_archiver_db_user" {
+  description = "Mail Archiver PostgreSQL database user"
+  type        = string
+  default     = "mailuser"
+}
+
+variable "mail_archiver_db_password" {
+  description = "Mail Archiver PostgreSQL database password"
+  type        = string
+  sensitive   = true
 }
 
 variable "beszel_public_key" {
