@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-11-28]
+
+### Changed
+- `docker/netbootxyz` — Update image to nbxyz28 (#526).
+
 ## [2026-11-27]
 
 ### Added
