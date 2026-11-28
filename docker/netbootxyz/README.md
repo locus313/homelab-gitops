@@ -147,7 +147,7 @@ This service is configured to use the `proxynet` external network for Traefik in
 
 ## NetbootXYZ Image
 
-This deployment uses the official NetbootXYZ image (`ghcr.io/netbootxyz/netbootxyz:0.7.6-nbxyz23`) which provides:
+This deployment uses the official NetbootXYZ image (`ghcr.io/netbootxyz/netbootxyz:0.7.6-nbxyz28`) which provides:
 
 - Comprehensive boot menu options
 - Regular updates with new distributions
